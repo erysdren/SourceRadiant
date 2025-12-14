@@ -82,21 +82,76 @@
 // =============================================================================
 // Project settings dialog
 
-class GameComboConfiguration
+class GameComboDefinition
 {
 public:
-	const char* basegame_dir;
-	const char* basegame;
-	const char* known_dir;
-	const char* known;
-	const char* custom;
+	std::string m_dir;
+	std::string m_name;
+	int m_index;
+	GameComboDefinition() : m_dir( "invalid" ), m_name( "invalid" ), m_index( -1 ){
+	}
+	GameComboDefinition( const char* dir, const char* name, int index ) : m_dir( dir ), m_name( name ), m_index( index ){
+	}
+	bool is_valid() const {
+		return this != &get_invalid();
+	}
+	static const GameComboDefinition& get_invalid() {
+		static GameComboDefinition invalid;
+		return invalid;
+	}
+};
 
-	GameComboConfiguration() :
-		basegame_dir( g_pGameDescription->getRequiredKeyValue( "basegame" ) ),
-		basegame( g_pGameDescription->getRequiredKeyValue( "basegamename" ) ),
-		known_dir( g_pGameDescription->getKeyValue( "knowngame" ) ),
-		known( g_pGameDescription->getKeyValue( "knowngamename" ) ),
-		custom( g_pGameDescription->getRequiredKeyValue( "unknowngamename" ) ){
+class GameComboConfiguration
+{
+	GameComboDefinition m_basegame;
+	std::vector<GameComboDefinition> m_knowngames;
+public:
+	const GameComboDefinition& basegame(){
+		return m_basegame;
+	}
+	const std::vector<GameComboDefinition>& knowngames(){
+		return m_knowngames;
+	}
+	const GameComboDefinition& for_dir( const char* dir ){
+		if ( path_equal( m_basegame.m_dir.c_str(), dir ) ) {
+			return m_basegame;
+		}
+		for ( auto& knowngame : m_knowngames ) {
+			if ( path_equal( knowngame.m_dir.c_str(), dir ) ) {
+				return knowngame;
+			}
+		}
+		return GameComboDefinition::get_invalid();
+	}
+	const GameComboDefinition& for_name( const char* name ){
+		if ( m_basegame.m_name == name ) {
+			return m_basegame;
+		}
+		for ( auto& knowngame : m_knowngames ) {
+			if ( knowngame.m_name == name ) {
+				return knowngame;
+			}
+		}
+		return GameComboDefinition::get_invalid();
+	}
+	std::size_t num_games(){
+		return m_knowngames.size() + 1;
+	}
+	GameComboConfiguration() : m_basegame( g_pGameDescription->getRequiredKeyValue( "basegame" ), g_pGameDescription->getRequiredKeyValue( "basegamename" ), 0 ){
+		const char* dirs = g_pGameDescription->getRequiredKeyValue( "knowngames" );
+		const char* names = g_pGameDescription->getRequiredKeyValue( "knowngamenames" );
+		if ( dirs && names ) {
+			StringTokeniser knowngames( dirs );
+			StringTokeniser knowngamenames( names, ";" );
+			while ( true ) {
+				const char* dir = knowngames.getToken();
+				const char* name = knowngamenames.getToken();
+				if ( string_empty( dir ) || string_empty( name ) ) {
+					break;
+				}
+				m_knowngames.push_back({ dir, name, m_knowngames.size() + 1 });
+			}
+		}
 	}
 };
 
@@ -118,6 +173,13 @@ struct gamecombo_t
 };
 
 gamecombo_t gamecombo_for_dir( const char* dir ){
+	const auto& found = globalGameComboConfiguration().for_dir( dir );
+	if ( found.is_valid() ) {
+		return gamecombo_t( found.m_index, found.m_dir.c_str(), false );
+	} else {
+		return gamecombo_t( globalGameComboConfiguration().num_games(), found.m_dir.c_str(), true );
+	}
+#if 0
 	if ( path_equal( dir, globalGameComboConfiguration().basegame_dir ) ) {
 		return gamecombo_t( 0, dir, false );
 	}
@@ -128,9 +190,17 @@ gamecombo_t gamecombo_for_dir( const char* dir ){
 	{
 		return gamecombo_t( string_empty( globalGameComboConfiguration().known_dir ) ? 1 : 2, dir, true );
 	}
+#endif
 }
 
 gamecombo_t gamecombo_for_gamename( const char* gamename ){
+	const auto& found = globalGameComboConfiguration().for_name( gamename );
+	if ( found.is_valid() ) {
+		return gamecombo_t( found.m_index, found.m_dir.c_str(), false );
+	} else {
+		return gamecombo_t( globalGameComboConfiguration().num_games(), "", true );
+	}
+#if 0
 	if ( string_empty( gamename ) || string_equal( gamename, globalGameComboConfiguration().basegame ) ) {
 		return gamecombo_t( 0, globalGameComboConfiguration().basegame_dir, false );
 	}
@@ -141,6 +211,7 @@ gamecombo_t gamecombo_for_gamename( const char* gamename ){
 	{
 		return gamecombo_t( string_empty( globalGameComboConfiguration().known_dir ) ? 1 : 2, "", true );
 	}
+#endif
 }
 
 
@@ -198,7 +269,7 @@ void GameImport( int value ){
 	const auto dir = s_gameCombo.fsgame_entry->currentText().toLatin1();
 
 	const char* new_gamename = dir.isEmpty()
-	                           ? globalGameComboConfiguration().basegame_dir
+	                           ? globalGameComboConfiguration().basegame().m_dir.c_str()
 	                           : dir.constData();
 
 	if ( !path_equal( new_gamename, gamename_get() ) ) {
@@ -233,10 +304,17 @@ void Game_constructPreferences( PreferencesPage& page ){
 			IntImportCallback( GameImportCaller() ),
 			IntExportCallback( GameExportCaller() )
 		);
+		s_gameCombo.game_select->addItem( globalGameComboConfiguration().basegame().m_name.c_str() );
+		for ( const auto& knowngame : globalGameComboConfiguration().knowngames() ) {
+			s_gameCombo.game_select->addItem( knowngame.m_name.c_str() );
+		}
+
+#if 0
 		s_gameCombo.game_select->addItem( globalGameComboConfiguration().basegame );
 		if ( !string_empty( globalGameComboConfiguration().known ) )
 			s_gameCombo.game_select->addItem( globalGameComboConfiguration().known );
 		s_gameCombo.game_select->addItem( globalGameComboConfiguration().custom );
+#endif
 	}
 	{
 		s_gameCombo.fsgame_entry = page.appendCombo(

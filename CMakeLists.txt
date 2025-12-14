@@ -364,23 +364,84 @@ endif()
 # gamepacks
 
 function(add_gamepack name)
-	cmake_parse_arguments(PARSE_ARGV 1 ARG "HAS_BASEGAME" "ENTITIES;PREFIX;TITLE;TITLE_BASEGAME;GAMEDIR;GAMEDIR_BASEGAME;PATH_WIN32;PATH_LINUX;PATH_MACOS;EXECUTABLE_WIN32;EXECUTABLE_LINUX;EXECUTABLE_MACOS" "")
+	cmake_parse_arguments(PARSE_ARGV 1 ARG "HAS_BASEGAME" "ENTITIES;PREFIX;BASE_TITLE;BASE_GAMEDIR;TITLE;GAMEDIR;PATH_WIN32;PATH_LINUX;PATH_MACOS;EXECUTABLE_WIN32;EXECUTABLE_LINUX;EXECUTABLE_MACOS" "KNOWN_TITLES;KNOWN_GAMEDIRS")
 	file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/install/gamepacks/games/")
 	file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/install/gamepacks/${name}.game/")
 	file(COPY "${PROJECT_SOURCE_DIR}/cmake/default_build_menu.xml" DESTINATION "${PROJECT_SOURCE_DIR}/install/gamepacks/${name}.game/")
+	set(target gamepack_${name})
+	add_custom_target(${target})
 	if(ARG_HAS_BASEGAME)
-		configure_file("${PROJECT_SOURCE_DIR}/cmake/gamepack-multi.xml.in" "${PROJECT_SOURCE_DIR}/install/gamepacks/games/${name}.game" @ONLY)
+		set_property(TARGET ${target} PROPERTY HAS_BASEGAME 1)
+		set_property(TARGET ${target} PROPERTY BASE_GAMEDIR ${ARG_BASE_GAMEDIR})
+		set_property(TARGET ${target} PROPERTY BASE_TITLE ${ARG_BASE_TITLE})
+		set_property(TARGET ${target} PROPERTY KNOWN_GAMEDIRS ${ARG_KNOWN_GAMEDIRS})
+		set_property(TARGET ${target} PROPERTY KNOWN_TITLES ${ARG_KNOWN_TITLES})
 	else()
-		configure_file("${PROJECT_SOURCE_DIR}/cmake/gamepack-single.xml.in" "${PROJECT_SOURCE_DIR}/install/gamepacks/games/${name}.game" @ONLY)
+		set_property(TARGET ${target} PROPERTY HAS_BASEGAME 0)
 	endif()
+	set_property(TARGET ${target} PROPERTY PREFIX ${ARG_PREFIX})
+	set_property(TARGET ${target} PROPERTY PATH_WIN32 ${ARG_PATH_WIN32})
+	set_property(TARGET ${target} PROPERTY PATH_LINUX ${ARG_PATH_LINUX})
+	set_property(TARGET ${target} PROPERTY PATH_MACOS ${ARG_PATH_MACOS})
+	set_property(TARGET ${target} PROPERTY EXECUTABLE_WIN32 ${ARG_EXECUTABLE_WIN32})
+	set_property(TARGET ${target} PROPERTY EXECUTABLE_LINUX ${ARG_EXECUTABLE_LINUX})
+	set_property(TARGET ${target} PROPERTY EXECUTABLE_MACOS ${ARG_EXECUTABLE_MACOS})
+	set_property(TARGET ${target} PROPERTY ENTITIES ${ARG_ENTITIES})
+	set_property(TARGET ${target} PROPERTY GAMEDIR ${ARG_GAMEDIR})
+	set_property(TARGET ${target} PROPERTY TITLE ${ARG_TITLE})
+	file(GENERATE
+		OUTPUT "${PROJECT_SOURCE_DIR}/install/gamepacks/games/${name}.game"
+		CONTENT
+[[<?xml version="1.0"?>
+<game
+  type="source"
+  index="1"
+  name="$<TARGET_PROPERTY:TITLE>"
+  enginepath_win32="$<TARGET_PROPERTY:PATH_WIN32>"
+  enginepath_linux="$<TARGET_PROPERTY:PATH_LINUX>"
+  engine_win32="$<TARGET_PROPERTY:EXECUTABLE_WIN32>"
+  engine_linux="$<TARGET_PROPERTY:EXECUTABLE_LINUX>"
+  engine_macos="$<TARGET_PROPERTY:EXECUTABLE_MACOS>"
+  prefix="$<TARGET_PROPERTY:PREFIX>"
+  basegame="$<IF:$<TARGET_PROPERTY:HAS_BASEGAME>,$<TARGET_PROPERTY:BASE_GAMEDIR>,$<TARGET_PROPERTY:GAMEDIR>>"
+  basegamename="$<IF:$<TARGET_PROPERTY:HAS_BASEGAME>,$<TARGET_PROPERTY:BASE_TITLE>,$<TARGET_PROPERTY:TITLE>>"
+  knowngames="$<LIST:JOIN,$<TARGET_PROPERTY:KNOWN_GAMEDIRS>, >"
+  knowngamenames="$<LIST:JOIN,$<TARGET_PROPERTY:KNOWN_TITLES>,$<SEMICOLON>>"
+  shaderpath="materials"
+  archivetypes="vpk gma gcf"
+  texturetypes="vtf tth"
+  modeltypes="mdl"
+  soundtypes="wav"
+  maptypes="mapvmf"
+  shaders="source"
+  entityclass="quake3"
+  entityclasstype="fgd"
+  entities="source"
+  entitiesfilename="$<TARGET_PROPERTY:ENTITIES>"
+  brushtypes="halflife"
+  patchtypes="quake3"
+  default_scale="0.25"
+  no_patch="1"
+  no_plugins="0"
+  no_bsp_monitor="1"
+  shader_caulk = "tools/toolsskip"
+  shader_trigger = "tools/toolstrigger"
+  shader_clip = "tools/toolsclip"
+  shader_nodraw = "tools/toolsnodraw"
+  shader_hint = "tools/toolshint"
+/>
+]]
+	TARGET ${target}
+	)
 endfunction()
 
 add_gamepack(cstrike
 	HAS_BASEGAME
-	TITLE_BASEGAME "Half-Life 2"
-	GAMEDIR_BASEGAME "hl2"
+	BASE_TITLE "Half-Life 2"
+	BASE_GAMEDIR "hl2"
 	TITLE "Counter-Strike: Source"
-	GAMEDIR "cstrike"
+	KNOWN_GAMEDIRS "cstrike"
+	KNOWN_TITLES "Counter-Strike: Source"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Counter-Strike Source/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Counter-Strike Source/"
 	EXECUTABLE_WIN32 "cstrike.exe"
@@ -392,10 +453,11 @@ add_gamepack(cstrike
 
 add_gamepack(diprip
 	HAS_BASEGAME
-	TITLE_BASEGAME "Source SDK Base 2007"
-	GAMEDIR_BASEGAME "vpks"
+	BASE_TITLE "Source SDK Base 2007"
+	BASE_GAMEDIR "vpks"
 	TITLE "D.I.P.R.I.P. Warm Up"
-	GAMEDIR "diprip"
+	KNOWN_GAMEDIRS "diprip"
+	KNOWN_TITLES "D.I.P.R.I.P. Warm Up"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Source SDK Base 2007/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Source SDK Base 2007/"
 	EXECUTABLE_WIN32 "hl2.exe"
@@ -407,10 +469,11 @@ add_gamepack(diprip
 
 add_gamepack(dod
 	HAS_BASEGAME
-	TITLE_BASEGAME "Half-Life 2"
-	GAMEDIR_BASEGAME "hl2"
+	BASE_TITLE "Half-Life 2"
+	BASE_GAMEDIR "hl2"
 	TITLE "Day of Defeat: Source"
-	GAMEDIR "dod"
+	KNOWN_GAMEDIRS "dod"
+	KNOWN_TITLES "Day of Defeat: Source"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Day of Defeat Source/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Day of Defeat Source/"
 	EXECUTABLE_WIN32 "dod.exe"
@@ -420,42 +483,13 @@ add_gamepack(dod
 	ENTITIES "dod.fgd"
 )
 
-add_gamepack(ep2
-	HAS_BASEGAME
-	TITLE_BASEGAME "Half-Life 2"
-	GAMEDIR_BASEGAME "hl2"
-	TITLE "Half-Life 2: Episode Two"
-	GAMEDIR "ep2"
-	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Half-Life 2/"
-	PATH_LINUX "~/.steam/steam/steamapps/common/Half-Life 2/"
-	EXECUTABLE_WIN32 "hl2.exe"
-	EXECUTABLE_LINUX "hl2.sh"
-	EXECUTABLE_MACOS "hl2.sh"
-	PREFIX ".ep2"
-	ENTITIES "halflife2.fgd"
-)
-
-add_gamepack(episodic
-	HAS_BASEGAME
-	TITLE_BASEGAME "Half-Life 2"
-	GAMEDIR_BASEGAME "hl2"
-	TITLE "Half-Life 2: Episode One"
-	GAMEDIR "episodic"
-	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Half-Life 2/"
-	PATH_LINUX "~/.steam/steam/steamapps/common/Half-Life 2/"
-	EXECUTABLE_WIN32 "hl2.exe"
-	EXECUTABLE_LINUX "hl2.sh"
-	EXECUTABLE_MACOS "hl2.sh"
-	PREFIX ".episodic"
-	ENTITIES "halflife2.fgd"
-)
-
 add_gamepack(garrysmod
 	HAS_BASEGAME
-	TITLE_BASEGAME "sourceengine"
-	GAMEDIR_BASEGAME "Source Engine Base Content"
+	BASE_TITLE "sourceengine"
+	BASE_GAMEDIR "Source Engine Base Content"
 	TITLE "Garry's Mod"
-	GAMEDIR "garrysmod"
+	KNOWN_GAMEDIRS "garrysmod"
+	KNOWN_TITLES "Garry's Mod"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/GarrysMod/"
 	EXECUTABLE_WIN32 "hl2.exe"
@@ -466,8 +500,12 @@ add_gamepack(garrysmod
 )
 
 add_gamepack(hl2
+	HAS_BASEGAME
+	BASE_TITLE "Half-Life 2"
+	BASE_GAMEDIR "hl2"
 	TITLE "Half-Life 2"
-	GAMEDIR "hl2"
+	KNOWN_GAMEDIRS "episodic" "ep2" "lostcoast"
+	KNOWN_TITLES "Half-Life 2: Episode One" "Half-Life 2: Episode Two" "Half-Life 2: Lost Coast"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Half-Life 2/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Half-Life 2/"
 	EXECUTABLE_WIN32 "hl2.exe"
@@ -479,10 +517,11 @@ add_gamepack(hl2
 
 add_gamepack(hl2mp
 	HAS_BASEGAME
-	TITLE_BASEGAME "Half-Life 2"
-	GAMEDIR_BASEGAME "hl2"
+	BASE_TITLE "Half-Life 2"
+	BASE_GAMEDIR "hl2"
 	TITLE "Half-Life 2: Deathmatch"
-	GAMEDIR "hl2mp"
+	KNOWN_GAMEDIRS "hl2mp"
+	KNOWN_TITLES "Half-Life 2: Deathmatch"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Half-Life 2 Deathmatch/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Half-Life 2 Deathmatch/"
 	EXECUTABLE_WIN32 "hl2mp.exe"
@@ -494,10 +533,11 @@ add_gamepack(hl2mp
 
 add_gamepack(portal
 	HAS_BASEGAME
-	TITLE_BASEGAME "Half-Life 2"
-	GAMEDIR_BASEGAME "hl2"
+	BASE_TITLE "Half-Life 2"
+	BASE_GAMEDIR "hl2"
 	TITLE "Portal"
-	GAMEDIR "portal"
+	KNOWN_GAMEDIRS "portal"
+	KNOWN_TITLES "Portal"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Portal/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Portal/"
 	EXECUTABLE_WIN32 "hl2.exe"
@@ -521,10 +561,11 @@ add_gamepack(portal2
 
 add_gamepack(sinepisodes
 	HAS_BASEGAME
-	TITLE_BASEGAME "SiN Episodes: Emergence Base Content"
-	GAMEDIR_BASEGAME "vpks"
+	BASE_TITLE "SiN Episodes: Emergence Base Content"
+	BASE_GAMEDIR "vpks"
 	TITLE "SiN Episodes: Emergence"
-	GAMEDIR "SE1"
+	KNOWN_GAMEDIRS "SE1"
+	KNOWN_TITLES "SiN Episodes: Emergence"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/SiN Episodes Emergence/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/SiN Episodes Emergence/"
 	EXECUTABLE_WIN32 "SinEpisodes.exe"
@@ -536,10 +577,11 @@ add_gamepack(sinepisodes
 
 add_gamepack(tf2
 	HAS_BASEGAME
-	TITLE_BASEGAME "Half-Life 2"
-	GAMEDIR_BASEGAME "hl2"
+	BASE_TITLE "Half-Life 2"
+	BASE_GAMEDIR "hl2"
 	TITLE "Team Fortress 2"
-	GAMEDIR "tf"
+	KNOWN_GAMEDIRS "tf"
+	KNOWN_TITLES "Team Fortress 2"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Team Fortress 2/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Team Fortress 2/"
 	EXECUTABLE_WIN32 "tf.exe"
@@ -549,10 +591,13 @@ add_gamepack(tf2
 	ENTITIES "tf.fgd"
 )
 
-# TODO: support unofficial patch directory
 add_gamepack(vampire
+	HAS_BASEGAME
+	BASE_TITLE "Vampire: The Masquerade - Bloodlines"
+	BASE_GAMEDIR "Vampire"
 	TITLE "Vampire: The Masquerade - Bloodlines"
-	GAMEDIR "Vampire"
+	KNOWN_GAMEDIRS "Unofficial_Patch"
+	KNOWN_TITLES "Vampire: The Masquerade - Bloodlines Unofficial Patch"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Vampire The Masquerade - Bloodlines/"
 	PATH_LINUX "~/.steam/steam/steamapps/common/Vampire The Masquerade - Bloodlines/"
 	EXECUTABLE_WIN32 "Vampire.exe"
