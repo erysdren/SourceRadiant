@@ -71,11 +71,14 @@ feasible.
 - Load MDL models
 	- FIXME: Only loads the first MDL surface, so some models are missing chunks.
 - Compile Maps
+- Load FGDs
+	- FIXME: Only loads them from gamepacks directory.
+	- FIXME: Doesn't load choice/list keyvalues.
+	- FIXME: Doesn't write default keyvalues to the saved map, like Hammer does.
+	- FIXME: Discards Source Entity I/O keys.
 
 ### Can't Do (yet):
 
-- Load FGDs
-	- Mostly a convenience thing, to help end users know which keys are available for each entity.
 - Displacements
 	- Might be a tough challenge to modify Patch support into Displacement support. I was told that [FTEQW](https://github.com/fte-team/fteqw) has code for converting Displacements into Q3-style bezier curves.
 - Source Entity I/O
