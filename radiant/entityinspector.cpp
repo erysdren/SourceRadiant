@@ -1098,8 +1098,13 @@ void EntityInspector_updateKeyValues(){
 	{
 		QStringList list = QString(output.value().c_str()).split(',');
 		list = QStringList{ output.key().c_str() } + list;
-		g_entoutputs_store->addTopLevelItem( new QTreeWidgetItem( list ) );
+		QTreeWidgetItem* item = new QTreeWidgetItem( list );
+		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		g_entoutputs_store->addTopLevelItem( item );
 	}
+	// resize to column contents
+	for ( int i = 0; i < 6; i++ )
+		g_entoutputs_store->resizeColumnToContents( i );
 
 	for ( EntityAttribute *attr : g_entityAttributes )
 	{
@@ -1432,9 +1437,17 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 		tree->setUniformRowHeights( true ); // optimization
 		tree->setHorizontalScrollBarPolicy( Qt::ScrollBarPolicy::ScrollBarAlwaysOff );
 		tree->header()->setSectionResizeMode( 0, QHeaderView::ResizeMode::ResizeToContents ); // no text elision
-		tree->setHeaderHidden( true );
+		tree->setHeaderHidden( false );
+		tree->setHeaderLabels( QStringList() << "Output" << "Target" << "Input" << "Parameter" << "Delay" << "Uses" );
+		auto *header = tree->headerItem();
+		header->setToolTip(0, "Output condition");
+		header->setToolTip(1, "Target identifier");
+		header->setToolTip(2, "Target input");
+		header->setToolTip(3, "Target input parameter");
+		header->setToolTip(4, "Delay in seconds");
+		header->setToolTip(5, "Number of uses<br>-1 = unlimited<br>1 = once");
 		tree->setRootIsDecorated( false );
-		tree->setEditTriggers( QAbstractItemView::EditTrigger::NoEditTriggers );
+		tree->setEditTriggers( QAbstractItemView::EditTrigger::DoubleClicked );
 
 		splitter->addWidget( tree );
 	}
