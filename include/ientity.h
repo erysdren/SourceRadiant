@@ -75,6 +75,32 @@ public:
 	std::string value() const {
 		return std::format( "{}{}{}{}{}{}{}{}{}", m_target, m_separator, m_input, m_separator, m_data, m_separator, m_delay, m_separator, m_numUses );
 	}
+	void set( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) {
+		m_name = name;
+		m_target = target;
+		m_input = input;
+		m_data = data;
+		m_delay = delay;
+		m_numUses = numUses;
+	}
+	void setName( const char* s ) {
+		m_name = s;
+	}
+	void setTarget( const char* s ) {
+		m_target = s;
+	}
+	void setInput( const char* s ) {
+		m_input = s;
+	}
+	void setData( const char* s ) {
+		m_data = s;
+	}
+	void setDelay( float f ) {
+		m_delay = f;
+	}
+	void setNumUses( int i ) {
+		m_numUses = i;
+	}
 };
 
 typedef Callback<void(const char*)> KeyObserver;
