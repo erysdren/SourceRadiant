@@ -27,6 +27,7 @@
 
 #include "string/string.h"
 #include "scenelib.h"
+#include "qerplugin.h"
 
 class EntityClass;
 
@@ -38,21 +39,32 @@ class EntityOutput
 	std::string m_data;
 	float m_delay;
 	int m_numUses;
+	char m_separator;
 public:
 	EntityOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) : m_name( name ), m_target( target ), m_input( input ), m_data( data ), m_delay( delay ), m_numUses( numUses ) {
+		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_seperator" ), "1" ) ) {
+			m_separator = '\x1b';
+		} else {
+			m_separator = ',';
+		}
 	}
 	EntityOutput( const char* key, const char* value ) : m_name( key ) {
+		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_seperator" ), "1" ) ) {
+			m_separator = '\x1b';
+		} else {
+			m_separator = ',';
+		}
 		// FIXME: why am i doing this C-style?
 		std::string delay, numUses;
-		while ( *value && *value != ',' ) m_target.append( 1, *(value++) );
+		while ( *value && *value != m_separator ) m_target.append( 1, *(value++) );
 		value++;
-		while ( *value && *value != ',' ) m_input.append( 1, *(value++) );
+		while ( *value && *value != m_separator ) m_input.append( 1, *(value++) );
 		value++;
-		while ( *value && *value != ',' ) m_data.append( 1, *(value++) );
+		while ( *value && *value != m_separator ) m_data.append( 1, *(value++) );
 		value++;
-		while ( *value && *value != ',' ) delay.append( 1, *(value++) );
+		while ( *value && *value != m_separator ) delay.append( 1, *(value++) );
 		value++;
-		while ( *value && *value != ',' ) numUses.append( 1, *(value++) );
+		while ( *value && *value != m_separator ) numUses.append( 1, *(value++) );
 		if ( delay.size() ) m_delay = std::stof( delay ); else m_delay = 0;
 		if ( numUses.size() ) m_numUses = std::stoi( numUses ); else m_numUses = -1;
 	}
@@ -61,7 +73,7 @@ public:
 		return m_name;
 	}
 	std::string value() const {
-		return std::format( "{},{},{},{},{}", m_target, m_input, m_data, m_delay, m_numUses );
+		return std::format( "{}{}{}{}{}{}{}{}{}", m_target, m_separator, m_input, m_separator, m_data, m_separator, m_delay, m_separator, m_numUses );
 	}
 };
 
