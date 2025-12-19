@@ -69,7 +69,7 @@ feasible.
 	- ~~TODO: Support VTMB VPKs. They can already be loaded by sourcepp, but my code assumes that the filenames end with `_dir.vpk`, which the VTMB ones don't.~~
 	- ~~TODO: Support Garry's Mod GMAs. They can already be loaded by sourcepp, but my code needs some adjustments for it to work right.~~
 - Load MDL models
-	- FIXME: Only loads the first MDL surface, so some models are missing chunks.
+	- ~~FIXME: Only loads the first MDL surface, so some models are missing chunks.~~
 - Compile Maps
 - Load FGDs
 	- FIXME: Only loads them from gamepacks directory.

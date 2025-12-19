@@ -67,23 +67,33 @@ static void processMesh(mdlpp::StudioModel& mdl, mdlpp::BakedModel& baked, mdlpp
 
 	Surface& surface = model.newSurface();
 
-	// vertices
-	// FIXME: this adds the vertices from *every* mesh to *each* surface
-	for ( auto vertex : baked.vertices ) {
-		surface.vertices().push_back(
-			ArbitraryMeshVertex(
-				Vertex3f( vertex.position[0], vertex.position[1], vertex.position[2] ),
-				Normal3f( vertex.normal[0], vertex.normal[1], vertex.normal[2] ),
-				TexCoord2f( vertex.uv[0], vertex.uv[1] )
-			)
-		);
-	}
-
-	// indices
+	// read in geometry
+	std::map<size_t, size_t> indicesMap;
 	for ( size_t i = 0; i < mesh.indices.size(); i += 3 ) {
-		surface.indices().insert( mesh.indices[i + 2] );
-		surface.indices().insert( mesh.indices[i + 1] );
-		surface.indices().insert( mesh.indices[i + 0] );
+		bool faceOk = true;
+		for ( size_t j = 2; j != (size_t)-1; j-- ) {
+			if ( !indicesMap.contains( mesh.indices[i + j] ) ) {
+				// globalOutputStream() << mesh.indices[i + j] << '\n';
+				if ( mesh.indices[i + j] >= baked.vertices.size() ) {
+					faceOk = false;
+					break;
+				}
+				indicesMap[mesh.indices[i + j]] = surface.vertices().size();
+				auto& vertex = baked.vertices[mesh.indices[i + j]];
+				surface.vertices().push_back(
+					ArbitraryMeshVertex(
+						Vertex3f( vertex.position[0], vertex.position[1], vertex.position[2] ),
+						Normal3f( vertex.normal[0], vertex.normal[1], vertex.normal[2] ),
+						TexCoord2f( vertex.uv[0], vertex.uv[1] )
+					)
+				);
+			}
+		}
+		if ( faceOk ) {
+			for ( size_t j = 2; j != (size_t)-1; j-- ) {
+				surface.indices().insert( indicesMap[mesh.indices[i + j]] );
+			}
+		}
 	}
 
 	// material
@@ -175,9 +185,15 @@ scene::Node& loadSourceModel( ArchiveFile& mdlFile ) {
 	// parse data
 	mdlpp::StudioModel mdl;
 	if ( !mdl.open( mdlBuffer.buffer, mdlBuffer.length, vtxBuffer.buffer, vtxBuffer.length, vvdBuffer.buffer, vvdBuffer.length ) ) {
+		vtxFile->release();
+		vvdFile->release();
 		Model_constructNull( modelNode->model() );
 		return modelNode->node();
 	}
+
+	// clean up
+	vtxFile->release();
+	vvdFile->release();
 
 	// bake and read in
 	mdlpp::BakedModel baked = mdl.processModelData();
@@ -185,17 +201,9 @@ scene::Node& loadSourceModel( ArchiveFile& mdlFile ) {
 		Model_constructNull( modelNode->model() );
 		return modelNode->node();
 	}
-	// FIXME: only the first mesh for now to prevent a segfault in Surface::updateAABB()
-	processMesh( mdl, baked, baked.meshes[0], modelNode->model() );
-#if 0
 	for ( size_t i = 0; i < baked.meshes.size(); i++ ) {
 		processMesh( mdl, baked, baked.meshes[i], modelNode->model() );
 	}
-#endif
-
-	// clean up
-	vtxFile->release();
-	vvdFile->release();
 
 	return modelNode->node();
 }
