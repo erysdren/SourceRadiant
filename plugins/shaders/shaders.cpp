@@ -1468,6 +1468,13 @@ void ParseSourceShaderFile( ArchiveFile* file, const char* filename ){
 	} else if ( vmtBaseTexture ) {
 		baseTextureName = vmtBaseTexture.getValue();
 	} else {
+		for ( auto& child : kv1[0] ) {
+			if ( child["$basetexture"] ) {
+				baseTextureName = child["$basetexture"].getValue();
+			}
+		}
+	}
+	if ( !baseTextureName.length() ) {
 		globalWarningStream() << "Failed to determine basetexture in " << filename << '\n';
 		return;
 	}
