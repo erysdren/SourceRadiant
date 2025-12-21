@@ -432,11 +432,11 @@ function(add_gamepack name)
   no_plugins="0"
   no_bsp_monitor="1"
   use_new_output_separator="$<TARGET_PROPERTY:USE_NEW_OUTPUT_SEPARATOR>"
-  shader_caulk = "tools/toolsskip"
-  shader_trigger = "tools/toolstrigger"
-  shader_clip = "tools/toolsclip"
-  shader_nodraw = "tools/toolsnodraw"
-  shader_hint = "tools/toolshint"
+  shader_caulk = "materials/tools/toolsskip"
+  shader_trigger = "materials/tools/toolstrigger"
+  shader_clip = "materials/tools/toolsclip"
+  shader_nodraw = "materials/tools/toolsnodraw"
+  shader_hint = "materials/tools/toolshint"
 />
 ]]
 	TARGET ${target}
