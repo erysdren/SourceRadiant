@@ -81,7 +81,7 @@ namespace
 typedef std::map<CopiedString, CopiedString> KeyValues;
 KeyValues g_selectedKeyValues;
 KeyValues g_selectedDefaultKeyValues;
-typedef std::list<EntityOutput> Outputs;
+typedef std::list<EntityOutput*> Outputs;
 Outputs g_selectedOutputs;
 }
 
@@ -768,9 +768,7 @@ public:
 	}
 
 	void visit( const char* key, const char* value ) override {
-		if ( !string_equal_prefix( key, "On" ) ) {
-			m_keyvalues.insert( KeyValues::value_type( CopiedString( key ), CopiedString( value ) ) );
-		}
+		m_keyvalues.insert( KeyValues::value_type( CopiedString( key ), CopiedString( value ) ) );
 	}
 };
 
@@ -808,20 +806,18 @@ void Entity_GetKeyValues_Selected( KeyValues& keyvalues, KeyValues& defaultValue
 	GlobalSelectionSystem().foreachSelected( visitor );
 }
 
-void Entity_GetOutputs( const Entity& entity, Outputs& outputs ){
-	class GetOutputsVisitor : public Entity::Visitor
+void Entity_GetOutputs( Entity& entity, Outputs& outputs ){
+	class GetOutputsVisitor : public Entity::OutputVisitor
 	{
 		Outputs& m_outputs;
 	public:
 		GetOutputsVisitor( Outputs& outputs ) : m_outputs( outputs ) {
 		}
-		void visit( const char* key, const char* value ) override {
-			if ( string_equal_prefix( key, "On" ) ) {
-				m_outputs.push_back( Outputs::value_type( key, value ) );
-			}
+		void visit( EntityOutput* output ) override {
+			m_outputs.push_back( output );
 		}
 	} visitor( outputs );
-	entity.forEachKeyValue( visitor );
+	entity.forEachOutput( visitor );
 }
 
 void Entity_GetOutputs_Selected( Outputs& outputs ){
@@ -1073,9 +1069,9 @@ void EntityInspector_applySpawnflags(){
 }
 
 class OutputTreeWidgetItem : public QTreeWidgetItem {
-	EntityOutput& m_output;
+	EntityOutput* m_output;
 public:
-	OutputTreeWidgetItem( const QStringList& strings, EntityOutput& output ) : QTreeWidgetItem( strings ), m_output( output ) {
+	OutputTreeWidgetItem( const QStringList& strings, EntityOutput* output ) : QTreeWidgetItem( strings ), m_output( output ) {
 	}
 };
 
@@ -1100,10 +1096,10 @@ void EntityInspector_updateKeyValues(){
 
 	// walk through outputs and add
 	g_entoutputs_store->clear();
-	for ( auto& output : g_selectedOutputs )
+	for ( auto* output : g_selectedOutputs )
 	{
-		QStringList list = QString(output.value().c_str()).split(',');
-		list = QStringList{ output.key().c_str() } + list;
+		QStringList list = QString(output->value().c_str()).split(output->separator());
+		list = QStringList{ output->key().c_str() } + list;
 		OutputTreeWidgetItem* item = new OutputTreeWidgetItem( list, output );
 		item->setFlags(item->flags() | Qt::ItemIsEditable);
 		g_entoutputs_store->addTopLevelItem( item );

@@ -619,10 +619,6 @@ public:
 		{
 			visitor.visit( key.c_str(), value->c_str() );
 		}
-		for ( const auto& output : m_outputs )
-		{
-			visitor.visit( output.key().c_str(), output.value().c_str() );
-		}
 	}
 	void setKeyValue( const char* key, const char* value ) override {
 		if (string_equal_prefix( key, "On") ) {
@@ -676,6 +672,13 @@ public:
 	EntityOutput& addOutput( const char* key, const char* value ) {
 		m_outputs.push_back( EntityOutput( key, value ) );
 		return m_outputs.back();
+	}
+
+	void forEachOutput( OutputVisitor& visitor ) override {
+		for ( auto& output : m_outputs )
+		{
+			visitor.visit( &output );
+		}
 	}
 };
 

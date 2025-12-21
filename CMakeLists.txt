@@ -364,7 +364,7 @@ endif()
 # gamepacks
 
 function(add_gamepack name)
-	cmake_parse_arguments(PARSE_ARGV 1 ARG "HAS_BASEGAME;USE_NEW_OUTPUT_SEPERATOR" "ENTITIES;PREFIX;BASE_TITLE;BASE_GAMEDIR;TITLE;GAMEDIR;PATH_WIN32;PATH_LINUX;PATH_MACOS;EXECUTABLE_WIN32;EXECUTABLE_LINUX;EXECUTABLE_MACOS" "KNOWN_TITLES;KNOWN_GAMEDIRS")
+	cmake_parse_arguments(PARSE_ARGV 1 ARG "HAS_BASEGAME;USE_NEW_OUTPUT_SEPARATOR" "ENTITIES;PREFIX;BASE_TITLE;BASE_GAMEDIR;TITLE;GAMEDIR;PATH_WIN32;PATH_LINUX;PATH_MACOS;EXECUTABLE_WIN32;EXECUTABLE_LINUX;EXECUTABLE_MACOS" "KNOWN_TITLES;KNOWN_GAMEDIRS")
 	file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/install/gamepacks/games/")
 	file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/install/gamepacks/${name}.game/")
 	file(COPY "${PROJECT_SOURCE_DIR}/cmake/default_build_menu.xml" DESTINATION "${PROJECT_SOURCE_DIR}/install/gamepacks/${name}.game/")
@@ -379,10 +379,10 @@ function(add_gamepack name)
 	else()
 		set_property(TARGET ${target} PROPERTY HAS_BASEGAME 0)
 	endif()
-	if(ARG_USE_NEW_OUTPUT_SEPERATOR)
-		set_property(TARGET ${target} PROPERTY USE_NEW_OUTPUT_SEPERATOR 1)
+	if(ARG_USE_NEW_OUTPUT_SEPARATOR)
+		set_property(TARGET ${target} PROPERTY USE_NEW_OUTPUT_SEPARATOR 1)
 	else()
-		set_property(TARGET ${target} PROPERTY USE_NEW_OUTPUT_SEPERATOR 0)
+		set_property(TARGET ${target} PROPERTY USE_NEW_OUTPUT_SEPARATOR 0)
 	endif()
 	set_property(TARGET ${target} PROPERTY PREFIX ${ARG_PREFIX})
 	set_property(TARGET ${target} PROPERTY PATH_WIN32 ${ARG_PATH_WIN32})
@@ -429,7 +429,7 @@ function(add_gamepack name)
   no_patch="1"
   no_plugins="0"
   no_bsp_monitor="1"
-  use_new_output_seperator="$<TARGET_PROPERTY:USE_NEW_OUTPUT_SEPERATOR>"
+  use_new_output_separator="$<TARGET_PROPERTY:USE_NEW_OUTPUT_SEPARATOR>"
   shader_caulk = "tools/toolsskip"
   shader_trigger = "tools/toolstrigger"
   shader_clip = "tools/toolsclip"
@@ -554,7 +554,7 @@ add_gamepack(portal
 )
 
 add_gamepack(portal2
-	USE_NEW_OUTPUT_SEPERATOR
+	USE_NEW_OUTPUT_SEPARATOR
 	TITLE "Portal 2"
 	GAMEDIR "portal2"
 	PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Portal 2/"

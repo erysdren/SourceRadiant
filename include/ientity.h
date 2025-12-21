@@ -42,14 +42,14 @@ class EntityOutput
 	char m_separator;
 public:
 	EntityOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) : m_name( name ), m_target( target ), m_input( input ), m_data( data ), m_delay( delay ), m_numUses( numUses ) {
-		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_seperator" ), "1" ) ) {
+		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_separator" ), "1" ) ) {
 			m_separator = '\x1b';
 		} else {
 			m_separator = ',';
 		}
 	}
 	EntityOutput( const char* key, const char* value ) : m_name( key ) {
-		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_seperator" ), "1" ) ) {
+		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_separator" ), "1" ) ) {
 			m_separator = '\x1b';
 		} else {
 			m_separator = ',';
@@ -74,6 +74,9 @@ public:
 	}
 	std::string value() const {
 		return std::format( "{}{}{}{}{}{}{}{}{}", m_target, m_separator, m_input, m_separator, m_data, m_separator, m_delay, m_separator, m_numUses );
+	}
+	char separator() const {
+		return m_separator;
 	}
 	void set( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) {
 		m_name = name;
@@ -133,6 +136,12 @@ public:
 		virtual void visit( const char* key, const char* value ) = 0;
 	};
 
+	class OutputVisitor
+	{
+	public:
+		virtual void visit( EntityOutput* output ) = 0;
+	};
+
 	virtual const EntityClass& getEntityClass() const = 0;
 	virtual const char* getClassName() const = 0;
 	virtual void forEachKeyValue( Visitor& visitor ) const = 0;
@@ -144,6 +153,7 @@ public:
 	virtual void detach( Observer& observer ) = 0;
 	virtual EntityOutput& addOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) = 0;
 	virtual EntityOutput& addOutput( const char* key, const char* value ) = 0;
+	virtual void forEachOutput( OutputVisitor& visitor ) = 0;
 };
 
 class EntityCopyingVisitor : public Entity::Visitor

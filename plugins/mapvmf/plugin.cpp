@@ -210,12 +210,17 @@ public:
 			m_element["id"] = m_childID++;
 		}
 		void visit( const char* key, const char* value ) override {
-			if ( string_equal_prefix( key, "On" ) ) {
-				// Source I/O string
-				m_element["connections"].addChild( key, value );
-			} else {
-				m_element[key] = value;
-			}
+			m_element[key] = value;
+		}
+	};
+	class MapVMFWriteOutput : public Entity::OutputVisitor
+	{
+		kvpp::KV1ElementWritable<std::string>& m_element;
+	public:
+		MapVMFWriteOutput( kvpp::KV1ElementWritable<std::string>& element ) : m_element( element ) {
+		}
+		void visit( EntityOutput* output ) override {
+			m_element["connections"].addChild( output->key(), output->value() );
 		}
 	};
 	class MapVMFWalker : public scene::Traversable::Walker
@@ -298,10 +303,15 @@ public:
 				if ( string_equal( entity->getClassName(), "worldspawn" ) ) {
 					MapVMFWriteKeyValue visitor( m_writer["world"], m_childID );
 					entity->forEachKeyValue( visitor );
+					MapVMFWriteOutput outputVisitor( m_writer["world"] );
+					entity->forEachOutput( outputVisitor );
 					m_childIndex = m_worldIndex;
 				} else {
-					MapVMFWriteKeyValue visitor( m_writer.addChild("entity"), m_childID );
+					auto& child = m_writer.addChild("entity");
+					MapVMFWriteKeyValue visitor( child, m_childID );
 					entity->forEachKeyValue( visitor );
+					MapVMFWriteOutput outputVisitor( child );
+					entity->forEachOutput( outputVisitor );
 					m_childIndex = m_writer.getChildCount() - 1;
 				}
 			} else if ( Node_isBrush( node ) ) {
