@@ -522,6 +522,9 @@ public:
 		{
 			insert( key.c_str(), value->c_str() );
 		}
+		for ( const auto& output : other.m_outputs ) {
+			m_outputs.push_back( output);
+		}
 	}
 	~EntityKeyValues(){
 		for ( Observers::iterator i = m_observers.begin(); i != m_observers.end(); )
@@ -622,8 +625,25 @@ public:
 		}
 	}
 	void setKeyValue( const char* key, const char* value ) override {
+		if (string_equal_prefix( key, "On") ) {
+			erase( key ); // drop the legacy keyvalue
+			if ( string_empty( value ) ) {
+				for (auto it = m_outputs.begin(); it != m_outputs.end(); ) {
+					if (string_equal( it->key().c_str(), key ) ) {
+						it = m_outputs.erase( it );
+					} else {
+						++it;
+					}
+				}
+			} else {
+				addOutput( key, value );
+			}
+			m_entityKeyValueChanged();
+			return;
+		}
+
 		if ( string_empty( value )
-		     /*|| string_equal( EntityClass_valueForKey( *m_eclass, key ), value )*/ ) { // don't delete values equal to default
+		    /*|| string_equal( EntityClass_valueForKey( *m_eclass, key ), value )*/ ) { // don't delete values equal to default
 			erase( key );
 		}
 		else
