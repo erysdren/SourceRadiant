@@ -64,6 +64,7 @@ const char* BrushType_getName( EBrushType type ){
 	case eBrushTypeQuake2Valve220:
 	case eBrushTypeQuake3Valve220:
 	case eBrushTypeValve220:
+	case eBrushTypeSinValve220:
 		return "Valve 220";
 	case eBrushTypeDoom3:
 		return "Doom3";
@@ -424,3 +425,32 @@ public:
 typedef SingletonModule<BrushHalfLifeAPI, BrushDependencies> BrushHalfLifeModule;
 typedef Static<BrushHalfLifeModule> StaticBrushHalfLifeModule;
 StaticRegisterModule staticRegisterBrushHalfLife( StaticBrushHalfLifeModule::instance() );
+
+
+class BrushSinAPI : public TypeSystemRef
+{
+	BrushCreator* m_brushsin;
+public:
+	typedef BrushCreator Type;
+	STRING_CONSTANT( Name, "sin" );
+
+	BrushSinAPI(){
+		g_multipleBrushTypes = true;
+		g_brushTypes[0] = eBrushTypeSinValve220;
+		g_brushTypes[1] = eBrushTypeSin;
+
+		Brush_Construct( eBrushTypeSinValve220 );
+
+		m_brushsin = &GetBrushCreator();
+	}
+	~BrushSinAPI(){
+		Brush_Destroy();
+	}
+	BrushCreator* getTable(){
+		return m_brushsin;
+	}
+};
+
+typedef SingletonModule<BrushSinAPI, BrushDependencies> BrushSinModule;
+typedef Static<BrushSinModule> StaticBrushSinModule;
+StaticRegisterModule staticRegisterBrushSin( StaticBrushSinModule::instance() );

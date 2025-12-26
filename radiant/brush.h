@@ -863,6 +863,7 @@ inline TexdefTypeId BrushType_getTexdefType( EBrushType type ){
 	case eBrushTypeDoom3:
 	case eBrushTypeQuake4:
 		return TEXDEFTYPEID_BRUSHPRIMITIVES;
+	case eBrushTypeSinValve220:
 	case eBrushTypeValve220:
 	case eBrushTypeQuake2Valve220:
 	case eBrushTypeQuake3Valve220:

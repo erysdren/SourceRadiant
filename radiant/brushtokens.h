@@ -216,6 +216,44 @@ public:
 	}
 };
 
+class SinFaceTokenImporter
+{
+	Face& m_face;
+public:
+	SinFaceTokenImporter( Face& face ) : m_face( face ){
+	}
+	bool importTokens( Tokeniser& tokeniser ){
+		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
+		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
+		RETURN_FALSE_IF_FAIL( FaceTexdef_importTokens( m_face.getTexdef(), tokeniser ) );
+		// optional face flags
+		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) {
+			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
+		}
+		m_face.getTexdef().m_scaleApplied = true;
+		return true;
+	}
+};
+
+class SinValve220FaceTokenImporter
+{
+	Face& m_face;
+public:
+	SinValve220FaceTokenImporter( Face& face ) : m_face( face ){
+	}
+	bool importTokens( Tokeniser& tokeniser ){
+		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
+		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
+		RETURN_FALSE_IF_FAIL( FaceTexdef_Valve220_importTokens( m_face.getTexdef(), tokeniser ) );
+		// optional face flags
+		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) {
+			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
+		}
+		m_face.getTexdef().m_scaleApplied = true;
+		return true;
+	}
+};
+
 class Quake3BPFaceTokenImporter
 {
 	Face& m_face;
@@ -427,6 +465,22 @@ public:
 	}
 };
 
+template<bool valve220>
+class SinFaceTokenExporter
+{
+	const Face& m_face;
+public:
+	SinFaceTokenExporter( const Face& face ) : m_face( face ){
+	}
+	void exportTokens( TokenWriter& writer ) const {
+		FacePlane_exportTokens( m_face.getPlane(), writer );
+		FaceShader_exportTokens( m_face.getShader(), writer );
+		FaceTexdef_exportTokens( m_face.getTexdef(), writer );
+		// FaceFlags_exportTokens<exportFlags>( m_face, writer );
+		writer.nextLine();
+	}
+};
+
 template<FaceExportFlags exportFlags>
 class Quake3BPFaceTokenExporter
 {
@@ -509,6 +563,18 @@ public:
 			case eBrushTypeQuake3:
 				{
 					QuakeFaceTokenImporter importer( face );
+					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
+				}
+				break;
+			case eBrushTypeSin:
+				{
+					SinFaceTokenImporter importer( face );
+					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
+				}
+				break;
+			case eBrushTypeSinValve220:
+				{
+					SinValve220FaceTokenImporter importer( face );
 					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
 				}
 				break;
@@ -635,6 +701,18 @@ public:
 				case eBrushTypeQuake3Valve220:
 					{
 						Valve220FaceTokenExporter<FaceExportFlags::yes> exporter( *face );
+						exporter.exportTokens( writer );
+					}
+					break;
+				case eBrushTypeSin:
+					{
+						SinFaceTokenExporter<false> exporter( *face );
+						exporter.exportTokens( writer );
+					}
+					break;
+				case eBrushTypeSinValve220:
+					{
+						SinFaceTokenExporter<true> exporter( *face );
 						exporter.exportTokens( writer );
 					}
 					break;
