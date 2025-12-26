@@ -1723,7 +1723,7 @@ protected:
 		}
 		else if ( press == MousePresses::Left || press == MousePresses::Middle ) {
 			if ( !event->modifiers().testFlag( Qt::KeyboardModifier::ShiftModifier ) )
-				SelectTexture( m_texBro, event->x() * m_scale, event->y() * m_scale, press == MousePresses::Middle );
+				SelectTexture( m_texBro, event->position().x() * m_scale, event->position().y() * m_scale, press == MousePresses::Middle );
 		}
 	}
 	void mouseDoubleClick( MousePresses::Result press ){
@@ -1742,7 +1742,7 @@ protected:
 				TextureBrowser_ContextMenu( m_texBro, m_scale );
 		}
 		else if ( release == MousePresses::Left && event->modifiers().testFlag( Qt::KeyboardModifier::ShiftModifier ) ) {
-			TextureBrowser_ViewShader( m_texBro, event->modifiers(), event->x() * m_scale, event->y() * m_scale );
+			TextureBrowser_ViewShader( m_texBro, event->modifiers(), event->position().x() * m_scale, event->position().y() * m_scale );
 		}
 	}
 	void wheelEvent( QWheelEvent *event ) override {
