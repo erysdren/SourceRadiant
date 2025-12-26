@@ -7,35 +7,6 @@ cmake_policy(SET CMP0077 NEW)
 
 include(FetchContent)
 
-FetchContent_Declare(
-	CMP_Compressonator
-	GIT_REPOSITORY https://github.com/craftablescience/compressonator
-	GIT_TAG 4d7469c41629f19b7d889592cab8a4115931339c
-	EXCLUDE_FROM_ALL
-)
-FetchContent_MakeAvailable(CMP_Compressonator)
-set_target_properties(CMP_Compressonator PROPERTIES POSITION_INDEPENDENT_CODE ON)
-set_target_properties(CMP_Core PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-FetchContent_Declare(
-	sourcepp
-	GIT_REPOSITORY https://github.com/craftablescience/sourcepp.git
-	GIT_TAG "v2025.12.4"
-	EXCLUDE_FROM_ALL
-)
-
-set(SOURCEPP_LIBS_START_ENABLED OFF CACHE BOOL "" FORCE)
-set(SOURCEPP_USE_KVPP ON CACHE BOOL "" FORCE) # for VMTs
-set(SOURCEPP_USE_MDLPP ON CACHE BOOL "" FORCE) # for MDLs
-set(SOURCEPP_USE_TOOLPP ON CACHE BOOL "" FORCE) # for FGDs
-set(SOURCEPP_USE_VPKPP ON CACHE BOOL "" FORCE) # for VPKs
-set(SOURCEPP_USE_VTFPP ON CACHE BOOL "" FORCE) # for VTFs
-set(SOURCEPP_VTFPP_SUPPORT_EXR OFF CACHE BOOL "" FORCE)
-set(SOURCEPP_VTFPP_SUPPORT_QOI OFF CACHE BOOL "" FORCE)
-set(SOURCEPP_VTFPP_SUPPORT_WEBP OFF CACHE BOOL "" FORCE)
-
-FetchContent_MakeAvailable(sourcepp)
-
 find_package(LibXml2)
 if(NOT LibXml2_FOUND)
 	FetchContent_Declare(
@@ -69,8 +40,6 @@ endif()
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg OpenGL OpenGLWidgets)
 
 # options
-
-option(GENERATE_GAMEPACKS "Generate gamepacks" ON)
 
 set(RADIANT_VERSION "1.6.0n" CACHE STRING "")
 set(RADIANT_MAJOR_VERSION "6" CACHE STRING "")
@@ -202,7 +171,7 @@ add_executable(radiant WIN32
 	${PROJECT_SOURCE_DIR}/radiant/dialog.cpp
 	${PROJECT_SOURCE_DIR}/radiant/eclass_def.cpp
 	${PROJECT_SOURCE_DIR}/radiant/eclass_doom3.cpp
-	${PROJECT_SOURCE_DIR}/radiant/eclass_fgd_sourcepp.cpp
+	${PROJECT_SOURCE_DIR}/radiant/eclass_fgd.cpp
 	${PROJECT_SOURCE_DIR}/radiant/eclass.cpp
 	${PROJECT_SOURCE_DIR}/radiant/eclass_xml.cpp
 	${PROJECT_SOURCE_DIR}/radiant/entityinspector.cpp
@@ -270,15 +239,14 @@ add_executable(radiant WIN32
 	${PROJECT_SOURCE_DIR}/radiant/xywindow.cpp
 )
 
-target_compile_definitions(radiant PRIVATE SOURCERADIANT)
 target_compile_definitions(radiant PRIVATE QT_NO_KEYWORDS)
 target_compile_definitions(radiant PRIVATE
 	RADIANT_VERSION=\"${RADIANT_VERSION}\"
 	RADIANT_MAJOR_VERSION=\"${RADIANT_MAJOR_VERSION}\"
 	RADIANT_MINOR_VERSION=\"${RADIANT_MINOR_VERSION}\"
 	RADIANT_ABOUTMSG=\"${RADIANT_ABOUTMSG}\"
-	RADIANT_DEFAULT_MAP_EXTENSION=\".vmf\"
-	RADIANT_DEFAULT_MAP_BACKUP_EXTENSION=\".vmx\"
+	RADIANT_DEFAULT_MAP_EXTENSION=\".map\"
+	RADIANT_DEFAULT_MAP_BACKUP_EXTENSION=\".bak\"
 )
 
 target_include_directories(radiant PRIVATE
@@ -289,7 +257,6 @@ target_include_directories(radiant PRIVATE
 target_link_libraries(radiant PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 target_link_libraries(radiant PRIVATE LibXml2::LibXml2)
 target_link_libraries(radiant PRIVATE commandlib gtkutil l_net xmllib quickhull)
-target_link_libraries(radiant PRIVATE sourcepp::toolpp)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	target_link_libraries(radiant PRIVATE ws2_32)
 endif()
@@ -310,7 +277,9 @@ set_target_properties(radiant
 file(WRITE ${PROJECT_SOURCE_DIR}/install/RADIANT_MINOR ${RADIANT_MINOR_VERSION})
 file(WRITE ${PROJECT_SOURCE_DIR}/install/RADIANT_MAJOR ${RADIANT_MAJOR_VERSION})
 
+file(GLOB RADIANT_GAMEPACKS "${PROJECT_SOURCE_DIR}/gamepacks/*")
 file(GLOB RADIANT_DATA_FILES "${PROJECT_SOURCE_DIR}/setup/data/tools/*")
+file(COPY ${RADIANT_GAMEPACKS} DESTINATION ${PROJECT_SOURCE_DIR}/install/gamepacks/)
 file(COPY ${RADIANT_DATA_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/install/)
 file(COPY "${PROJECT_SOURCE_DIR}/docs/mouse shortcuts.txt" DESTINATION ${PROJECT_SOURCE_DIR}/install/docs/)
 
@@ -363,261 +332,6 @@ else()
 	endif()
 endif()
 
-# gamepacks
-
-function(add_gamepack name)
-	cmake_parse_arguments(PARSE_ARGV 1 ARG "HAS_BASEGAME;USE_NEW_OUTPUT_SEPARATOR" "ENTITIES;PREFIX;BASE_TITLE;BASE_GAMEDIR;TITLE;GAMEDIR;PATH_WIN32;PATH_LINUX;PATH_MACOS;EXECUTABLE_WIN32;EXECUTABLE_LINUX;EXECUTABLE_MACOS" "KNOWN_TITLES;KNOWN_GAMEDIRS")
-	file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/install/gamepacks/games/")
-	file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/install/gamepacks/${name}.game/")
-	file(COPY "${PROJECT_SOURCE_DIR}/cmake/default_build_menu.xml" DESTINATION "${PROJECT_SOURCE_DIR}/install/gamepacks/${name}.game/")
-	set(target gamepack_${name})
-	add_custom_target(${target})
-	if(ARG_HAS_BASEGAME)
-		set_property(TARGET ${target} PROPERTY HAS_BASEGAME 1)
-		set_property(TARGET ${target} PROPERTY BASE_GAMEDIR ${ARG_BASE_GAMEDIR})
-		set_property(TARGET ${target} PROPERTY BASE_TITLE ${ARG_BASE_TITLE})
-		set_property(TARGET ${target} PROPERTY KNOWN_GAMEDIRS ${ARG_KNOWN_GAMEDIRS})
-		set_property(TARGET ${target} PROPERTY KNOWN_TITLES ${ARG_KNOWN_TITLES})
-	else()
-		set_property(TARGET ${target} PROPERTY HAS_BASEGAME 0)
-	endif()
-	if(ARG_USE_NEW_OUTPUT_SEPARATOR)
-		set_property(TARGET ${target} PROPERTY USE_NEW_OUTPUT_SEPARATOR 1)
-	else()
-		set_property(TARGET ${target} PROPERTY USE_NEW_OUTPUT_SEPARATOR 0)
-	endif()
-	set_property(TARGET ${target} PROPERTY PREFIX ${ARG_PREFIX})
-	set_property(TARGET ${target} PROPERTY PATH_WIN32 ${ARG_PATH_WIN32})
-	set_property(TARGET ${target} PROPERTY PATH_LINUX ${ARG_PATH_LINUX})
-	set_property(TARGET ${target} PROPERTY PATH_MACOS ${ARG_PATH_MACOS})
-	set_property(TARGET ${target} PROPERTY EXECUTABLE_WIN32 ${ARG_EXECUTABLE_WIN32})
-	set_property(TARGET ${target} PROPERTY EXECUTABLE_LINUX ${ARG_EXECUTABLE_LINUX})
-	set_property(TARGET ${target} PROPERTY EXECUTABLE_MACOS ${ARG_EXECUTABLE_MACOS})
-	set_property(TARGET ${target} PROPERTY ENTITIES ${ARG_ENTITIES})
-	set_property(TARGET ${target} PROPERTY GAMEDIR ${ARG_GAMEDIR})
-	set_property(TARGET ${target} PROPERTY TITLE ${ARG_TITLE})
-	file(GENERATE
-		OUTPUT "${PROJECT_SOURCE_DIR}/install/gamepacks/games/${name}.game"
-		CONTENT
-[[<?xml version="1.0"?>
-<game
-  type="source"
-  index="1"
-  name="$<TARGET_PROPERTY:TITLE>"
-  enginepath_win32="$<TARGET_PROPERTY:PATH_WIN32>"
-  enginepath_linux="$<TARGET_PROPERTY:PATH_LINUX>"
-  engine_win32="$<TARGET_PROPERTY:EXECUTABLE_WIN32>"
-  engine_linux="$<TARGET_PROPERTY:EXECUTABLE_LINUX>"
-  engine_macos="$<TARGET_PROPERTY:EXECUTABLE_MACOS>"
-  prefix="$<TARGET_PROPERTY:PREFIX>"
-  basegame="$<IF:$<TARGET_PROPERTY:HAS_BASEGAME>,$<TARGET_PROPERTY:BASE_GAMEDIR>,$<TARGET_PROPERTY:GAMEDIR>>"
-  basegamename="$<IF:$<TARGET_PROPERTY:HAS_BASEGAME>,$<TARGET_PROPERTY:BASE_TITLE>,$<TARGET_PROPERTY:TITLE>>"
-  knowngames="$<LIST:JOIN,$<TARGET_PROPERTY:KNOWN_GAMEDIRS>, >"
-  knowngamenames="$<LIST:JOIN,$<TARGET_PROPERTY:KNOWN_TITLES>,$<SEMICOLON>>"
-  shaderpath="materials"
-  archivetypes="vpk gma gcf"
-  texturetypes="vtf tth"
-  modeltypes="mdl"
-  soundtypes="wav"
-  maptypes="mapvmf"
-  shaders="source"
-  entityclass="quake3"
-  entityclasstype="fgd"
-  entities="source"
-  entitiesfilename="$<TARGET_PROPERTY:ENTITIES>"
-  brushtypes="halflife"
-  patchtypes="quake3"
-  default_scale="0.25"
-  no_patch="1"
-  no_plugins="0"
-  no_bsp_monitor="1"
-  use_new_output_separator="$<TARGET_PROPERTY:USE_NEW_OUTPUT_SEPARATOR>"
-  shader_caulk = "materials/tools/toolsskip"
-  shader_trigger = "materials/tools/toolstrigger"
-  shader_clip = "materials/tools/toolsclip"
-  shader_nodraw = "materials/tools/toolsnodraw"
-  shader_hint = "materials/tools/toolshint"
-/>
-]]
-	TARGET ${target}
-	)
-endfunction()
-
-if(GENERATE_GAMEPACKS)
-	add_gamepack(cstrike
-		HAS_BASEGAME
-		BASE_TITLE "Half-Life 2"
-		BASE_GAMEDIR "hl2"
-		TITLE "Counter-Strike: Source"
-		KNOWN_GAMEDIRS "cstrike"
-		KNOWN_TITLES "Counter-Strike: Source"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Counter-Strike Source/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Counter-Strike Source/"
-		EXECUTABLE_WIN32 "cstrike.exe"
-		EXECUTABLE_LINUX "cstrike.sh"
-		EXECUTABLE_MACOS "cstrike.sh"
-		PREFIX ".cstrike"
-		ENTITIES "cstrike.fgd"
-	)
-
-	add_gamepack(diprip
-		HAS_BASEGAME
-		BASE_TITLE "Source SDK Base 2007"
-		BASE_GAMEDIR "vpks"
-		TITLE "D.I.P.R.I.P. Warm Up"
-		KNOWN_GAMEDIRS "diprip"
-		KNOWN_TITLES "D.I.P.R.I.P. Warm Up"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Source SDK Base 2007/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Source SDK Base 2007/"
-		EXECUTABLE_WIN32 "hl2.exe"
-		EXECUTABLE_LINUX "hl2.sh"
-		EXECUTABLE_MACOS "hl2.sh"
-		PREFIX ".diprip"
-		ENTITIES "diprip.fgd"
-	)
-
-	add_gamepack(dod
-		HAS_BASEGAME
-		BASE_TITLE "Half-Life 2"
-		BASE_GAMEDIR "hl2"
-		TITLE "Day of Defeat: Source"
-		KNOWN_GAMEDIRS "dod"
-		KNOWN_TITLES "Day of Defeat: Source"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Day of Defeat Source/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Day of Defeat Source/"
-		EXECUTABLE_WIN32 "dod.exe"
-		EXECUTABLE_LINUX "dod.sh"
-		EXECUTABLE_MACOS "dod.sh"
-		PREFIX ".dod"
-		ENTITIES "dod.fgd"
-	)
-
-	add_gamepack(garrysmod
-		HAS_BASEGAME
-		BASE_TITLE "sourceengine"
-		BASE_GAMEDIR "Source Engine Base Content"
-		TITLE "Garry's Mod"
-		KNOWN_GAMEDIRS "garrysmod"
-		KNOWN_TITLES "Garry's Mod"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/GarrysMod/"
-		EXECUTABLE_WIN32 "hl2.exe"
-		EXECUTABLE_LINUX "hl2.sh"
-		EXECUTABLE_MACOS "hl2.sh"
-		PREFIX ".garrysmod"
-		ENTITIES "garrysmod.fgd"
-	)
-
-	add_gamepack(hl2
-		HAS_BASEGAME
-		BASE_TITLE "Half-Life 2"
-		BASE_GAMEDIR "hl2"
-		TITLE "Half-Life 2"
-		KNOWN_GAMEDIRS "episodic" "ep2" "lostcoast"
-		KNOWN_TITLES "Half-Life 2: Episode One" "Half-Life 2: Episode Two" "Half-Life 2: Lost Coast"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Half-Life 2/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Half-Life 2/"
-		EXECUTABLE_WIN32 "hl2.exe"
-		EXECUTABLE_LINUX "hl2.sh"
-		EXECUTABLE_MACOS "hl2.sh"
-		PREFIX ".hl2"
-		ENTITIES "halflife2.fgd"
-	)
-
-	add_gamepack(hl2mp
-		HAS_BASEGAME
-		BASE_TITLE "Half-Life 2"
-		BASE_GAMEDIR "hl2"
-		TITLE "Half-Life 2: Deathmatch"
-		KNOWN_GAMEDIRS "hl2mp"
-		KNOWN_TITLES "Half-Life 2: Deathmatch"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Half-Life 2 Deathmatch/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Half-Life 2 Deathmatch/"
-		EXECUTABLE_WIN32 "hl2mp.exe"
-		EXECUTABLE_LINUX "hl2mp.sh"
-		EXECUTABLE_MACOS "hl2mp.sh"
-		PREFIX ".hl2mp"
-		ENTITIES "hl2mp.fgd"
-	)
-
-	add_gamepack(portal
-		HAS_BASEGAME
-		BASE_TITLE "Half-Life 2"
-		BASE_GAMEDIR "hl2"
-		TITLE "Portal"
-		KNOWN_GAMEDIRS "portal"
-		KNOWN_TITLES "Portal"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Portal/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Portal/"
-		EXECUTABLE_WIN32 "hl2.exe"
-		EXECUTABLE_LINUX "hl2.sh"
-		EXECUTABLE_MACOS "hl2.sh"
-		PREFIX ".portal"
-		ENTITIES "portal.fgd"
-	)
-
-	add_gamepack(portal2
-		USE_NEW_OUTPUT_SEPARATOR
-		TITLE "Portal 2"
-		GAMEDIR "portal2"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Portal 2/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Portal 2/"
-		EXECUTABLE_WIN32 "portal2.exe"
-		EXECUTABLE_LINUX "portal2.sh"
-		EXECUTABLE_MACOS "portal2.sh"
-		PREFIX ".portal2"
-		ENTITIES "portal2.fgd"
-	)
-
-	add_gamepack(sinepisodes
-		HAS_BASEGAME
-		BASE_TITLE "SiN Episodes: Emergence Base Content"
-		BASE_GAMEDIR "vpks"
-		TITLE "SiN Episodes: Emergence"
-		KNOWN_GAMEDIRS "SE1"
-		KNOWN_TITLES "SiN Episodes: Emergence"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/SiN Episodes Emergence/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/SiN Episodes Emergence/"
-		EXECUTABLE_WIN32 "SinEpisodes.exe"
-		EXECUTABLE_LINUX "SinEpisodes.sh"
-		EXECUTABLE_MACOS "SinEpisodes.sh"
-		PREFIX ".sinepisodes"
-		ENTITIES "SinEpisodes.fgd"
-	)
-
-	add_gamepack(tf2
-		HAS_BASEGAME
-		BASE_TITLE "Half-Life 2"
-		BASE_GAMEDIR "hl2"
-		TITLE "Team Fortress 2"
-		KNOWN_GAMEDIRS "tf"
-		KNOWN_TITLES "Team Fortress 2"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Team Fortress 2/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Team Fortress 2/"
-		EXECUTABLE_WIN32 "tf.exe"
-		EXECUTABLE_LINUX "tf.sh"
-		EXECUTABLE_MACOS "tf.sh"
-		PREFIX ".tf"
-		ENTITIES "tf.fgd"
-	)
-
-	add_gamepack(vampire
-		HAS_BASEGAME
-		BASE_TITLE "Vampire: The Masquerade - Bloodlines"
-		BASE_GAMEDIR "Vampire"
-		TITLE "Vampire: The Masquerade - Bloodlines"
-		KNOWN_GAMEDIRS "Unofficial_Patch"
-		KNOWN_TITLES "Vampire: The Masquerade - Bloodlines Unofficial Patch"
-		PATH_WIN32 "C:/Program Files (x86)/Steam/steamapps/common/Vampire The Masquerade - Bloodlines/"
-		PATH_LINUX "~/.steam/steam/steamapps/common/Vampire The Masquerade - Bloodlines/"
-		EXECUTABLE_WIN32 "Vampire.exe"
-		EXECUTABLE_LINUX "Vampire.sh"
-		EXECUTABLE_MACOS "Vampire.sh"
-		PREFIX ".vampire"
-		ENTITIES "vampire.fgd"
-	)
-endif()
-
 # modules
 
 function(add_module name)
@@ -653,14 +367,6 @@ function(add_module name)
 	)
 endfunction()
 
-add_module(archivevpk
-	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/archivevpk/archive.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivevpk/plugin.cpp
-)
-target_link_libraries(archivevpk PRIVATE sourcepp::vpkpp)
-set_target_properties(sourcepp_vpkpp miniz minizip-ng zlib-ng bzip2 liblzma sourcepp_crypto sourcepp_parser sourcepp PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
 add_module(entity
 	SOURCES
 		${PROJECT_SOURCE_DIR}/plugins/entity/angle.cpp
@@ -692,29 +398,17 @@ add_module(imagepng
 )
 target_link_libraries(imagepng PRIVATE PNG::PNG)
 
-add_module(imagevtf
+add_module(imageswl
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/imagevtf/imagevtf.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imagevtf/vtf.cpp
+		${PROJECT_SOURCE_DIR}/plugins/imageswl/imageswl.cpp
+		${PROJECT_SOURCE_DIR}/plugins/imageswl/swl.cpp
 )
-target_link_libraries(imagevtf PRIVATE sourcepp::vtfpp)
-set_target_properties(sourcepp_vtfpp sourcepp_compression PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-add_module(sourcemodel
+add_module(archivesin
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/sourcemodel/mdl.cpp
-		${PROJECT_SOURCE_DIR}/plugins/sourcemodel/model.cpp
-		${PROJECT_SOURCE_DIR}/plugins/sourcemodel/plugin.cpp
+		${PROJECT_SOURCE_DIR}/plugins/archivesin/archive.cpp
+		${PROJECT_SOURCE_DIR}/plugins/archivesin/plugin.cpp
 )
-target_link_libraries(sourcemodel PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
-target_link_libraries(sourcemodel PRIVATE sourcepp::mdlpp)
-set_target_properties(sourcepp_mdlpp PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-add_module(mapvmf
-	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/mapvmf/plugin.cpp
-)
-target_link_libraries(mapvmf PRIVATE sourcepp::kvpp)
 
 add_module(shaders
 	SOURCES
@@ -723,8 +417,6 @@ add_module(shaders
 )
 target_link_libraries(shaders PRIVATE commandlib)
 target_link_libraries(shaders PRIVATE LibXml2::LibXml2)
-target_link_libraries(shaders PRIVATE sourcepp::kvpp)
-set_target_properties(sourcepp_kvpp PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_module(vfspk3
 	SOURCES

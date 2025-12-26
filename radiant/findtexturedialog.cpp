@@ -83,8 +83,8 @@ namespace
 {
 
 void FindTextureDialog_apply(){
-	const auto find = StringStream<64>( "materials/", g_FindTextureDialog.m_strFind );
-	const auto replace = StringStream<64>( "materials/", PathCleaned( g_FindTextureDialog.m_strReplace.c_str() ) );
+	const auto find = StringStream<64>( "textures/", g_FindTextureDialog.m_strFind );
+	const auto replace = StringStream<64>( "textures/", PathCleaned( g_FindTextureDialog.m_strReplace.c_str() ) );
 	FindReplaceTextures( find, replace, g_FindTextureDialog.m_bSelectedOnly );
 }
 
@@ -177,11 +177,11 @@ void FindTextureDialog::BuildDialog(){
 void FindTextureDialog::updateTextures( const char* name ){
 	if ( isOpen() ) {
 		if ( g_bFindActive ) {
-			setFindStr( name + strlen( "materials/" ) );
+			setFindStr( name + strlen( "textures/" ) );
 		}
 		else
 		{
-			setReplaceStr( name + strlen( "materials/" ) );
+			setReplaceStr( name + strlen( "textures/" ) );
 		}
 	}
 }

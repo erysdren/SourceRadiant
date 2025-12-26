@@ -104,7 +104,7 @@ public:
 		{
 			const IShader *shader = QERApp_ActiveShaders_IteratorCurrent();
 
-			if ( shader_equal_prefix( shader->getName(), "materials/" ) ) {
+			if ( shader_equal_prefix( shader->getName(), "textures/" ) ) {
 				callback( shader->getName() + 10 );
 			}
 		}

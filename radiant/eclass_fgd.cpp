@@ -344,12 +344,12 @@ void EntityClassFGD_parseClass( Tokeniser& tokeniser, bool fixedsize, bool isBas
 				{
 					const size_t bit = std::log2( atoi( flag ) );
 					ASSERT_MESSAGE( bit < MAX_FLAGS, "invalid flag bit" << PARSE_ERROR );
-					ASSERT_MESSAGE( string_empty( entityClass->flagnames[bit] ), "non-unique flag bit" << PARSE_ERROR );
+					ASSERT_MESSAGE( entityClass->flagNames[bit].empty(), "non-unique flag bit" << PARSE_ERROR );
 
 					ASSERT_MESSAGE( EntityClassFGD_parseToken( tokeniser, ":" ), PARSE_ERROR );
 
 					const char* name = tokeniser.getToken();
-					strncpy( entityClass->flagnames[bit], name, std::size( entityClass->flagnames[bit] ) - 1 );
+					entityClass->flagNames[bit] = name;
 					EntityClassAttribute *attribute = &EntityClass_insertAttribute( *entityClass, name, EntityClassAttribute( "flag", name ) ).second;
 					entityClass->flagAttributes[bit] = attribute;
 					{
@@ -636,8 +636,8 @@ void EntityClassFGD_resolveInheritance( EntityClass* derivedClass ){
 				}
 
 				for( size_t flag = 0; flag < MAX_FLAGS; ++flag ){
-					if( !string_empty( parentClass->flagnames[flag] ) && string_empty( derivedClass->flagnames[flag] ) ){
-						strncpy( derivedClass->flagnames[flag], parentClass->flagnames[flag], std::size( derivedClass->flagnames[flag] ) - 1 );
+					if( !parentClass->flagNames[flag].empty() && derivedClass->flagNames[flag].empty() ){
+						derivedClass->flagNames[flag] = parentClass->flagNames[flag];
 						// this ptr ref is cool, but requires parents to stay alive (e.g. bases)
 						// non base parent also may be deleted during insertion to global entity stack, if entity is already present there
 						// derivedClass->flagAttributes[flag] = parentClass->flagAttributes[flag];

@@ -138,7 +138,7 @@ typedef SingletonModule<ShadersQuake4API, ShadersDependencies, DependenciesAPICo
 
 ShadersQuake4Module g_ShadersQuake4Module;
 
-
+#ifdef SOURCERADIANT
 class ShadersSourceAPI
 {
 	ShaderSystem* m_shaderssource;
@@ -168,7 +168,7 @@ public:
 typedef SingletonModule<ShadersSourceAPI, ShadersDependencies, DependenciesAPIConstructor<ShadersSourceAPI, ShadersDependencies> > ShadersSourceModule;
 
 ShadersSourceModule g_ShadersSourceModule;
-
+#endif
 
 
 extern "C" void RADIANT_DLLEXPORT Radiant_RegisterModules( ModuleServer& server ){
@@ -177,5 +177,7 @@ extern "C" void RADIANT_DLLEXPORT Radiant_RegisterModules( ModuleServer& server 
 	g_ShadersQ3Module.selfRegister();
 	g_ShadersDoom3Module.selfRegister();
 	g_ShadersQuake4Module.selfRegister();
+#ifdef SOURCERADIANT
 	g_ShadersSourceModule.selfRegister();
+#endif
 }

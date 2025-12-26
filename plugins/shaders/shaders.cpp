@@ -68,7 +68,9 @@
 #include "archivelib.h"
 #include "imagelib.h"
 
+#ifdef SOURCERADIANT
 #include <kvpp/kvpp.h>
+#endif
 
 const char* g_shadersExtension = "";
 const char* g_shadersDirectory = "";
@@ -1449,6 +1451,7 @@ void parseGuideFile( Tokeniser& tokeniser, const char* filename ){
 	}
 }
 
+#ifdef SOURCERADIANT
 void ParseSourceShaderFile( ArchiveFile* file, const char* filename ){
 	g_shaderFilenames.push_back( filename );
 	filename = g_shaderFilenames.back().c_str();
@@ -1534,8 +1537,10 @@ void ParseSourceShaderFile( ArchiveFile* file, const char* filename ){
 
 	g_shaderDefinitions.insert( ShaderDefinitionMap::value_type( shaderTemplate->getName(), ShaderDefinition( shaderTemplate.get(), ShaderArguments(), filename ) ) );
 }
+#endif
 
 void LoadShaderFile( const char* filename ){
+#ifdef SOURCERADIANT
 	// we do something totally different with source vmts
 	if (g_shaderLanguage == SHADERLANGUAGE_SOURCE) {
 		ArchiveFile* f = GlobalFileSystem().openFile( filename );
@@ -1543,6 +1548,7 @@ void LoadShaderFile( const char* filename ){
 		f->release();
 		return;
 	}
+#endif
 
 	ArchiveTextFile* file = GlobalFileSystem().openTextFile( filename );
 

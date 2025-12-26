@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<project version="2.0">
+<var name="engine">&quot;[EnginePath]quake2ex_steam.[ExecutableType]&quot;</var>
+<var name="light">&quot;[RadiantPath]ericw/light.[ExecutableType]&quot;</var>
+<var name="qbsp">&quot;[RadiantPath]ericw/qbsp.[ExecutableType]&quot;</var>
+<var name="vis">&quot;[RadiantPath]ericw/vis.[ExecutableType]&quot;</var>
+<build name="Dirt Debug">
+<command>[qbsp] -q2bsp &quot;[MapFile]&quot;</command>
+<command>[vis] -fast &quot;[MapFile]&quot;</command>
+<command>[light] -dirtdebug -gamma 0.4 -dirtgain 0.5 -dirtscale 0.5 &quot;[MapFile]&quot;</command>
+<command>[engine] +game [GameName] -skipmovies +flushmap 1 +developer 1 +cheats 1 +map &quot;[MapName]&quot;</command>
+</build>
+<build name="Light Low">
+<command>[qbsp] -q2bsp &quot;[MapFile]&quot;</command>
+<command>[vis] &quot;[MapFile]&quot;</command>
+<command>[light] -bounce 1 -emissivequality low -world_units_per_luxel 24 -wrnormals -novanilla -lightgrid -lightgrid_dist 64 64 64 &quot;[MapFile]&quot;</command>
+<command>[engine] +game [GameName] -skipmovies +flushmap 1 +developer 1 +cheats 1 +map &quot;[MapName]&quot;</command>
+</build>
+<build name="Light Mid">
+<command>[qbsp] -q2bsp &quot;[MapFile]&quot;</command>
+<command>[vis] &quot;[MapFile]&quot;</command>
+<command>[light] -extra -bounce 3 -emissivequality low -world_units_per_luxel 16 -wrnormals -novanilla -lightgrid -lightgrid_dist 48 48 48 &quot;[MapFile]&quot;</command>
+<command>[engine] +game [GameName] -skipmovies +flushmap 1 +developer 1 +cheats 1 +map &quot;[MapName]&quot;</command>
+</build>
+<build name="Light High">
+<command>[qbsp] -q2bsp &quot;[MapFile]&quot;</command>
+<command>[vis] &quot;[MapFile]&quot;</command>
+<command>[light] -extra4 -bounce 8 -emissivequality high -world_units_per_luxel 8 -wrnormals -novanilla -lightgrid -lightgrid_dist 32 32 32 &quot;[MapFile]&quot;</command>
+<command>[engine] +game [GameName] -skipmovies +flushmap 1 +developer 1 +cheats 1 +map &quot;[MapName]&quot;</command>
+</build>
+<separator/>
+<build name="Only Ents">
+<command>[qbsp] -onlyents &quot;[BspFile]&quot;</command>
+<command>[light] -onlyents &quot;[BspFile]&quot;</command>
+<command>[engine] +game [GameName] -skipmovies +flushmap 1 +developer 1 +cheats 1 +map &quot;[MapName]&quot;</command>
+</build>
+<separator/>
+<build name="BSP">
+<command>[qbsp] -q2bsp &quot;[MapFile]&quot;</command>
+</build>
+<build name="VIS">
+<command>[vis] &quot;[MapFile]&quot;</command>
+</build>
+<build name="Leak Test">
+<command>[qbsp] -leaktest &quot;[MapFile]&quot;</command>
+</build>
+<separator/>
+<build name="Play Map">
+<command>[engine] +game [GameName] -skipmovies +flushmap 1 +developer 1 +cheats 1 +map &quot;[MapName]&quot;</command>
+</build>
+<build name="Launch Game">
+<command>[engine] +game [GameName] -skipmovies</command>
+</build>
+</project>

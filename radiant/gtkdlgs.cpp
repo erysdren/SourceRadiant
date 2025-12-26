@@ -413,7 +413,7 @@ void DoSides( EBrushPrefab type ){
 
 void DoAbout(){
 	QDialog dialog( MainFrame_getWindow(), Qt::Dialog | Qt::WindowCloseButtonHint );
-	dialog.setWindowTitle( "About SourceRadiant" );
+	dialog.setWindowTitle( "About SiNRadiant" );
 
 	{
 		auto *vbox = new QVBoxLayout( &dialog );
@@ -430,7 +430,7 @@ void DoAbout(){
 			}
 
 			{
-				auto *label = new QLabel( "SourceRadiant " RADIANT_VERSION "\n"
+				auto *label = new QLabel( "SiNRadiant " RADIANT_VERSION "\n"
 				                         __DATE__ "\n\n"
 				                         RADIANT_ABOUTMSG "\n\n"
 				                         "This program is free software\n"
@@ -743,7 +743,7 @@ R"(
 		rgbGen identity
 	}
 	{
-		map materials/
+		map textures/
 		blendFunc GL_DST_COLOR GL_ZERO
 		rgbGen identity
 	}
@@ -755,7 +755,7 @@ R"(
 R"(
 	surfaceparm nolightmap
 	{
-		map materials/
+		map textures/
 		rgbGen exactVertex
 	}
 }
@@ -766,7 +766,7 @@ R"(
 R"(
 	cull none
 	{
-		map materials/
+		map textures/
 		alphaFunc GE128
 		depthWrite
 	}
@@ -777,7 +777,7 @@ R"(
 	}
 	{
 		// same texture once more
-		map materials/
+		map textures/
 		blendFunc GL_DST_COLOR GL_ZERO
 		rgbGen identity
 		depthFunc equal
@@ -791,7 +791,7 @@ R"(
 	surfaceparm nolightmap
 	cull none
 	{
-		map materials/
+		map textures/
 		alphaFunc GE128
 		depthWrite
 		rgbGen exactVertex
@@ -804,7 +804,7 @@ R"(
 R"(
 	cull none
 	{
-		map materials/
+		map textures/
 		blendFunc GL_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
 	}
 	{
@@ -820,9 +820,9 @@ R"(
 R"(
 	// compile time parameter
 	surfaceparm slick
-	qer_editorimage materials/
+	qer_editorimage textures/
 	// remap back to original shader
-	q3map_remapShader materials/
+	q3map_remapShader textures/
 }
 )"
 	},
@@ -2132,7 +2132,7 @@ private:
 			}
 		};
 
-		Radiant_getImageModules().foreachModule( LoadTexturesByTypeVisitor( "materials/", m_texTree ) );
+		Radiant_getImageModules().foreachModule( LoadTexturesByTypeVisitor( "textures/", m_texTree ) );
 		Radiant_getImageModules().foreachModule( LoadTexturesByTypeVisitor( "models/", m_texTree ) );
 		Radiant_getImageModules().foreachModule( LoadTexturesByTypeVisitor( "env/", m_texTree ) );
 	}
@@ -2211,7 +2211,7 @@ private:
 								complete_tex_path( "" );
 							}
 							else if( tokens[i] == "%p" ){
-								push_token( "materials/" ); // isn't textures/ every time, but mostly
+								push_token( "textures/" ); // isn't textures/ every time, but mostly
 							}
 							else{
 								push_token( tokens[i] );
