@@ -410,6 +410,13 @@ add_module(archivesin
 		${PROJECT_SOURCE_DIR}/plugins/archivesin/plugin.cpp
 )
 
+add_module(mapq3
+	SOURCES
+		${PROJECT_SOURCE_DIR}/plugins/mapq3/parse.cpp
+		${PROJECT_SOURCE_DIR}/plugins/mapq3/plugin.cpp
+		${PROJECT_SOURCE_DIR}/plugins/mapq3/write.cpp
+)
+
 add_module(shaders
 	SOURCES
 		${PROJECT_SOURCE_DIR}/plugins/shaders/plugin.cpp

@@ -504,6 +504,76 @@ typedef SingletonModule<MapQ2API, MapDependencies> MapQ2Module;
 MapQ2Module g_MapQ2Module;
 
 
+class MapSinAPI final : public TypeSystemRef, public MapFormat, public PrimitiveParser
+{
+	mutable bool m_formatDetected;
+public:
+	typedef MapFormat Type;
+	STRING_CONSTANT( Name, "mapsin" );
+
+	MapSinAPI(){
+		GlobalFiletypesModule::getTable().addType( Type::Name, Name, filetype_t( "sin maps", "*.map" ) );
+		GlobalFiletypesModule::getTable().addType( Type::Name, Name, filetype_t( "sin region", "*.reg" ) );
+	}
+	MapFormat* getTable(){
+		return this;
+	}
+	scene::Node& parsePrimitive( Tokeniser& tokeniser ) const override {
+		const char* primitive = tokeniser.getToken();
+		if ( primitive != 0 ) {
+			if( !m_formatDetected ){
+				EBrushType detectedFormat;
+				if ( string_equal( primitive, "(" ) && tokeniser.bufferContains( " [ " ) && tokeniser.bufferContains( " ] " ) ) {
+					detectedFormat = eBrushTypeSinValve220;
+					globalWarningStream() << "detectedFormat = eBrushTypeSinValve220\n";
+				}
+				else if ( string_equal( primitive, "(" ) ) {
+					detectedFormat = eBrushTypeSin;
+					globalWarningStream() << "detectedFormat = eBrushTypeSin\n";
+				}
+				else{
+					globalErrorStream() << "Format is not detected\n";
+					Tokeniser_unexpectedError( tokeniser, primitive, "#different-brush-format" );
+					return g_nullNode;
+				}
+				m_formatDetected = true;
+				if( detectedFormat != GlobalBrushCreator().getFormat() ){
+					GlobalBrushCreator().toggleFormat( detectedFormat );
+				}
+			}
+
+			switch ( GlobalBrushCreator().getFormat() )
+			{
+			case eBrushTypeSin:
+			case eBrushTypeSinValve220:
+				tokeniser.ungetToken(); // (
+				return GlobalBrushCreator().createBrush();
+			default:
+				break;
+			}
+		}
+
+		Tokeniser_unexpectedError( tokeniser, primitive, "#sin-primitive" );
+		return g_nullNode;
+	}
+	void readGraph( scene::Node& root, TextInputStream& inputStream, EntityCreator& entityTable ) const override {
+		Tokeniser& tokeniser = GlobalScripLibModule::getTable().m_pfnNewMapTokeniser( inputStream );
+		m_formatDetected = false;
+		Map_Read( root, tokeniser, entityTable, *this );
+		tokeniser.release();
+	}
+	void writeGraph( scene::Node& root, GraphTraversalFunc traverse, TextOutputStream& outputStream ) const override {
+		TokenWriter& writer = GlobalScripLibModule::getTable().m_pfnNewSimpleTokenWriter( outputStream );
+		Map_Write( root, traverse, writer, true );
+		writer.release();
+	}
+};
+
+typedef SingletonModule<MapSinAPI, MapDependencies> MapSinModule;
+
+MapSinModule g_MapSinModule;
+
+
 #if 0
 #define PARSE_ERROR "error parsing VMF"
 
@@ -652,6 +722,7 @@ extern "C" void RADIANT_DLLEXPORT Radiant_RegisterModules( ModuleServer& server 
 	g_MapQ3Module.selfRegister();
 	g_MapQ1Module.selfRegister();
 	g_MapQ2Module.selfRegister();
+	g_MapSinModule.selfRegister();
 	g_MapHalfLifeModule.selfRegister();
 #if 0
 	g_MapVMFModule.selfRegister();
