@@ -267,22 +267,42 @@ public:
 
 typedef ReferencePair<FaceShaderObserver> FaceShaderObserverPair;
 
+// stuff specific to SiN
+class SurfaceSiNData
+{
+public:
+	SurfaceSiNData() = default;
+	SurfaceSiNData(const SurfaceSiNData &) = default;
+	SurfaceSiNData &operator=(const SurfaceSiNData &) = default;
+
+	// texinfo
+	float m_nonlitvalue = 0.5f;
+	Vector3 m_color = {};
+	int m_trans_angle = 0;
+	float m_trans_mag = 0;
+	float m_translucence = 0;
+	float m_restitution = 0;
+	float m_friction = 1.0f;
+	float m_animtime = 0.2f;
+
+	// lightinfo
+	CopiedString m_directstylename = "";
+	int m_lightvalue = 0;
+	float m_direct = 0;
+	float m_directangle = 0;
+};
+
+extern const SurfaceSiNData defaultSiNSurfaceData;
 
 class ContentsFlagsValue
 {
 public:
-	ContentsFlagsValue(){
-	}
-	ContentsFlagsValue( int surfaceFlags, int contentFlags, int value, bool specified ) :
-		m_surfaceFlags( surfaceFlags ),
-		m_contentFlags( contentFlags ),
-		m_value( value ),
-		m_specified( specified ){
-	}
-	int m_surfaceFlags;
-	int m_contentFlags;
-	int m_value;
-	bool m_specified; /* this represents Q2 duality, where flags may be absent in .map file = use .wal tex flags
+	int m_surfaceFlags = 0;
+	int m_contentFlags = 0;
+	int m_value = 0;
+	SurfaceSiNData m_sinData {};
+	bool m_specified = false;
+	                  /* this represents Q2 duality, where flags may be absent in .map file = use .wal tex flags
 	                     or present = use them
 	                     in editor runtime this tracks user will regarding this
 	                     in m_contentFlags BRUSH_DETAIL_MASK flag is special, since its presence must be homogenous over faces
@@ -338,7 +358,7 @@ public:
 	bool m_instanced;
 	bool m_realised;
 
-	FaceShader( const char* shader, const ContentsFlagsValue& flags = ContentsFlagsValue( 0, 0, 0, false ) ) :
+	FaceShader( const char* shader, const ContentsFlagsValue& flags = ContentsFlagsValue() ) :
 		m_shader( shader ),
 		m_state( 0 ),
 		m_flags( flags ),
@@ -420,6 +440,7 @@ public:
 		         : ContentsFlagsValue( m_state->getTexture().surfaceFlags,
 		                               m_state->getTexture().contentFlags,
 		                               m_state->getTexture().value,
+									   SurfaceSiNData{},
 		                               true );
 	}
 	void setFlags( const ContentsFlagsValue& flags ){
@@ -1339,13 +1360,14 @@ public:
 				m_shader.m_flags = ContentsFlagsValue( m_shader.m_state->getTexture().surfaceFlags,
 				                                       m_shader.m_state->getTexture().contentFlags | BRUSH_DETAIL_MASK,
 				                                       m_shader.m_state->getTexture().value,
+													   SurfaceSiNData{},
 				                                       false );
 		}
 		else if ( !detail && isDetail() ) {
 			if( m_shader.m_flags.m_specified )
 				m_shader.m_flags.m_contentFlags &= ~BRUSH_DETAIL_MASK;
 			else
-				m_shader.m_flags = ContentsFlagsValue( 0, 0, 0, false );
+				m_shader.m_flags = ContentsFlagsValue();
 		}
 		m_observer->shaderChanged();
 		Brush_textureChanged();

@@ -53,6 +53,7 @@ void write_stack_trace( TextOutputStream& outputStream ){
 #include "windows.h"
 #include "winnt.h"
 #include "dbghelp.h"
+#include <inttypes.h>
 
 class Address
 {
@@ -84,7 +85,7 @@ template<typename TextOutputStreamType>
 inline TextOutputStreamType& ostream_write( TextOutputStreamType& ostream, const Offset& p ){
 	const std::size_t bufferSize = ( sizeof( void* ) * 2 ) + 1;
 	char buf[bufferSize];
-	ostream.write( buf, std::snprintf( buf, bufferSize, "%X", p.m_value ) );
+	ostream.write( buf, std::snprintf( buf, bufferSize, "%" PRIXPTR, (uintptr_t) p.m_value ) );
 	return ostream;
 }
 
@@ -265,7 +266,7 @@ void write_stack_trace( PCONTEXT pContext, TextOutputStream& outputStream ){
 				DWORD dwLineDisplacement;
 				if ( SymGetLineFromAddr64( m_hProcess, sf.AddrPC.Offset,
 				                           &dwLineDisplacement, &lineInfo ) ) {
-					outputStream << ' ' << lineInfo.FileName << " line " << lineInfo.LineNumber;
+					outputStream << ' ' << lineInfo.FileName << " line " << (uint32_t) lineInfo.LineNumber;
 				}
 			}
 			else

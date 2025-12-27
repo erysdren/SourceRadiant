@@ -277,7 +277,7 @@ void environment_init( int argc, char* argv[] ){
 	{
 		// get path to the editor
 		char filename[MAX_PATH + 1];
-		GetModuleFileName( 0, filename, MAX_PATH );
+		GetModuleFileNameA( 0, filename, MAX_PATH );
 
 		app_filepath = StringStream( PathCleaned( filename ) );
 		app_path = PathFilenameless( app_filepath.c_str() );

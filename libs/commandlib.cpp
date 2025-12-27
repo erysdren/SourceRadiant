@@ -32,6 +32,11 @@
 
 #include <QProcess>
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#endif
+
 bool Q_Exec( const char *cmd, char *cmdline, const char *execdir, bool bCreateConsole, bool waitfor ){
 	QProcess *process = new QProcess();
 

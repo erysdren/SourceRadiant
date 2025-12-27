@@ -258,7 +258,7 @@ target_link_libraries(radiant PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Q
 target_link_libraries(radiant PRIVATE LibXml2::LibXml2)
 target_link_libraries(radiant PRIVATE commandlib gtkutil l_net xmllib quickhull)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-	target_link_libraries(radiant PRIVATE ws2_32)
+	target_link_libraries(radiant PRIVATE ws2_32 dbghelp)
 endif()
 
 set_target_properties(radiant commandlib gtkutil xmllib PROPERTIES CXX_STANDARD_REQUIRED ON CXX_STANDARD 20)

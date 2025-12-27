@@ -32,6 +32,8 @@ void Brush_textureChanged(){
 	g_brushTextureChangedCallbacks();
 }
 
+const SurfaceSiNData defaultSiNSurfaceData = {};
+
 QuantiseFunc Face::m_quantise;
 EBrushType Face::m_type;
 EBrushType FacePlane::m_type;

@@ -10,3 +10,5 @@
 /build*/
 /untracked*/
 CMakeUserPresets.json
+.vs
+out

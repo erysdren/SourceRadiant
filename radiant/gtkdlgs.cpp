@@ -77,7 +77,14 @@
 #include "qerplugin.h"
 #include "os/file.h"
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <shellapi.h>
 
+#undef max
+#undef min
+#endif
 
 // =============================================================================
 // Project settings dialog
@@ -149,7 +156,7 @@ public:
 				if ( string_empty( dir ) || string_empty( name ) ) {
 					break;
 				}
-				m_knowngames.push_back({ dir, name, m_knowngames.size() + 1 });
+				m_knowngames.push_back({ dir, name, (int) (m_knowngames.size() + 1) });
 			}
 		}
 	}
@@ -2123,11 +2130,11 @@ private:
 			void insert( const char *name ) const {
 				m_texTree.insert( m_stringStream( m_dirstring, PathExtensionless( name ) ) );
 			}
-			typedef ConstMemberCaller<LoadTexturesByTypeVisitor, void(const char*), &LoadTexturesByTypeVisitor::insert> InsertCaller;
 			LoadTexturesByTypeVisitor( const char* dirstring, TexTree& texTree ) :
 				m_dirstring( dirstring ), m_texTree( texTree ), m_stringStream( 64 )
 			{}
 			void visit( const char* minor, const _QERPlugImageTable& table ) const override {
+				typedef ConstMemberCaller<LoadTexturesByTypeVisitor, void(const char*), &LoadTexturesByTypeVisitor::insert> InsertCaller;
 				GlobalFileSystem().forEachFile( m_dirstring, minor, InsertCaller( *this ), 99 );
 			}
 		};
@@ -2543,6 +2550,11 @@ CopiedString g_TextEditor_editorCommand;
 #include "iarchive.h"
 #include "idatastream.h"
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#endif
+
 void DoShaderView( const char *shaderFileName, const char *shaderName, bool external_editor ){
 	const char* pathRoot = GlobalFileSystem().findFile( shaderFileName );
 	const bool pathEmpty = string_empty( pathRoot );
@@ -2556,7 +2568,7 @@ void DoShaderView( const char *shaderFileName, const char *shaderName, bool exte
 	else if( external_editor && pathIsDir ){
 		if( g_TextEditor_editorCommand.empty() ){
 #ifdef WIN32
-			ShellExecute( (HWND)MainFrame_getWindow()->effectiveWinId(), 0, pathFull.c_str(), 0, 0, SW_SHOWNORMAL );
+			ShellExecuteA( (HWND)MainFrame_getWindow()->effectiveWinId(), 0, pathFull.c_str(), 0, 0, SW_SHOWNORMAL );
 #else
 			globalWarningStream() << "Failed to open " << SingleQuoted( pathFull ) << "\nSet Shader Editor Command in preferences\n";
 #endif

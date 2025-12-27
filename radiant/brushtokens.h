@@ -33,6 +33,280 @@ inline bool FaceShader_importContentsFlagsValue( FaceShader& faceShader, Tokenis
 	return true;
 }
 
+#include <cstdint>
+
+template<typename T>
+struct name_and_flag_t
+{
+    const char  *name;
+    T           flag;
+};
+
+// extra SiN info
+// TODO: move this stuff to gamedef in some way
+enum class sin_contents_t : uint32_t
+{
+    SOLID     = 0x1,
+    WINDOW    = 0x2,
+    FENCE     = 0x4,
+    LAVA      = 0x8,
+    SLIME     = 0x10,
+    WATER     = 0x20,
+    MIST      = 0x40,
+    // UNUSED = 0x80,
+    
+    // UNUSED = 0x100,
+    // UNUSED = 0x200,
+    // UNUSED = 0x400,
+    // UNUSED = 0x800,
+    // UNUSED = 0x1000,
+    // UNUSED = 0x2000,
+    // UNUSED = 0x4000,
+    // UNUSED = 0x8000,
+    
+    PLAYERCLIP   = 0x10000,
+    MONSTERCLIP  = 0x20000,
+    CURRENT_0    = 0x40000,
+    CURRENT_90   = 0x80000,
+    CURRENT_180  = 0x100000,
+    CURRENT_270  = 0x200000,
+    CURRENT_UP   = 0x400000,
+    CURRENT_DOWN = 0x800000,
+
+    ORIGIN      = 0x1000000,
+    MONSTER     = 0x2000000,
+    CORPSE      = 0x4000000,
+    DETAIL      = 0x8000000,
+    TRANSLUCENT = 0x10000000,
+    LADDER      = 0x20000000
+    // UNUSED   = 0x40000000,
+    // UNUSED   = 0x80000000,
+};
+
+static constexpr name_and_flag_t<sin_contents_t> sin_contents_names[] = {
+    {"solid",         sin_contents_t::SOLID},
+    {"window",        sin_contents_t::WINDOW},
+    {"fence",         sin_contents_t::FENCE},
+    {"lava",          sin_contents_t::LAVA},
+    {"slime",         sin_contents_t::SLIME},
+    {"water",         sin_contents_t::WATER},
+    {"mist",          sin_contents_t::MIST},
+
+    {"playerclip",    sin_contents_t::PLAYERCLIP},
+    {"monsterclip",   sin_contents_t::MONSTERCLIP},
+    {"current_0",     sin_contents_t::CURRENT_0},
+    {"current_90",    sin_contents_t::CURRENT_90},
+    {"current_180",   sin_contents_t::CURRENT_180},
+    {"current_270",   sin_contents_t::CURRENT_270},
+    {"current_up",    sin_contents_t::CURRENT_UP},
+    {"current_dn",    sin_contents_t::CURRENT_DOWN},
+    
+    {"origin",        sin_contents_t::ORIGIN},
+    {"monster",       sin_contents_t::MONSTER},
+    {"corpse",        sin_contents_t::CORPSE},
+    {"detail",        sin_contents_t::DETAIL},
+    {"translucent",   sin_contents_t::TRANSLUCENT},
+    {"ladder",        sin_contents_t::LADDER}
+};
+
+enum class sin_surfflags_t : uint32_t
+{
+    LIGHT    = 0x1,
+    MASKED   = 0x2,
+    SKY      = 0x4,
+    WARP     = 0x8,
+    NONLIT   = 0x10,
+    NOFILTER = 0x20,
+    CONVEYOR = 0x40,
+    NODRAW   = 0x80,
+
+    HINT     = 0x100,
+    SKIP     = 0x200,
+    WAVY     = 0x400,
+    RICOCHET = 0x800,
+    PRELIT   = 0x1000,
+    MIRROR   = 0x2000,
+    CONSOLE  = 0x4000,
+    USECOLOR = 0x8000,
+
+    HARDWAREONLY  = 0x10000,
+    DAMAGE        = 0x20000,
+    WEAK          = 0x40000,
+    NORMAL        = 0x80000,
+    ADD           = 0x100000,
+    ENVMAPPED     = 0x200000,
+    RANDOMANIMATE = 0x400000,
+    ANIMATE       = 0x800000,
+    
+    RNDTIME   = 0x1000000,
+    TRANSLATE = 0x2000000,
+    NOMERGE   = 0x4000000,
+    TYPE_BIT0 = 0x8000000,
+    TYPE_BIT1 = 0x10000000,
+    TYPE_BIT2 = 0x20000000,
+    TYPE_BIT3 = 0x40000000,
+    //UNUSED  = 0x80000000
+};
+
+static constexpr name_and_flag_t<sin_surfflags_t> sin_surfflag_names[] = {
+    {"light",       sin_surfflags_t::LIGHT},
+    {"masked",      sin_surfflags_t::MASKED},
+    {"sky",         sin_surfflags_t::SKY},
+    {"warping",     sin_surfflags_t::WARP},
+    {"nonlit",      sin_surfflags_t::NONLIT},
+    {"nofilter",    sin_surfflags_t::NOFILTER},
+    {"conveyor",    sin_surfflags_t::CONVEYOR},
+    {"nodraw",      sin_surfflags_t::NODRAW},
+
+    {"hint",        sin_surfflags_t::HINT},
+    {"skip",        sin_surfflags_t::SKIP},
+    {"wavy",        sin_surfflags_t::WAVY},
+    {"ricochet",    sin_surfflags_t::RICOCHET},
+    {"prelit",      sin_surfflags_t::PRELIT},
+    {"mirror",      sin_surfflags_t::MIRROR},
+    {"console",     sin_surfflags_t::CONSOLE},
+    {"usecolor",    sin_surfflags_t::USECOLOR},
+
+    {"hardwareonly",sin_surfflags_t::HARDWAREONLY},
+    {"damage",      sin_surfflags_t::DAMAGE},
+    {"weak",        sin_surfflags_t::WEAK},
+    {"normal",      sin_surfflags_t::NORMAL},
+    {"add",         sin_surfflags_t::ADD},
+    {"envmapped",   sin_surfflags_t::ENVMAPPED},
+    {"random",      sin_surfflags_t::RANDOMANIMATE},
+    {"animate",     sin_surfflags_t::ANIMATE},
+
+    {"rndtime",     sin_surfflags_t::RNDTIME},
+    {"translate",   sin_surfflags_t::TRANSLATE},
+    {"nomerge",     sin_surfflags_t::NOMERGE},
+    {"surfbit0",    sin_surfflags_t::TYPE_BIT0},
+    {"surfbit1",    sin_surfflags_t::TYPE_BIT1},
+    {"surfbit2",    sin_surfflags_t::TYPE_BIT2},
+    {"surfbit3",    sin_surfflags_t::TYPE_BIT3},
+};
+
+template<typename T>
+inline void FaceShader_SiN_AttemptParseScalar(const std::string_view key, const std::string_view value, const char *expected_key, T &scalar)
+{
+	if (expected_key != key) {
+		return;
+	}
+
+	if constexpr(std::is_integral_v<T>)
+	{
+		scalar = atoi(value.data());
+	}
+	else
+	{
+		scalar = atof(value.data());
+	}
+}
+
+inline void FaceShader_SiN_AttemptParseString(const std::string_view key, const std::string_view value, const char *expected_key, CopiedString &scalar)
+{
+	if (expected_key != key) {
+		return;
+	}
+
+	scalar = value;
+}
+
+inline void FaceShader_SiN_AttemptParseVector(const std::string_view key, const std::string_view value, const char *expected_key, Vector3 &scalar)
+{
+	if (expected_key != key) {
+		return;
+	}
+
+	char *next = (char *) value.data();
+
+	for (int i = 0; i < 3; i++) {
+		scalar[i] = strtof(next, &next);
+	}
+}
+
+inline bool FaceShader_importSiNData( FaceShader& faceShader, Tokeniser& tokeniser ){
+	// SiN always specifies flags.
+	faceShader.m_flags.m_specified = true;
+
+	// TODO: probably would be nice to tell the tokeniser not to
+	// cross lines, and then distinguish EOL vs EOF
+	while (true) {
+		const char *tok = tokeniser.getToken();
+
+		if (*tok == '-') {
+			// for now skip this
+			//Tokeniser_unexpectedError( tokeniser, tok, "+ or alphabet character" );
+			return true;
+		}
+
+		// + or a-z means it's a valid object
+		if (*tok != '+' && !isalpha(*tok)) {
+			tokeniser.ungetToken();
+			return true;
+		}
+		
+		// flag
+		if (*tok == '+') {
+			const std::string_view flag = tok + 1;
+
+			// TODO: use game def
+			for (auto &content : sin_contents_names) {
+				if (flag == content.name) {
+					faceShader.m_flags.m_contentFlags |= (int) content.flag;
+					break;
+				}
+			}
+			for (auto &surf : sin_surfflag_names) {
+				if (flag == surf.name) {
+					faceShader.m_flags.m_surfaceFlags |= (int) surf.flag;
+					break;
+				}
+			}
+
+			continue;
+		}
+
+		// kvp
+		std::string value;
+		std::string key = tok;
+
+		// keys cannot start with a number, so we can use that knowledge to auto-detect
+		// vectors when they appear (only color, though)
+		while (true) {
+			tok = tokeniser.getToken();
+
+			if (!value.empty()) {
+				value += " ";
+			}
+
+			value += tok;
+
+			tok = tokeniser.getToken();
+			bool eov = !isdigit(*tok);
+			tokeniser.ungetToken();
+
+			if (eov) {
+				break;
+			}
+		}
+
+		// ugly but whatever
+		FaceShader_SiN_AttemptParseScalar(key, value, "animtime", faceShader.m_flags.m_sinData.m_animtime);
+		FaceShader_SiN_AttemptParseScalar(key, value, "friction", faceShader.m_flags.m_sinData.m_friction);
+		FaceShader_SiN_AttemptParseScalar(key, value, "restitution", faceShader.m_flags.m_sinData.m_restitution);
+		FaceShader_SiN_AttemptParseScalar(key, value, "direct", faceShader.m_flags.m_sinData.m_direct);
+		FaceShader_SiN_AttemptParseScalar(key, value, "directangle", faceShader.m_flags.m_sinData.m_directangle);
+		FaceShader_SiN_AttemptParseScalar(key, value, "translucence", faceShader.m_flags.m_sinData.m_translucence);
+		FaceShader_SiN_AttemptParseScalar(key, value, "trans_mag", faceShader.m_flags.m_sinData.m_trans_mag);
+		FaceShader_SiN_AttemptParseScalar(key, value, "trans_angle", faceShader.m_flags.m_sinData.m_trans_angle);
+		FaceShader_SiN_AttemptParseVector(key, value, "color", faceShader.m_flags.m_sinData.m_color);
+		FaceShader_SiN_AttemptParseScalar(key, value, "lightvalue", faceShader.m_flags.m_sinData.m_lightvalue);
+		FaceShader_SiN_AttemptParseScalar(key, value, "nonlitvalue", faceShader.m_flags.m_sinData.m_nonlitvalue);
+		FaceShader_SiN_AttemptParseString(key, value, "directstyle", faceShader.m_flags.m_sinData.m_directstylename);
+	}
+	return true;
+}
+
 inline bool FaceTexdef_importTokens( FaceTexdef& texdef, Tokeniser& tokeniser ){
 	// parse texdef
 	RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, texdef.m_projection.m_texdef.shift[0] ) );
@@ -226,10 +500,7 @@ public:
 		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
 		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
 		RETURN_FALSE_IF_FAIL( FaceTexdef_importTokens( m_face.getTexdef(), tokeniser ) );
-		// optional face flags
-		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) {
-			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
-		}
+		RETURN_FALSE_IF_FAIL( FaceShader_importSiNData( m_face.getShader(), tokeniser ) );
 		m_face.getTexdef().m_scaleApplied = true;
 		return true;
 	}
@@ -245,10 +516,7 @@ public:
 		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
 		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
 		RETURN_FALSE_IF_FAIL( FaceTexdef_Valve220_importTokens( m_face.getTexdef(), tokeniser ) );
-		// optional face flags
-		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) {
-			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
-		}
+		RETURN_FALSE_IF_FAIL( FaceShader_importSiNData( m_face.getShader(), tokeniser ) );
 		m_face.getTexdef().m_scaleApplied = true;
 		return true;
 	}
@@ -465,6 +733,79 @@ public:
 	}
 };
 
+template<typename T>
+inline void FaceShader_SiN_AttemptWriteScalar(TokenWriter& writer, const char *key, const T &value, const T &defaultValue)
+{
+	if (value == defaultValue) {
+		return;
+	}
+
+	writer.writeToken(key);
+
+	if constexpr(std::is_integral_v<T>) {
+		writer.writeInteger(value);
+	} else {
+		writer.writeFloat(value);
+	}
+}
+
+inline void FaceShader_SiN_AttemptWriteVector(TokenWriter& writer, const char *key, const Vector3 &value, const Vector3 &defaultValue)
+{
+	if (value == defaultValue) {
+		return;
+	}
+
+	writer.writeToken(key);
+	writer.writeFloat(value[0]);
+	writer.writeFloat(value[1]);
+	writer.writeFloat(value[2]);
+}
+
+inline void FaceShader_SiN_AttemptWriteString(TokenWriter& writer, const char *key, const CopiedString &value, const CopiedString &defaultValue)
+{
+	if (value == defaultValue) {
+		return;
+	}
+	
+	writer.writeToken(key);
+	writer.writeToken(value.c_str());
+}
+
+inline void FaceFlags_exportSiNData( const Face& face, TokenWriter& writer ){
+	const auto &faceShader = face.getShader();
+
+	// write contents & surface flags
+	for (auto &content : sin_contents_names) {
+		if (faceShader.m_flags.m_contentFlags & (int) content.flag) {
+			std::string s = "+";
+			s += content.name;
+			writer.writeToken(s.c_str());
+		}
+	}
+	for (auto &surf : sin_surfflag_names) {
+		if (faceShader.m_flags.m_surfaceFlags & (int) surf.flag) {
+			std::string s = "+";
+			s += surf.name;
+			writer.writeToken(s.c_str());
+		}
+	}
+
+	// ugly but whatever
+	FaceShader_SiN_AttemptWriteScalar(writer, "animtime", faceShader.m_flags.m_sinData.m_animtime, defaultSiNSurfaceData.m_animtime);
+	FaceShader_SiN_AttemptWriteScalar(writer, "friction", faceShader.m_flags.m_sinData.m_friction, defaultSiNSurfaceData.m_friction);
+	FaceShader_SiN_AttemptWriteScalar(writer, "restitution", faceShader.m_flags.m_sinData.m_restitution, defaultSiNSurfaceData.m_restitution);
+	FaceShader_SiN_AttemptWriteScalar(writer, "direct", faceShader.m_flags.m_sinData.m_direct, defaultSiNSurfaceData.m_direct);
+	FaceShader_SiN_AttemptWriteScalar(writer, "directangle", faceShader.m_flags.m_sinData.m_directangle, defaultSiNSurfaceData.m_directangle);
+	FaceShader_SiN_AttemptWriteScalar(writer, "translucence", faceShader.m_flags.m_sinData.m_translucence, defaultSiNSurfaceData.m_translucence);
+	FaceShader_SiN_AttemptWriteScalar(writer, "trans_mag", faceShader.m_flags.m_sinData.m_trans_mag, defaultSiNSurfaceData.m_trans_mag);
+	FaceShader_SiN_AttemptWriteScalar(writer, "trans_angle", faceShader.m_flags.m_sinData.m_trans_angle, defaultSiNSurfaceData.m_trans_angle);
+	FaceShader_SiN_AttemptWriteVector(writer, "color", faceShader.m_flags.m_sinData.m_color, defaultSiNSurfaceData.m_color);
+	FaceShader_SiN_AttemptWriteScalar(writer, "lightvalue", faceShader.m_flags.m_sinData.m_lightvalue, defaultSiNSurfaceData.m_lightvalue);
+	FaceShader_SiN_AttemptWriteScalar(writer, "nonlitvalue", faceShader.m_flags.m_sinData.m_nonlitvalue, defaultSiNSurfaceData.m_nonlitvalue);
+	FaceShader_SiN_AttemptWriteString(writer, "directstyle", faceShader.m_flags.m_sinData.m_directstylename, defaultSiNSurfaceData.m_directstylename);
+}
+
+
 template<bool valve220>
 class SinFaceTokenExporter
 {
@@ -475,8 +816,12 @@ public:
 	void exportTokens( TokenWriter& writer ) const {
 		FacePlane_exportTokens( m_face.getPlane(), writer );
 		FaceShader_exportTokens( m_face.getShader(), writer );
-		FaceTexdef_exportTokens( m_face.getTexdef(), writer );
-		// FaceFlags_exportTokens<exportFlags>( m_face, writer );
+		if constexpr(valve220) {
+			FaceTexdef_Valve220_exportTokens( m_face.getTexdef(), writer );
+		} else {
+			FaceTexdef_exportTokens( m_face.getTexdef(), writer );
+		}
+		FaceFlags_exportSiNData( m_face, writer );
 		writer.nextLine();
 	}
 };

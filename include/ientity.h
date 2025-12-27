@@ -22,6 +22,7 @@
 #pragma once
 
 #include <format>
+#include <string>
 
 #include "generic/constant.h"
 

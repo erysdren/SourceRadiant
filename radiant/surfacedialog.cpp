@@ -259,7 +259,7 @@ void SurfaceInspector_SetCurrent_FromSelected(){
 				SurfaceInspector_SetSelectedShader( name.c_str() );
 			}
 
-			ContentsFlagsValue flags( 0, 0, 0, false );
+			ContentsFlagsValue flags {};
 			Scene_BrushGetFlags_Selected( GlobalSceneGraph(), flags );
 			SurfaceInspector_SetSelectedFlags( flags );
 		}
@@ -499,7 +499,7 @@ OnBtnFaceFitHeightOnly;
 
 static void OnBtnUnsetFlags(){
 	UndoableCommand undo( "flagsUnSetSelected" );
-	Select_SetFlags( ContentsFlagsValue( 0, 0, 0, false ) );
+	Select_SetFlags( ContentsFlagsValue{} );
 }
 
 
@@ -1101,8 +1101,10 @@ void SurfaceInspector::ApplyFlags(){
 
 	int value = entry_get_int( m_valueEntry );
 
+	SurfaceSiNData sinData {};
+
 	UndoableCommand undo( "flagsSetSelected" );
-	Select_SetFlags( ContentsFlagsValue( surfaceflags, contentflags, value, true ) );
+	Select_SetFlags( ContentsFlagsValue( surfaceflags, contentflags, value, sinData, true ) );
 }
 
 
@@ -1182,7 +1184,7 @@ public:
 FaceTexture g_faceTextureClipboard;
 
 void FaceTextureClipboard_setDefault(){
-	g_faceTextureClipboard.m_flags = ContentsFlagsValue( 0, 0, 0, false );
+	g_faceTextureClipboard.m_flags = {};
 	g_faceTextureClipboard.m_projection.m_texdef = texdef_t();
 	g_faceTextureClipboard.m_projection.m_brushprimit_texdef = brushprimit_texdef_t();
 	TexDef_Construct_Default( g_faceTextureClipboard.m_projection );

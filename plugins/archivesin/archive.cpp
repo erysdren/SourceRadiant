@@ -95,7 +95,7 @@ public:
 				{
 					sinpakentry_t entry;
 
-					m_pakfile.read( reinterpret_cast<FileInputStream::byte_type*>( entry.filename ), 0x38 );
+					m_pakfile.read( reinterpret_cast<FileInputStream::byte_type*>( entry.filename ), sizeof(entry.filename) );
 					entry.offset = istream_read_uint32_le( m_pakfile );
 					entry.size = istream_read_uint32_le( m_pakfile );
 

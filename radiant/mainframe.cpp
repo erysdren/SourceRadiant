@@ -177,9 +177,9 @@ void HomePaths_Realise(){
 #endif
 
 #if defined( WIN32 )
-			TCHAR mydocsdir[MAX_PATH + 1];
+			CHAR mydocsdir[MAX_PATH + 1];
 			wchar_t *mydocsdirw;
-			HMODULE shfolder = LoadLibrary( "shfolder.dll" );
+			HMODULE shfolder = LoadLibraryA( "shfolder.dll" );
 			if ( shfolder ) {
 				qSHGetKnownFolderPath = (qSHGetKnownFolderPath_t *) GetProcAddress( shfolder, "SHGetKnownFolderPath" );
 			}
@@ -203,7 +203,7 @@ void HomePaths_Realise(){
 			if ( shfolder ) {
 				FreeLibrary( shfolder );
 			}
-			if ( SUCCEEDED( SHGetFolderPath( nullptr, CSIDL_PERSONAL, nullptr, 0, mydocsdir ) ) ) {
+			if ( SUCCEEDED( SHGetFolderPathA( nullptr, CSIDL_PERSONAL, nullptr, 0, mydocsdir ) ) ) {
 				path( DirectoryCleaned( mydocsdir ), "My Games/", ( prefix + 1 ), '/' );
 				// win32: only add it if it already exists
 				if ( file_is_directory( path ) ) {
@@ -1538,12 +1538,12 @@ void MainFrame::SetActiveXY( XYWnd* p ){
 }
 
 #ifdef WIN32
-#include <QtPlatformHeaders/QWindowsWindowFunctions>
+//#include <QtPlatformHeaders/QWindowsWindowFunctions>
 #endif
 void MainFrame_toggleFullscreen(){
 	QWidget *w = MainFrame_getWindow();
 #ifdef WIN32 // https://doc.qt.io/qt-5.15/windows-issues.html#fullscreen-opengl-based-windows
-	QWindowsWindowFunctions::setHasBorderInFullScreen( w->windowHandle(), true );
+	//QWindowsWindowFunctions::setHasBorderInFullScreen( w->windowHandle(), true );
 #endif
 	w->setWindowState( w->windowState() ^ Qt::WindowState::WindowFullScreen );
 }
