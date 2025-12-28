@@ -79,7 +79,7 @@
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include <windows.h>
 #include <shellapi.h>
 
 #undef max
@@ -2552,7 +2552,7 @@ CopiedString g_TextEditor_editorCommand;
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include <windows.h>
 #endif
 
 void DoShaderView( const char *shaderFileName, const char *shaderName, bool external_editor ){
