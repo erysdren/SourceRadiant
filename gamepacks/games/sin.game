@@ -23,7 +23,7 @@
   entityclass="quake3"
   entityclasstype="fgd"
   entities="quake3"
-  entitiesfilename="sin.fgd"
+  entitiesfilename="SiNReloaded.fgd"
   brushtypes="sin"
   patchtypes="quake3"
   default_scale="1.0"
