@@ -380,7 +380,8 @@ void EntityClassFGD_parseClass( Tokeniser& tokeniser, bool fixedsize, bool isBas
 			EntityClassAttribute attribute;
 
 			ASSERT_MESSAGE( EntityClassFGD_parseToken( tokeniser, ":" ), PARSE_ERROR );
-			attribute.m_displayName = attribute.m_name = tokeniser.getToken();
+			attribute.m_displayName = key;
+			attribute.m_name = tokeniser.getToken();
 			const char* valueSeparator = tokeniser.getToken();
 			if ( string_equal( valueSeparator, ":" ) ) {
 				const char* value = tokeniser.getToken();
@@ -462,6 +463,8 @@ void EntityClassFGD_parseClass( Tokeniser& tokeniser, bool fixedsize, bool isBas
 		       || string_equal_nocase( type.c_str(), "target_source" )
 		       || string_equal_nocase( type.c_str(), "target_destination" )
 		       || string_equal_nocase( type.c_str(), "sound" )
+		       // hammer 4.x
+		       || string_equal_nocase( type.c_str(), "boolean" )
 		       // hl2 below
 		       || string_equal_nocase( type.c_str(), "angle" )
 		       || string_equal_nocase( type.c_str(), "origin" )
@@ -492,7 +495,8 @@ void EntityClassFGD_parseClass( Tokeniser& tokeniser, bool fixedsize, bool isBas
 
 			EntityClassAttribute attribute;
 			attribute.m_type = attributeType;
-			attribute.m_displayName = attribute.m_name = tokeniser.getToken();
+			attribute.m_displayName = key;
+			attribute.m_name = tokeniser.getToken();
 
 			const char* defaultSeparator = tokeniser.getToken();
 			if ( string_equal( defaultSeparator, ":" ) ) {
