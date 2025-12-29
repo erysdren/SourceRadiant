@@ -1090,7 +1090,7 @@ void EntityInspector_updateKeyValues(){
 	}
 
 	// walk through outputs and add
-	if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "outputs" ), "1" ) )
+	if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "no_outputs" ), "0" ) )
 	{
 		g_selectedOutputs.clear();
 		Entity_GetOutputs_Selected( g_selectedOutputs );
@@ -1439,7 +1439,7 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 
 		scroll->setWidget( containerWidget ); // widget's layout must be set b4 this!
 	}
-	if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "outputs" ), "1" ) )
+	if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "no_outputs" ), "0" ) )
 	{
 		// outputs list
 		auto *tree = g_entoutputs_store = new QTreeWidget;

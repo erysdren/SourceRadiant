@@ -829,13 +829,10 @@ void SurfaceInspector::BuildDialog(){
 				grid->addWidget( b, 3, 1 );
 				QObject::connect( b, &QAbstractButton::clicked, Patch_NaturalTexture );
 			}
-#ifdef SOURCERADIANT
-			grid->addWidget( patch_tesselation_create(), 3, 2, 1, 2 );
-#else
-			if ( g_pGameDescription->mGameType == "doom3" ){
+
+			if ( string_equal( g_pGameDescription->getKeyValue( "no_patch_tesselation" ), "0" ) ){
 				grid->addWidget( patch_tesselation_create(), 3, 2, 1, 2 );
 			}
-#endif
 		}
 		if ( !string_empty( g_pGameDescription->getKeyValue( "si_flags" ) ) )
 		{
