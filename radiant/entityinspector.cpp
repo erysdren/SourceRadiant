@@ -1078,9 +1078,6 @@ void EntityInspector_updateKeyValues(){
 	g_selectedDefaultKeyValues.clear();
 	Entity_GetKeyValues_Selected( g_selectedKeyValues, g_selectedDefaultKeyValues );
 
-	g_selectedOutputs.clear();
-	Entity_GetOutputs_Selected( g_selectedOutputs );
-
 	EntityInspector_setEntityClass( GlobalEntityClassManager().findOrInsert( keyvalues_valueforkey( g_selectedKeyValues, "classname" ), false ) );
 
 	EntityInspector_updateSpawnflags();
@@ -1093,18 +1090,23 @@ void EntityInspector_updateKeyValues(){
 	}
 
 	// walk through outputs and add
-	g_entoutputs_store->clear();
-	for ( auto* output : g_selectedOutputs )
+	if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "outputs" ), "1" ) )
 	{
-		QStringList list = QString(output->value().c_str()).split(output->separator());
-		list = QStringList{ output->key().c_str() } + list;
-		OutputTreeWidgetItem* item = new OutputTreeWidgetItem( list, output );
-		item->setFlags(item->flags() | Qt::ItemIsEditable);
-		g_entoutputs_store->addTopLevelItem( item );
+		g_selectedOutputs.clear();
+		Entity_GetOutputs_Selected( g_selectedOutputs );
+		g_entoutputs_store->clear();
+		for ( auto* output : g_selectedOutputs )
+		{
+			QStringList list = QString(output->value().c_str()).split(output->separator());
+			list = QStringList{ output->key().c_str() } + list;
+			OutputTreeWidgetItem* item = new OutputTreeWidgetItem( list, output );
+			item->setFlags(item->flags() | Qt::ItemIsEditable);
+			g_entoutputs_store->addTopLevelItem( item );
+		}
+		// resize to column contents
+		for ( int i = 0; i < 6; i++ )
+			g_entoutputs_store->resizeColumnToContents( i );
 	}
-	// resize to column contents
-	for ( int i = 0; i < 6; i++ )
-		g_entoutputs_store->resizeColumnToContents( i );
 
 	for ( EntityAttribute *attr : g_entityAttributes )
 	{
@@ -1437,6 +1439,7 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 
 		scroll->setWidget( containerWidget ); // widget's layout must be set b4 this!
 	}
+	if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "outputs" ), "1" ) )
 	{
 		// outputs list
 		auto *tree = g_entoutputs_store = new QTreeWidget;
