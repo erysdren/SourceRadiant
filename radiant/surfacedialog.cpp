@@ -72,8 +72,8 @@
 #include "commands.h"
 #include "stream/stringstream.h"
 #include "grid.h"
+#include "groupdialog.h"
 #include "textureentry.h"
-
 
 class Increment
 {
@@ -96,9 +96,11 @@ public:
 
 void SurfaceInspector_GridChange();
 
-class SurfaceInspector : public Dialog
+class SurfaceInspector
 {
-	void BuildDialog() override;
+	QWidget* m_window{};
+
+	QWidget* BuildDialog();
 
 	NonModalEntry *m_textureEntry;
 
@@ -131,12 +133,13 @@ public:
 		m_fitHorizontal = 1;
 	}
 
-	void constructWindow( QWidget* main_window ){
-		Create( main_window );
+	QWidget* constructWindow( QWidget* main_window ){
+		m_window = new QWidget;
 		AddGridChangeCallback( FreeCaller<void(), SurfaceInspector_GridChange>() );
+		return BuildDialog();
 	}
 	void destroyWindow(){
-		Destroy();
+		// Destroy();
 	}
 	bool visible() const {
 		return GetWidget()->isVisible();
@@ -145,6 +148,17 @@ public:
 		if ( visible() ) {
 			m_idleDraw.queueDraw();
 		}
+	}
+
+	QWidget* GetWidget(){
+		return m_window;
+	}
+	const QWidget* GetWidget() const {
+		return m_window;
+	}
+
+	void exportData(){
+
 	}
 
 	void Update();
@@ -169,6 +183,8 @@ public:
 	typedef MemberCaller<SurfaceInspector, void(), &SurfaceInspector::ApplyFlags> ApplyFlagsCaller;
 };
 
+QWidget* g_page_surface;
+
 namespace
 {
 SurfaceInspector* g_SurfaceInspector;
@@ -179,8 +195,13 @@ inline SurfaceInspector& getSurfaceInspector(){
 }
 }
 
-void SurfaceInspector_constructWindow( QWidget* main_window ){
-	getSurfaceInspector().constructWindow( main_window );
+void SurfaceInspector_toggleShow(){
+	GroupDialog_showPage( g_page_surface );
+	getSurfaceInspector().Update();
+}
+
+QWidget* SurfaceInspector_constructWindow( QWidget* main_window ){
+	return getSurfaceInspector().constructWindow( main_window );
 }
 void SurfaceInspector_destroyWindow(){
 	getSurfaceInspector().destroyWindow();
@@ -334,6 +355,7 @@ static void OnBtnMatchGrid(){
 	DoSnapTToGrid( hscale, vscale );
 }
 
+#if 0
 // DoSurface will always try to show the surface inspector
 // or update it because something new has been selected
 // Shamus: It does get called when the SI is hidden, but not when you select something new. ;-)
@@ -352,6 +374,7 @@ void SurfaceInspector_toggleShown(){
 		DoSurface();
 	}
 }
+#endif
 
 #include "camwindow.h"
 
@@ -633,10 +656,10 @@ g_pressedKeysFilter;
 // =============================================================================
 // SurfaceInspector class
 
-void SurfaceInspector::BuildDialog(){
+QWidget* SurfaceInspector::BuildDialog(){
 	GetWidget()->setWindowTitle( "Surface Inspector" );
 
-	g_guiSettings.addWindow( GetWidget(), "SurfaceInspector/geometry", 99, 99 );
+	// g_guiSettings.addWindow( GetWidget(), "SurfaceInspector/geometry", 99, 99 );
 
 	GetWidget()->installEventFilter( &g_pressedKeysFilter );
 
@@ -789,12 +812,12 @@ void SurfaceInspector::BuildDialog(){
 			{
 				auto *spin = new DoubleSpinBox( 0, 1 << 9, 1, 3, 1 );
 				grid->addWidget( spin, 1, 2 );
-				AddDialogData( *spin, m_fitHorizontal );
+				// AddDialogData( *spin, m_fitHorizontal );
 			}
 			{
 				auto *spin = new DoubleSpinBox( 0, 1 << 9, 1, 3, 1 );
 				grid->addWidget( spin, 1, 3 );
-				AddDialogData( *spin, m_fitVertical );
+				// AddDialogData( *spin, m_fitVertical );
 			}
 			{
 				grid->addWidget( new QLabel( "Project:" ), 2, 0 );
@@ -848,11 +871,13 @@ void SurfaceInspector::BuildDialog(){
 				box->addWidget( container );
 				auto *grid = new QGridLayout( container );
 
-				// QObject::connect( frame, &QGroupBox::clicked, container, &QWidget::setVisible );
+				QObject::connect( frame, &QGroupBox::clicked, container, &QWidget::setVisible );
+#if 0
 				QObject::connect( frame, &QGroupBox::clicked, [container, wnd = GetWidget()]( bool checked ){
 					container->setVisible( checked );
 					QTimer::singleShot( 0, [wnd](){ wnd->adjustSize(); wnd->resize( 99, 99 ); } );
 				} );
+#endif
 				container->setVisible( false );
 				{
 					QCheckBox** p = m_surfaceFlags;
@@ -881,10 +906,13 @@ void SurfaceInspector::BuildDialog(){
 				box->addWidget( container );
 				auto *grid = new QGridLayout( container );
 
+				QObject::connect( frame, &QGroupBox::clicked, container, &QWidget::setVisible );
+#if 0
 				QObject::connect( frame, &QGroupBox::clicked, [container, wnd = GetWidget()]( bool checked ){
 					container->setVisible( checked );
 					QTimer::singleShot( 0, [wnd](){ wnd->adjustSize(); wnd->resize( 99, 99 ); } );
 				} );
+#endif
 				container->setVisible( false );
 				{
 					QCheckBox** p = m_contentFlags;
@@ -923,6 +951,8 @@ void SurfaceInspector::BuildDialog(){
 		}
 		vbox->addStretch( 1 );
 	}
+
+	return GetWidget();
 }
 
 /*
@@ -1758,7 +1788,7 @@ void SurfaceInspector_registerCommands(){
 	GlobalCommands_insert( "TextureProjectAxial", makeCallbackF( SurfaceInspector_ProjectTexture_eProjectAxial ) );
 	GlobalCommands_insert( "TextureProjectOrtho", makeCallbackF( SurfaceInspector_ProjectTexture_eProjectOrtho ) );
 	GlobalCommands_insert( "TextureProjectCam", makeCallbackF( SurfaceInspector_ProjectTexture_eProjectCam ) );
-	GlobalCommands_insert( "SurfaceInspector", makeCallbackF( SurfaceInspector_toggleShown ), QKeySequence( "S" ) );
+	GlobalCommands_insert( "SurfaceInspector", makeCallbackF( SurfaceInspector_toggleShow ), QKeySequence( "S" ) );
 
 //	GlobalCommands_insert( "FaceCopyTexture", makeCallbackF( SelectedFaces_copyTexture ) );
 //	GlobalCommands_insert( "FacePasteTexture", makeCallbackF( SelectedFaces_pasteTexture ) );

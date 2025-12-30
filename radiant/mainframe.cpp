@@ -1709,6 +1709,8 @@ void MainFrame::Create(){
 		g_page_textures = GroupDialog_addPage( "Textures", TextureBrowser_constructWindow( GroupDialog_getWindow() ), TextureBrowserExportTitleCaller() );
 	}
 
+	g_page_surface = GroupDialog_addPage( "Surface", SurfaceInspector_constructWindow( GroupDialog_getWindow() ), RawStringExportCaller( "Surface" ) );
+
 	g_page_models = GroupDialog_addPage( "Models", ModelBrowser_constructWindow( GroupDialog_getWindow() ), RawStringExportCaller( "Models" ) );
 
 	g_page_layers = GroupDialog_addPage( "Layers", LayersBrowser_constructWindow( GroupDialog_getWindow() ), RawStringExportCaller( "Layers" ) );
