@@ -135,8 +135,8 @@ typedef std::list< std::pair<CopiedString, CopiedString> > KeyValues;
 NodeSmartReference g_nullNode( NewNullNode() );
 
 
-NodeSmartReference Entity_create( EntityCreator& entityTable, EntityClass* entityClass, const KeyValues& keyValues ){
-	scene::Node& entity( entityTable.createEntity( entityClass ) );
+NodeSmartReference Entity_create( EntityCreator& entityTable, EntityClass* entityClass, const KeyValues& keyValues, bool has_brushes ){
+	scene::Node& entity( entityTable.createEntity( entityClass, has_brushes ) );
 	for ( const auto& [ key, value ] : keyValues )
 	{
 		Node_getEntity( entity )->setKeyValue( key.c_str(), value.c_str() );
@@ -153,7 +153,7 @@ NodeSmartReference Entity_parseTokens( Tokeniser& tokeniser, EntityCreator& enti
 	while ( true )
 	{
 		tokeniser.nextLine();
-		const char* token;
+		const char* token = "(no token)";
 		if ( !layersParser.read_layer( tokeniser ) || !( token = tokeniser.getToken() ) ) {
 			Tokeniser_unexpectedError( tokeniser, token, "#entity-token" );
 			return g_nullNode;
@@ -161,14 +161,14 @@ NodeSmartReference Entity_parseTokens( Tokeniser& tokeniser, EntityCreator& enti
 		if ( !strcmp( token, "}" ) ) { // end entity
 			if ( entity == g_nullNode ) {
 				// entity does not have brushes
-				entity = Entity_create( entityTable, GlobalEntityClassManager().findOrInsert( classname, false ), keyValues );
+				entity = Entity_create( entityTable, GlobalEntityClassManager().findOrInsert( classname, false ), keyValues, false );
 			}
 			return entity;
 		}
 		else if ( !strcmp( token, "{" ) ) { // begin primitive
 			if ( entity == g_nullNode ) {
 				// entity has brushes
-				entity = Entity_create( entityTable, GlobalEntityClassManager().findOrInsert( classname, true ), keyValues );
+				entity = Entity_create( entityTable, GlobalEntityClassManager().findOrInsert( classname, true ), keyValues, true );
 			}
 
 			tokeniser.nextLine();

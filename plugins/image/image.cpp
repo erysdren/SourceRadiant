@@ -24,14 +24,9 @@
 #include "ifilesystem.h"
 #include "iimage.h"
 
-#include "jpeg.h"
 #include "tga.h"
 #include "bmp.h"
 #include "pcx.h"
-#include "dds.h"
-#include "ktx.h"
-#include "crn.h"
-#include "webp.h"
 
 
 #include "modulesystem/singletonmodule.h"
@@ -60,6 +55,8 @@ typedef SingletonModule<ImageTGAAPI> ImageTGAModule;
 ImageTGAModule g_ImageTGAModule;
 
 
+#ifndef NO_JPEG
+#include "jpeg.h"
 class ImageJPGAPI
 {
 	_QERPlugImageTable m_imagejpg;
@@ -78,6 +75,7 @@ public:
 typedef SingletonModule<ImageJPGAPI, ImageDependencies> ImageJPGModule;
 
 ImageJPGModule g_ImageJPGModule;
+#endif
 
 
 class ImageBMPAPI
@@ -120,6 +118,8 @@ typedef SingletonModule<ImagePCXAPI, ImageDependencies> ImagePCXModule;
 ImagePCXModule g_ImagePCXModule;
 
 
+#ifndef NO_DDS
+#include "dds.h"
 class ImageDDSAPI
 {
 	_QERPlugImageTable m_imagedds;
@@ -138,8 +138,10 @@ public:
 typedef SingletonModule<ImageDDSAPI, ImageDependencies> ImageDDSModule;
 
 ImageDDSModule g_ImageDDSModule;
+#endif
 
-
+#ifndef NO_KTX
+#include "ktx.h"
 class ImageKTXAPI
 {
 	_QERPlugImageTable m_imagektx;
@@ -158,8 +160,11 @@ public:
 typedef SingletonModule<ImageKTXAPI, ImageDependencies> ImageKTXModule;
 
 ImageKTXModule g_ImageKTXModule;
+#endif
 
 
+#ifndef NO_CRN
+#include "crn.h"
 class ImageCRNAPI
 {
 	_QERPlugImageTable m_imagecrn;
@@ -178,8 +183,10 @@ public:
 typedef SingletonModule<ImageCRNAPI, ImageDependencies> ImageCRNModule;
 
 ImageCRNModule g_ImageCRNModule;
+#endif
 
-
+#ifndef NO_WEBP
+#include "webp.h"
 class ImageWebpAPI
 {
 	_QERPlugImageTable m_imagewebp;
@@ -198,17 +205,28 @@ public:
 typedef SingletonModule<ImageWebpAPI, ImageDependencies> ImageWebpModule;
 
 ImageWebpModule g_ImageWebpModule;
+#endif
 
 
 extern "C" void RADIANT_DLLEXPORT Radiant_RegisterModules( ModuleServer& server ){
 	initialiseModule( server );
 
 	g_ImageTGAModule.selfRegister();
+#ifndef NO_JPEG
 	g_ImageJPGModule.selfRegister();
+#endif
 	g_ImageBMPModule.selfRegister();
 	g_ImagePCXModule.selfRegister();
+#ifndef NO_DDS
 	g_ImageDDSModule.selfRegister();
+#endif
+#ifndef NO_KTX
 	g_ImageKTXModule.selfRegister();
+#endif
+#ifndef NO_CRN
 	g_ImageCRNModule.selfRegister();
+#endif
+#ifndef NO_WEBP
 	g_ImageWebpModule.selfRegister();
+#endif
 }

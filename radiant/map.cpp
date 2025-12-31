@@ -537,7 +537,7 @@ void Node_insertChildFirst( scene::Node& parent, scene::Node& child ){
 }
 
 scene::Node& createWorldspawn(){
-	NodeSmartReference worldspawn( GlobalEntityCreator().createEntity( GlobalEntityClassManager().findOrInsert( "worldspawn", true ) ) );
+	NodeSmartReference worldspawn( GlobalEntityCreator().createEntity( GlobalEntityClassManager().findOrInsert( "worldspawn", true ), true ) );
 	Node_insertChildFirst( GlobalSceneGraph().root(), worldspawn );
 	return worldspawn;
 }
@@ -1334,7 +1334,7 @@ public:
 			Node_getTraversable( Map_FindOrInsertWorldspawn( g_map ) )->insert( NodeSmartReference( *brush ) );
 		}
 
-		m_startpoint = &GlobalEntityCreator().createEntity( GlobalEntityClassManager().findOrInsert( "info_player_start", false ) );
+		m_startpoint = &GlobalEntityCreator().createEntity( GlobalEntityClassManager().findOrInsert( "info_player_start", false ), false );
 
 		/* adjust temp box: space may be too small, also help with lights and flat primitives */
 		const Vector3 min( g_region_mins - Vector3( 256, 256, 8 ) ), max( g_region_maxs + Vector3( 256, 256, 512 ) );

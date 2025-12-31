@@ -131,6 +131,11 @@ public:
 
 const char EXCLUDE_NAME[] = "misc_model";
 
+
+inline void read_aabb( AABB& aabb, const EntityClass& eclass ){
+	aabb = aabb_for_minmax( eclass.mins, eclass.maxs );
+}
+
 class MiscModel :
 	public Snappable
 {
@@ -157,7 +162,15 @@ class MiscModel :
 	Callback<void()> m_transformChanged;
 	Callback<void()> m_evaluateTransform;
 
+	AABB m_aabb_local;
+
+	RenderableArrow m_arrow;
+	RenderableSolidAABB m_aabb_solid;
+	RenderableWireframeAABB m_aabb_wire;
+
 	void construct(){
+		read_aabb( m_aabb_local, m_entity.getEntityClass() );
+
 		m_keyObservers.insert( "classname", ClassnameFilter::ClassnameChangedCaller( m_filter ) );
 		m_keyObservers.insert( Static<KeyIsName>::instance().m_nameKey, NamedEntity::IdentifierChangedCaller( m_named ) );
 		m_keyObservers.insert( m_entity.getEntityClass().miscmodel_key(), SingletonModel::ModelChangedCaller( m_model ) );
@@ -217,6 +230,9 @@ public:
 		m_filter( m_entity, node ),
 		m_named( m_entity ),
 		m_nameKeys( m_entity ),
+		m_arrow( m_aabb_local.origin, m_angles ),
+		m_aabb_solid( m_aabb_local ),
+		m_aabb_wire( m_aabb_local ),
 		m_renderName( m_named, g_vector3_identity, EXCLUDE_NAME ),
 		m_transformChanged( transformChanged ),
 		m_evaluateTransform( evaluateTransform ){
@@ -234,6 +250,9 @@ public:
 		m_filter( m_entity, node ),
 		m_named( m_entity ),
 		m_nameKeys( m_entity ),
+		m_arrow( m_aabb_local.origin, m_angles ),
+		m_aabb_solid( m_aabb_local ),
+		m_aabb_wire( m_aabb_local ),
 		m_renderName( m_named, g_vector3_identity, EXCLUDE_NAME ),
 		m_transformChanged( transformChanged ),
 		m_evaluateTransform( evaluateTransform ){
@@ -295,18 +314,28 @@ public:
 		m_model.detach( observer );
 	}
 
-	void renderSolid( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld, bool selected ) const {
-		if ( selected ) {
-			m_renderOrigin.render( renderer, volume, localToWorld );
+	void renderArrow( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld ) const {
+		if ( g_showAngles ) {
+			renderer.addRenderable( m_arrow, localToWorld );
 		}
-		renderer.SetState( m_entity.getEntityClass().m_state_wire, Renderer::eWireframeOnly );
-		if ( m_renderName.excluded_not()
-		  && ( selected || ( g_showNames && ( volume.fill() || aabb_fits_view( AABB( Vector3( 0, 0, 0 ), Vector3( 32, 32, 32 ) ), volume.GetModelview(), volume.GetViewport(), g_showNamesRatio ) ) ) ) ) {
+	}
+	void renderSolid( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld, bool selected ) const {
+		// TODO: can't render wireframes here? wtf
+		renderer.SetState( m_entity.getEntityClass().m_state_fill, Renderer::eFullMaterials );
+
+		renderer.addRenderable( m_aabb_solid, localToWorld );
+		renderArrow( renderer, volume, localToWorld );
+		if ( g_showNames || selected ) {
 			m_renderName.render( renderer, volume, localToWorld, selected );
 		}
 	}
 	void renderWireframe( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld, bool selected ) const {
-		renderSolid( renderer, volume, localToWorld, selected );
+		renderer.SetState( m_entity.getEntityClass().m_state_wire, Renderer::eWireframeOnly );
+		renderer.addRenderable( m_aabb_wire, localToWorld );
+		renderArrow( renderer, volume, localToWorld );
+		if ( selected || ( g_showNames && aabb_fits_view( m_aabb_local, volume.GetModelview(), volume.GetViewport(), g_showNamesRatio ) ) ) {
+			m_renderName.render( renderer, volume, localToWorld, selected );
+		}
 	}
 
 	void translate( const Vector3& translation ){

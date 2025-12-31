@@ -59,7 +59,9 @@ public:
 
 	void modelChanged( const char* value ){
 		m_resource.detach( *this );
-		m_resource.setName( StringOutputStream( string_length( value ) + 1 )( PathCleaned( value ) ) );
+		// Paril TODO: this is hardcoded for SiN atm
+		std::string temp = std::string("models/") + value;
+		m_resource.setName( StringOutputStream( temp.size() + 1 )( PathCleaned( temp.c_str() ) ) );
 		m_resource.attach( *this );
 		m_modelChanged();
 	}
@@ -70,6 +72,9 @@ public:
 	}
 	scene::Node* getNode() const {
 		return m_node;
+	}
+	const Resource* getResource() const {
+		return m_resource.get();
 	}
 };
 
@@ -100,5 +105,13 @@ public:
 
 	scene::Node* getNode() const {
 		return m_model.getNode();
+	}
+
+	const Resource* getResource() const {
+		return m_model.getResource();
+	}
+
+	const char *getModelName() const {
+		return m_model.getName();
 	}
 };

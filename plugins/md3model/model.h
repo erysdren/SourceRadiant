@@ -222,6 +222,8 @@ class Model :
 	surfaces_t m_surfaces;
 
 	AABB m_aabb_local;
+	bool m_isnull = false;
+
 public:
 	Callback<void()> m_lightsChanged;
 
@@ -271,6 +273,11 @@ public:
 				surf->testSelect( selector, test, localToWorld );
 			}
 		}
+	}
+
+	bool isNull() const
+	{
+		return m_isnull;
 	}
 };
 
@@ -518,37 +525,6 @@ inline void Surface_constructQuad( Surface& surface, const Vector3& a, const Vec
 
 inline void Model_constructNull( Model& model ){
 	Surface& surface = model.newSurface();
-
-	AABB aabb( Vector3( 0, 0, 0 ), Vector3( 8, 8, 8 ) );
-
-	const std::array<Vector3, 8> points = aabb_corners( aabb );
-
-	surface.vertices().reserve( 24 );
-
-	Surface_constructQuad( surface, points[2], points[1], points[5], points[6], aabb_normals[0] );
-	Surface_constructQuad( surface, points[1], points[0], points[4], points[5], aabb_normals[1] );
-	Surface_constructQuad( surface, points[0], points[1], points[2], points[3], aabb_normals[2] );
-	Surface_constructQuad( surface, points[0], points[3], points[7], points[4], aabb_normals[3] );
-	Surface_constructQuad( surface, points[3], points[2], points[6], points[7], aabb_normals[4] );
-	Surface_constructQuad( surface, points[7], points[6], points[5], points[4], aabb_normals[5] );
-
-	surface.indices().reserve( 36 );
-
-	RenderIndex indices[36] = {
-		 0,  1,  2,  0,  2,  3,
-		 4,  5,  6,  4,  6,  7,
-		 8,  9, 10,  8, 10, 11,
-		12, 13, 14, 12, 14, 15,
-		16, 17, 18, 16, 18, 19,
-		20, 21, 22, 20, 22, 23,
-	};
-
-	for ( RenderIndex* i = indices; i != indices + ( sizeof( indices ) / sizeof( RenderIndex ) ); ++i )
-	{
-		surface.indices().insert( *i );
-	}
-
-	surface.setShader( "nomodel" );
 
 	surface.updateAABB();
 

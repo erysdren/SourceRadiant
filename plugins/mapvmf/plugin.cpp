@@ -143,7 +143,7 @@ public:
 					globalWarningStream() << "no classname in entity" << '\n';
 					continue;
 				}
-				scene::Node& entity( entityTable.createEntity( entityClass ) );
+				scene::Node& entity( entityTable.createEntity( entityClass, hasSolids ) );
 				for ( auto e : elem ) {
 					if (string_equal_nocase(e.getKey().data(), "id")) {
 						// FIXME: do we need to keep track of this?

@@ -733,7 +733,11 @@ public:
 		m_resource->detach( observer );
 	}
 
-	Resource* get(){
+	Resource* get() {
+		return m_resource;
+	}
+
+	const Resource* get() const {
 		return m_resource;
 	}
 };

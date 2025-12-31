@@ -398,6 +398,15 @@ add_module(imagepng
 )
 target_link_libraries(imagepng PRIVATE PNG::PNG)
 
+add_module(image
+	SOURCES
+		${PROJECT_SOURCE_DIR}/plugins/image/bmp.cpp
+		${PROJECT_SOURCE_DIR}/plugins/image/image.cpp
+		${PROJECT_SOURCE_DIR}/plugins/image/pcx.cpp
+		${PROJECT_SOURCE_DIR}/plugins/image/tga.cpp
+)
+target_compile_definitions(image PRIVATE NO_WEBP NO_KTX NO_JPEG NO_DDS NO_CRN)
+
 add_module(imageswl
 	SOURCES
 		${PROJECT_SOURCE_DIR}/plugins/imageswl/imageswl.cpp
@@ -433,6 +442,24 @@ add_module(vfspk3
 )
 target_link_libraries(vfspk3 PRIVATE LibXml2::LibXml2)
 target_link_libraries(vfspk3 PRIVATE filematch)
+
+add_module(md3model
+	SOURCES
+		${PROJECT_SOURCE_DIR}/plugins/md3model/mdc.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/mdl.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/mdlformat.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/mdlimage.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/mdlnormals.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/md2.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/md3.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/md3normals.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/md5.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/model.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/plugin.cpp
+		${PROJECT_SOURCE_DIR}/plugins/md3model/sin.cpp
+)
+
+target_link_libraries(md3model PRIVATE Qt6::Core Qt6::OpenGL)
 
 # plugins
 

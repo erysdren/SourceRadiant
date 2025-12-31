@@ -41,6 +41,7 @@
 #include "mdc.h"
 #include "mdlimage.h"
 #include "md5.h"
+#include "sin.h"
 
 
 class MD3ModelLoader : public ModelLoader
@@ -216,6 +217,32 @@ typedef SingletonModule<ModelMD5API, ModelMD5Dependencies> ModelMD5Module;
 
 ModelMD5Module g_ModelMD5Module;
 
+class SiNModelLoader : public ModelLoader
+{
+public:
+	scene::Node& loadModel( ArchiveFile& file ) override {
+		return loadSiNModel( file );
+	}
+};
+
+class ModelSiNAPI : public TypeSystemRef
+{
+	SiNModelLoader m_modelsin;
+public:
+	typedef ModelLoader Type;
+	STRING_CONSTANT( Name, "def" );
+
+	ModelSiNAPI(){
+		GlobalFiletypesModule::getTable().addType( Type::Name, Name, filetype_t( "SiN models", "*.def" ) );
+	}
+	ModelLoader* getTable(){
+		return &m_modelsin;
+	}
+};
+
+typedef SingletonModule<ModelSiNAPI, ModelMD5Dependencies> ModelSiNModule;
+
+ModelSiNModule g_ModelSiNModule;
 
 extern "C" void RADIANT_DLLEXPORT Radiant_RegisterModules( ModuleServer& server ){
 	initialiseModule( server );
@@ -226,4 +253,5 @@ extern "C" void RADIANT_DLLEXPORT Radiant_RegisterModules( ModuleServer& server 
 	g_ModelMDCModule.selfRegister();
 	g_ImageMDLModule.selfRegister();
 	g_ModelMD5Module.selfRegister();
+	g_ModelSiNModule.selfRegister();
 }

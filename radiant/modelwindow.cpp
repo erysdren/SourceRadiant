@@ -1016,7 +1016,7 @@ protected:
 			// otherwise search for entityClass->miscmodel_is
 			// otherwise go with GlobalEntityClassManager().findOrInsert( "misc_model", false );
 			EntityClass* entityClass = GlobalEntityClassManager().findOrInsert( "misc_model", false );
-			NodeSmartReference node( GlobalEntityCreator().createEntity( entityClass ) );
+			NodeSmartReference node( GlobalEntityCreator().createEntity( entityClass, false ) );
 
 			Node_getTraversable( GlobalSceneGraph().root() )->insert( node );
 

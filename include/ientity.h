@@ -202,7 +202,7 @@ public:
 	INTEGER_CONSTANT( Version, 2 );
 	STRING_CONSTANT( Name, "entity" );
 
-	virtual scene::Node& createEntity( EntityClass* eclass ) = 0;
+	virtual scene::Node& createEntity( EntityClass* eclass, bool has_brushes ) = 0;
 
 	typedef void ( *KeyValueChangedFunc )();
 	virtual void setKeyValueChangedFunc( KeyValueChangedFunc func ) = 0;

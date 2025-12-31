@@ -154,12 +154,12 @@ public:
 	}
 	void pushElement( const XMLElement& element ) override {
 		ASSERT_MESSAGE( string_equal( element.name(), "entity" ), PARSE_ERROR );
-		constructor( node(), NodeSmartReference( m_entityTable.createEntity( GlobalEntityClassManager().findOrInsert( "", true ) ) ) );
+		constructor( node(), NodeSmartReference( m_entityTable.createEntity( GlobalEntityClassManager().findOrInsert( "", true ), true ) ) );
 		constructor( primitive(), makeReference( node().get() ) );
 	}
 	void popElement( const char* name ) override {
 		ASSERT_MESSAGE( string_equal( name, "entity" ), PARSE_ERROR );
-		NodeSmartReference entity( m_entityTable.createEntity( GlobalEntityClassManager().findOrInsert( Node_getEntity( node() )->getClassName(), node_is_group( node() ) ) ) );
+		NodeSmartReference entity( m_entityTable.createEntity( GlobalEntityClassManager().findOrInsert( Node_getEntity( node() )->getClassName(), node_is_group( node() ) ), node_is_group( node() ) ) );
 
 		{
 			EntityCopyingVisitor visitor( *Node_getEntity( entity ) );

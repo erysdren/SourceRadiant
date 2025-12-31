@@ -104,7 +104,7 @@ public:
 //						Scene_BrushSetShader_Selected( GlobalSceneGraph(), GetCommonShader( "trigger" ).c_str() );
 //					}
 
-					NodeSmartReference node( GlobalEntityCreator().createEntity( entityClass ) );
+					NodeSmartReference node( GlobalEntityCreator().createEntity( entityClass, true ) );
 					Node_getTraversable( GlobalSceneGraph().root() )->insert( node );
 
 					scene::Path entitypath( makeReference( GlobalSceneGraph().root() ) );
@@ -130,7 +130,7 @@ public:
 			}
 
 			EntityClass* eclass = GlobalEntityClassManager().findOrInsert( m_classname, node_is_group( path.top() ) );
-			NodeSmartReference node( GlobalEntityCreator().createEntity( eclass ) );
+			NodeSmartReference node( GlobalEntityCreator().createEntity( eclass, node_is_group( path.top() ) ) );
 
 			if( entity->isContainer() && eclass->fixedsize ){ /* group entity to point one */
 				char value[64];
@@ -419,7 +419,7 @@ void Entity_createFromSelection( const char* name, const Vector3& origin ){
 	AABB workzone( aabb_for_minmax( Select_getWorkZone().d_work_min, Select_getWorkZone().d_work_max ) );
 
 
-	NodeSmartReference node( GlobalEntityCreator().createEntity( entityClass ) );
+	NodeSmartReference node( GlobalEntityCreator().createEntity( entityClass, true ) );
 
 	Node_getTraversable( GlobalSceneGraph().root() )->insert( node );
 

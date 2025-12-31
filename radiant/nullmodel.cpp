@@ -62,11 +62,11 @@ public:
 	}
 
 	void renderSolid( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld ) const {
-		renderer.SetState( m_state, Renderer::eFullMaterials );
-		renderer.addRenderable( m_aabb_solid, localToWorld );
+		//renderer.SetState( m_state, Renderer::eFullMaterials );
+		//renderer.addRenderable( m_aabb_solid, localToWorld );
 	}
 	void renderWireframe( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld ) const {
-		renderer.addRenderable( m_aabb_wire, localToWorld );
+		//renderer.addRenderable( m_aabb_wire, localToWorld );
 	}
 
 	void testSelect( Selector& selector, SelectionTest& test, const Matrix4& localToWorld ){

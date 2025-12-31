@@ -50,15 +50,15 @@
 
 EGameType g_gameType;
 
-inline scene::Node& entity_for_eclass( EntityClass* eclass ){
-	if ( eclass->miscmodel_is ) {
+inline scene::Node& entity_for_eclass( EntityClass* eclass, bool has_brushes ){
+	if ( !has_brushes && (eclass->miscmodel_is || !string_empty(eclass->miscmodel_key())) ) {
 		return New_MiscModel( eclass );
 	}
 	else if ( classname_equal( eclass->name(), "light" )
 	       || classname_equal( eclass->name(), "lightJunior" ) ) {
 		return New_Light( eclass );
 	}
-	if ( !eclass->fixedsize ) {
+	if ( !eclass->fixedsize || has_brushes ) {
 		if ( g_gameType == eGameTypeDoom3 ) {
 			return New_Doom3Group( eclass );
 		}
@@ -85,8 +85,8 @@ inline Namespaced* Node_getNamespaced( scene::Node& node ){
 	return NodeTypeCast<Namespaced>::cast( node );
 }
 
-inline scene::Node& node_for_eclass( EntityClass* eclass ){
-	scene::Node& node = entity_for_eclass( eclass );
+inline scene::Node& node_for_eclass( EntityClass* eclass, bool has_brushes ){
+	scene::Node& node = entity_for_eclass( eclass, has_brushes );
 	Node_getEntity( node )->setKeyValue( "classname", eclass->name() );
 
 	if ( g_gameType == eGameTypeDoom3
@@ -150,8 +150,8 @@ inline Entity* ScenePath_getEntity( const scene::Path& path ){
 class Quake3EntityCreator : public EntityCreator
 {
 public:
-	scene::Node& createEntity( EntityClass* eclass ) override {
-		return node_for_eclass( eclass );
+	scene::Node& createEntity( EntityClass* eclass, bool has_brushes ) override {
+		return node_for_eclass( eclass, has_brushes );
 	}
 	void setKeyValueChangedFunc( KeyValueChangedFunc func ) override {
 		EntityKeyValues::setKeyValueChangedFunc( func );
