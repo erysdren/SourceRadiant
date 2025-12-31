@@ -320,10 +320,19 @@ public:
 		}
 	}
 	void renderSolid( Renderer& renderer, const VolumeTest& volume, const Matrix4& localToWorld, bool selected ) const {
-		// TODO: can't render wireframes here? wtf
-		renderer.SetState( m_entity.getEntityClass().m_state_fill, Renderer::eFullMaterials );
 
-		renderer.addRenderable( m_aabb_solid, localToWorld );
+		if (string_empty(m_model.getModelName()))
+		{
+			renderer.SetState( m_entity.getEntityClass().m_state_fill, Renderer::eFullMaterials );
+
+			renderer.addRenderable( m_aabb_solid, localToWorld );
+		}
+		else
+		{
+			renderer.SetState( m_entity.getEntityClass().m_state_wire, Renderer::eFullMaterials );
+
+			renderer.addRenderable( m_aabb_wire, localToWorld );
+		}
 		renderArrow( renderer, volume, localToWorld );
 		if ( g_showNames || selected ) {
 			m_renderName.render( renderer, volume, localToWorld, selected );
