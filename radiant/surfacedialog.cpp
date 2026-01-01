@@ -43,6 +43,8 @@
 #include <QToolButton>
 #include <QGroupBox>
 #include <QCheckBox>
+#include <QButtonGroup>
+#include <QComboBox>
 
 #include "signal/isignal.h"
 #include "math/vector.h"
@@ -75,6 +77,151 @@
 #include "groupdialog.h"
 #include "textureentry.h"
 
+//======
+// erysdren: copied from dialog.cpp
+namespace {
+template<
+    typename Type_,
+    typename Other_,
+    void( *Import ) ( Type_&, Other_ ),
+    void( *Export ) ( Type_&, const Callback<void(Other_)>& )
+    >
+class ImportExport
+{
+public:
+	typedef Type_ Type;
+	typedef Other_ Other;
+
+	typedef ReferenceCaller<Type, void(Other), Import> ImportCaller;
+	typedef ReferenceCaller<Type, void(const Callback<void(Other)>&), Export> ExportCaller;
+};
+
+typedef ImportExport<bool, bool, BoolImport, BoolExport> BoolImportExport;
+typedef ImportExport<int, int, IntImport, IntExport> IntImportExport;
+typedef ImportExport<std::size_t, std::size_t, SizeImport, SizeExport> SizeImportExport;
+typedef ImportExport<float, float, FloatImport, FloatExport> FloatImportExport;
+typedef ImportExport<CopiedString, const char*, StringImport, StringExport> StringImportExport;
+
+void BoolToggleImport( QCheckBox& widget, bool value ){
+	widget.setChecked( value );
+}
+void BoolToggleExport( QCheckBox& widget, const BoolImportCallback& importCallback ){
+	importCallback( widget.isChecked() );
+}
+typedef ImportExport<QCheckBox, bool, BoolToggleImport, BoolToggleExport> BoolToggleImportExport;
+
+
+void IntRadioImport( QButtonGroup& widget, int index ){
+	widget.button( index )->setChecked( true );
+}
+void IntRadioExport( QButtonGroup& widget, const IntImportCallback& importCallback ){
+	importCallback( widget.checkedId() );
+}
+typedef ImportExport<QButtonGroup, int, IntRadioImport, IntRadioExport> IntRadioImportExport;
+
+
+void TextEntryImport( QLineEdit& widget, const char* text ){
+	widget.setText( text );
+}
+void TextEntryExport( QLineEdit& widget, const StringImportCallback& importCallback ){
+	importCallback( widget.text().toLatin1().constData() );
+}
+typedef ImportExport<QLineEdit, const char*, TextEntryImport, TextEntryExport> TextEntryImportExport;
+
+
+void FloatSpinnerImport( QDoubleSpinBox& widget, float value ){
+	widget.setValue( value );
+}
+void FloatSpinnerExport( QDoubleSpinBox& widget, const FloatImportCallback& importCallback ){
+	importCallback( widget.value() );
+}
+typedef ImportExport<QDoubleSpinBox, float, FloatSpinnerImport, FloatSpinnerExport> FloatSpinnerImportExport;
+
+
+void IntSpinnerImport( QSpinBox& widget, int value ){
+	widget.setValue( value );
+}
+void IntSpinnerExport( QSpinBox& widget, const IntImportCallback& importCallback ){
+	importCallback( widget.value() );
+}
+typedef ImportExport<QSpinBox, int, IntSpinnerImport, IntSpinnerExport> IntSpinnerImportExport;
+
+
+void IntSliderImport( QSlider& widget, int value ){
+	widget.setValue( value );
+}
+void IntSliderExport( QSlider& widget, const IntImportCallback& importCallback ){
+	importCallback( widget.value() );
+}
+typedef ImportExport<QSlider, int, IntSliderImport, IntSliderExport> IntSliderImportExport;
+
+// QSlider operates on int values only, so using 10x range for floats
+void FloatSliderImport( QSlider& widget, float value ){
+	widget.setValue( value * 10.0 );
+}
+void FloatSliderExport( QSlider& widget, const FloatImportCallback& importCallback ){
+	importCallback( widget.value() / 10.0 );
+}
+typedef ImportExport<QSlider, float, FloatSliderImport, FloatSliderExport> FloatSliderImportExport;
+
+
+void IntComboImport( QComboBox& widget, int value ){
+	widget.setCurrentIndex( value );
+}
+void IntComboExport( QComboBox& widget, const IntImportCallback& importCallback ){
+	importCallback( widget.currentIndex() );
+}
+typedef ImportExport<QComboBox, int, IntComboImport, IntComboExport> IntComboImportExport;
+
+template<typename FirstArgument>
+class CallbackDialogData final : public DLG_DATA
+{
+public:
+	typedef Callback<void(FirstArgument)> ImportCallback;
+	typedef Callback<void(const ImportCallback&)> ExportCallback;
+
+private:
+	ImportCallback m_importWidget;
+	ExportCallback m_exportWidget;
+	ImportCallback m_importViewer;
+	ExportCallback m_exportViewer;
+
+public:
+	CallbackDialogData( const ImportCallback& importWidget, const ExportCallback& exportWidget, const ImportCallback& importViewer, const ExportCallback& exportViewer )
+		: m_importWidget( importWidget ), m_exportWidget( exportWidget ), m_importViewer( importViewer ), m_exportViewer( exportViewer ){
+	}
+	void release() override{
+		delete this;
+	}
+	void importData() const override {
+		m_exportViewer( m_importWidget );
+	}
+	void exportData() const override {
+		m_exportWidget( m_importViewer );
+	}
+};
+
+template<typename Widget, typename Viewer>
+class AddData
+{
+	DialogDataList& m_data;
+public:
+	AddData( DialogDataList& data ) : m_data( data ){
+	}
+	void apply( typename Widget::Type& widget, typename Viewer::Type& viewer ) const {
+		m_data.push_back(
+		    new CallbackDialogData<typename Widget::Other>(
+		        typename Widget::ImportCaller( widget ),
+		        typename Widget::ExportCaller( widget ),
+		        typename Viewer::ImportCaller( viewer ),
+		        typename Viewer::ExportCaller( viewer )
+		    )
+		);
+	}
+};
+}
+//======
+
 class Increment
 {
 	float& m_f;
@@ -99,6 +246,8 @@ void SurfaceInspector_GridChange();
 class SurfaceInspector
 {
 	QWidget* m_window{};
+
+	DialogDataList m_data;
 
 	QWidget* BuildDialog();
 
@@ -133,6 +282,13 @@ public:
 		m_fitHorizontal = 1;
 	}
 
+	~SurfaceInspector(){
+		for ( auto *data : m_data )
+		{
+			data->release();
+		}
+	}
+
 	QWidget* constructWindow( QWidget* main_window ){
 		m_window = new QWidget;
 		AddGridChangeCallback( FreeCaller<void(), SurfaceInspector_GridChange>() );
@@ -158,7 +314,17 @@ public:
 	}
 
 	void exportData(){
+		for ( const auto *data : m_data )
+		{
+			data->exportData();
+		}
+	}
 
+	void importData(){
+		for ( const auto *data : m_data )
+		{
+			data->importData();
+		}
 	}
 
 	void Update();
@@ -181,6 +347,31 @@ public:
 
 	void ApplyFlags();
 	typedef MemberCaller<SurfaceInspector, void(), &SurfaceInspector::ApplyFlags> ApplyFlagsCaller;
+
+	void AddDialogData( QCheckBox& widget, bool& data ){
+		AddData<BoolToggleImportExport, BoolImportExport>( m_data ).apply( widget, data );
+	}
+	void AddDialogData( QButtonGroup& widget, int& data ){
+		AddData<IntRadioImportExport, IntImportExport>( m_data ).apply( widget, data );
+	}
+	void AddDialogData( QLineEdit& widget, CopiedString& data ){
+		AddData<TextEntryImportExport, StringImportExport>( m_data ).apply( widget, data );
+	}
+	void AddDialogData( QDoubleSpinBox& widget, float& data ){
+		AddData<FloatSpinnerImportExport, FloatImportExport>( m_data ).apply( widget, data );
+	}
+	void AddDialogData( QSpinBox& widget, int& data ){
+		AddData<IntSpinnerImportExport, IntImportExport>( m_data ).apply( widget, data );
+	}
+	void AddDialogData( QSlider& widget, int& data ){
+		AddData<IntSliderImportExport, IntImportExport>( m_data ).apply( widget, data );
+	}
+	void AddDialogData( QSlider& widget, float& data ){
+		AddData<FloatSliderImportExport, FloatImportExport>( m_data ).apply( widget, data );
+	}
+	void AddDialogData( QComboBox& widget, int& data ){
+		AddData<IntComboImportExport, IntImportExport>( m_data ).apply( widget, data );
+	}
 };
 
 QWidget* g_page_surface;
@@ -198,6 +389,7 @@ inline SurfaceInspector& getSurfaceInspector(){
 void SurfaceInspector_toggleShow(){
 	GroupDialog_showPage( g_page_surface );
 	getSurfaceInspector().Update();
+	getSurfaceInspector().importData();
 }
 
 QWidget* SurfaceInspector_constructWindow( QWidget* main_window ){
@@ -812,12 +1004,12 @@ QWidget* SurfaceInspector::BuildDialog(){
 			{
 				auto *spin = new DoubleSpinBox( 0, 1 << 9, 1, 3, 1 );
 				grid->addWidget( spin, 1, 2 );
-				// AddDialogData( *spin, m_fitHorizontal );
+				AddDialogData( *spin, m_fitHorizontal );
 			}
 			{
 				auto *spin = new DoubleSpinBox( 0, 1 << 9, 1, 3, 1 );
 				grid->addWidget( spin, 1, 3 );
-				// AddDialogData( *spin, m_fitVertical );
+				AddDialogData( *spin, m_fitVertical );
 			}
 			{
 				grid->addWidget( new QLabel( "Project:" ), 2, 0 );
