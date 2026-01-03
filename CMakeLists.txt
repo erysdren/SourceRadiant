@@ -662,6 +662,14 @@ add_module(archivevpk
 target_link_libraries(archivevpk PRIVATE sourcepp::vpkpp)
 set_target_properties(sourcepp_vpkpp miniz minizip-ng zlib-ng bzip2 liblzma sourcepp_crypto sourcepp_parser sourcepp PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+add_module(archivezip
+	SOURCES
+		${PROJECT_SOURCE_DIR}/plugins/archivezip/archive.cpp
+		${PROJECT_SOURCE_DIR}/plugins/archivezip/pkzip.cpp
+		${PROJECT_SOURCE_DIR}/plugins/archivezip/plugin.cpp
+		${PROJECT_SOURCE_DIR}/plugins/archivezip/zlibstream.cpp
+)
+
 add_module(entity
 	SOURCES
 		${PROJECT_SOURCE_DIR}/plugins/entity/angle.cpp
