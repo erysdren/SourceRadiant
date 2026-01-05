@@ -10,3 +10,4 @@
 /build*/
 /untracked*/
 CMakeUserPresets.json
+/cmake/gamepacks/user.cmake
