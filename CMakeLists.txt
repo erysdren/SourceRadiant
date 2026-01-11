@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.21)
 project(radiant LANGUAGES C CXX)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+# options
+
+option(RADIANT_GENERATE_GAMEPACKS "Generate gamepacks" ON)
+option(RADIANT_USE_ASSIMP "Build Assimp model loader plugin" OFF)
+
+set(RADIANT_VERSION "1.6.0n" CACHE STRING "")
+set(RADIANT_MAJOR_VERSION "6" CACHE STRING "")
+set(RADIANT_MINOR_VERSION "0" CACHE STRING "")
+set(RADIANT_ABOUTMSG "trans rights are human rights" CACHE STRING "")
+
 # external dependencies
 
 cmake_policy(SET CMP0077 NEW)
@@ -65,18 +75,22 @@ if(NOT PNG_FOUND)
 	add_library(PNG::PNG ALIAS png_static)
 endif()
 
+if(RADIANT_USE_ASSIMP)
+	FetchContent_Declare(
+		assimp
+		GIT_REPOSITORY https://github.com/assimp/assimp.git
+		GIT_TAG "v6.0.2"
+		EXCLUDE_FROM_ALL
+	)
+	set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+	set(ASSIMP_INJECT_DEBUG_POSTFIX OFF CACHE BOOL "" FORCE)
+	set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+	FetchContent_MakeAvailable(assimp)
+endif()
+
 # packages
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg OpenGL OpenGLWidgets)
-
-# options
-
-option(GENERATE_GAMEPACKS "Generate gamepacks" ON)
-
-set(RADIANT_VERSION "1.6.0n" CACHE STRING "")
-set(RADIANT_MAJOR_VERSION "6" CACHE STRING "")
-set(RADIANT_MINOR_VERSION "0" CACHE STRING "")
-set(RADIANT_ABOUTMSG "trans rights are human rights" CACHE STRING "")
 
 # commandlib
 
@@ -365,7 +379,7 @@ endif()
 
 # gamepacks
 
-if(GENERATE_GAMEPACKS)
+if(RADIANT_GENERATE_GAMEPACKS)
 	include(gamepacks)
 endif()
 
@@ -472,6 +486,17 @@ add_module(imagevtf
 )
 target_link_libraries(imagevtf PRIVATE sourcepp::vtfpp)
 set_target_properties(sourcepp_vtfpp sourcepp_compression PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+if(RADIANT_USE_ASSIMP)
+	add_module(assmodel
+		SOURCES
+			${PROJECT_SOURCE_DIR}/plugins/assmodel/mdlimage.cpp
+			${PROJECT_SOURCE_DIR}/plugins/assmodel/model.cpp
+			${PROJECT_SOURCE_DIR}/plugins/assmodel/plugin.cpp
+	)
+	target_link_libraries(assmodel PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
+	target_link_libraries(assmodel PRIVATE assimp)
+endif()
 
 add_module(sourcemodel
 	SOURCES

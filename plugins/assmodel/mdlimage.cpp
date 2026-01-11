@@ -23,8 +23,8 @@
 
 #include "imagelib.h"
 
-#include ASSIMP_INCLUDE(assimp/Importer.hpp)
-#include ASSIMP_INCLUDE(assimp/scene.h)
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 
 Image* LoadMDLImage( Assimp::Importer& importer, ArchiveFile& file ){
