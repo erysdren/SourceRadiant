@@ -334,7 +334,7 @@ const char* Map_Name( const Map& map ){
 }
 
 bool Map_Unnamed( const Map& map ){
-	return string_equal( Map_Name( map ), "unnamed" RADIANT_DEFAULT_MAP_EXTENSION );
+	return string_equal( Map_Name( map ), StringStream( "unnamed", getMapExtension() ) );
 }
 
 inline const MapFormat& MapFormat_forFile( const char* filename ){
@@ -1264,7 +1264,7 @@ bool Map_Save(){
 void Map_New(){
 	//globalOutputStream() << "Map_New\n";
 
-	g_map.m_name = "unnamed" RADIANT_DEFAULT_MAP_EXTENSION;
+	g_map.m_name = StringStream( "unnamed", getMapExtension() );
 	Map_UpdateTitle( g_map );
 
 	{
@@ -1597,7 +1597,7 @@ tryDecompile:
 		Q_Exec( nullptr, str.c_str(), nullptr, false, true );
 
 		// rebuild filename as "filenamewithoutext_converted.map"
-		str( PathExtensionless( filename ), "_converted" RADIANT_DEFAULT_MAP_EXTENSION );
+		str( PathExtensionless( filename ), "_converted", getMapExtension() );
 		filename = str.c_str();
 
 		const EBrushType brush_type = GlobalBrushCreator().getFormat();
@@ -2157,7 +2157,7 @@ void map_autocaulk_selected(){
 
 	ScopeDisableScreenUpdates disableScreenUpdates( "processing", "autocaulk" );
 
-	auto filename = StringStream( PathExtensionless( g_map.m_name.c_str() ), "_ac" RADIANT_DEFAULT_MAP_EXTENSION );
+	auto filename = StringStream( PathExtensionless( g_map.m_name.c_str() ), "_ac", getMapExtension() );
 
 	{	// write .map
 		const Vector3 spawn( Camera_getOrigin( *g_pParentWnd->GetCamWnd() ) );
@@ -2458,4 +2458,22 @@ void Map_Construct(){
 void Map_Destroy(){
 	Radiant_detachHomePathsObserver( g_MapModuleObserver );
 	GlobalEntityClassManager().detach( g_MapEntityClasses );
+}
+
+const char* getMapExtension()
+{
+	const char *extension = GlobalRadiant().getGameDescriptionKeyValue("mapextension");
+	if ( string_empty( extension ) ) {
+		extension = ".map";
+	}
+	return extension;
+}
+
+const char* getMapBackupExtension()
+{
+	const char *extension = GlobalRadiant().getGameDescriptionKeyValue("mapbackupextension");
+	if ( string_empty( extension ) ) {
+		extension = ".bak";
+	}
+	return extension;
 }

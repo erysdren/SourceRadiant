@@ -148,3 +148,6 @@ void Map_mergeClonedNames( bool makeUnique = true );
 
 
 const char* getMapsPath();
+
+const char* getMapExtension();
+const char* getMapBackupExtension();
