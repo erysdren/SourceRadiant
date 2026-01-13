@@ -53,7 +53,7 @@ function(add_gamepack name)
   archivetypes="vpk gma gcf"
   texturetypes="vtf tth"
   modeltypes="mdl"
-  soundtypes="wav"
+  soundtypes="wav mp3"
   maptypes="mapvmf"
   shaders="source"
   entityclass="quake3"
