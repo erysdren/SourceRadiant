@@ -229,4 +229,3 @@ add_gamepack(vampire
 	PREFIX ".vampire"
 	ENTITIES "vampire.fgd"
 )
-
