@@ -63,6 +63,23 @@ if(NOT LibXml2_FOUND)
 	FetchContent_MakeAvailable(libxml2)
 endif()
 
+find_package(JPEG)
+if(NOT JPEG_FOUND)
+	FetchContent_Declare(
+		libjpeg-turbo
+		GIT_REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
+		GIT_TAG "3.1.3"
+		EXCLUDE_FROM_ALL
+	)
+	set(ENABLE_SHARED OFF CACHE BOOL "" FORCE)
+	set(WITH_TOOLS OFF CACHE BOOL "" FORCE)
+	set(WITH_TESTS OFF CACHE BOOL "" FORCE)
+	set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
+	set(REQUIRE_SIMD OFF CACHE BOOL "" FORCE)
+	FetchContent_MakeAvailable(libjpeg-turbo)
+	add_library(JPEG::JPEG ALIAS jpeg-static)
+endif()
+
 find_package(PNG)
 if(NOT PNG_FOUND)
 	FetchContent_Declare(
@@ -501,7 +518,8 @@ add_module(image
 		${PROJECT_SOURCE_DIR}/plugins/image/tga.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/webp.cpp
 )
-target_compile_definitions(image PRIVATE NO_WEBP NO_KTX NO_JPEG NO_DDS NO_CRN)
+target_link_libraries(image PRIVATE $<TARGET_NAME_IF_EXISTS:JPEG::JPEG>)
+target_compile_definitions(image PRIVATE NO_WEBP NO_KTX $<IF:$<TARGET_EXISTS:JPEG::JPEG>,,NO_JPEG> NO_DDS NO_CRN)
 
 add_module(imagevtf
 	SOURCES

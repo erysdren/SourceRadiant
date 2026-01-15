@@ -88,7 +88,7 @@ endif()
 target_link_libraries(q3map2 PRIVATE l_net filematch ddslib etclib)
 target_link_libraries(q3map2 PRIVATE LibXml2::LibXml2)
 target_link_libraries(q3map2 PRIVATE assimp)
-target_link_libraries(q3map2 PRIVATE PNG::PNG)
+target_link_libraries(q3map2 PRIVATE PNG::PNG $<TARGET_NAME_IF_EXISTS:JPEG::JPEG>)
 target_include_directories(q3map2 PRIVATE
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/libs
@@ -100,7 +100,7 @@ target_compile_definitions(q3map2 PRIVATE
 	RADIANT_MINOR_VERSION=\"${RADIANT_MINOR_VERSION}\"
 	RADIANT_ABOUTMSG=\"${RADIANT_ABOUTMSG}\"
 	Q3MAP_VERSION=\"${Q3MAP_VERSION}\"
-	NO_JPEG
+	$<IF:$<TARGET_EXISTS:JPEG::JPEG>,,NO_JPEG>
 	NO_WEBP
 	NO_CRN
 )
