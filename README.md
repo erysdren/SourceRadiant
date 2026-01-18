@@ -1,7 +1,7 @@
 SourceRadiant
 =================
 
-The open-source, cross-platform level editor for Source Engine based games.
+The open-source, cross-platform level editor for Source Engine and GoldSrc based games.
 
 SourceRadiant is a fork of NetRadiant-custom ([GtkRadiant](https://icculus.org/gtkradiant/) 1.4&rarr;massive rewrite&rarr;1.5&rarr;[NetRadiant](https://netradiant.gitlab.io/)&rarr;[NetRadiant-custom](https://github.com/Garux/netradiant-custom)&rarr;this)
 
@@ -28,8 +28,9 @@ SourceRadiant is a fork of NetRadiant-custom ([GtkRadiant](https://icculus.org/g
 
 ## Supported games
 
-There are gamepacks for the following Source Engine titles:
+There are gamepacks for the following Source Engine and GoldSrc titles:
 
+- Half-Life (1998)
 - Half-Life 2 (2004)
 - Half-Life 2: Deathmatch (2004)
 - Vampire: The Masquerade - Bloodlines (2004)
@@ -44,9 +45,8 @@ There are gamepacks for the following Source Engine titles:
 - D.I.P.R.I.P. Warm Up (2008)
 - Portal 2 (2011)
 
-But if the [sourcepp](https://github.com/craftablescience/sourcepp) library can
-load the assets, then supporting a lot more Source Engine games is probably
-feasible.
+Note that any support for specific game or engine branch features should be
+considered **!!EXPERIMENTAL!!**
 
 ## Features
 
@@ -58,6 +58,7 @@ feasible.
 	- FIXME: Discards some metadata, like `viewsettings` and `mapversion`.
 	- FIXME: Discards Cordons.
 	- FIXME: Discards Cameras.
+	- FIXME: Discards VMF object IDs
 - Save VMF maps
 	- ~~FIXME: Sometimes solids are saved incorrectly and then the map won't compile.~~
 	- FIXME: Needs to have a special case for not merging entity keys that start with "On", which are **always** Source Engine I/O outputs.
@@ -89,6 +90,20 @@ feasible.
 - Decals
 	- Probably should look at [TrenchBroom](https://github.com/TrenchBroom/TrenchBroom/)'s implementation for reference.
 - Instances
+
+### To Do:
+
+- Improve WAD handling for GoldSrc gamepacks
+	- Allow you to choose which WADs get mounted instead of mounting all the ones it can find
+	- Write `wad` keyvalue in the `worldspawn` entity so GoldSrc compile tools can work properly.
+- Allow you to pick which texture directories to load (like TrenchBroom)
+- Add read/write support of [J.A.C.K.](https://store.steampowered.com/app/496450/JACK/) map files for better GoldSrc developer interop
+- Add read-only support of Worldcraft map files for loading legacy GoldSrc maps
+- Simple prefab system
+	- Support Worldcraft `.ol` prefab libraries
+	- Support general prefabs loaded from a folder
+- Parse TrenchBroom-specific map keys
+	- Convert TrenchBroom map layers into Radiant map layers
 
 ### Random feature highlights
 
