@@ -2139,7 +2139,7 @@ void TextureBrowser_Construct(){
 
 	g_TexBro.m_shader = texdef_name_default();
 
-	TextureBrowser::wads = !string_empty( g_pGameDescription->getKeyValue( "show_wads" ) );
+	TextureBrowser::wads = string_equal( g_pGameDescription->getKeyValue( "show_wads" ), "1" );
 
 	Textures_setModeChangedNotify( ConstMemberCaller<TextureBrowser, void(), &TextureBrowser::queueDraw>( g_TexBro ) );
 

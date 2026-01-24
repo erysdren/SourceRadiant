@@ -229,7 +229,7 @@ class TextureAttribute : public StringAttribute
 {
 public:
 	TextureAttribute( const char* key ) : StringAttribute( key ){
-		if( string_empty( GlobalRadiant().getGameDescriptionKeyValue( "show_wads" ) ) )
+		if( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "show_wads" ), "1" ) )
 			GlobalAllShadersEntryCompletion::instance().connect( StringAttribute::getEntry() );	// with textures/
 		else
 			GlobalTextureEntryCompletion::instance().connect( StringAttribute::getEntry() );	// w/o

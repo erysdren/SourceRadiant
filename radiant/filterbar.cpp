@@ -22,7 +22,7 @@ CopiedString GetCommonShader( const char* name ){
 		return gotShader;
 	}
 	else{
-		if( string_empty( g_pGameDescription->getKeyValue( "show_wads" ) ) ){
+		if( string_equal( g_pGameDescription->getKeyValue( "show_wads" ), "1" ) ){
 			const char* commonDir = g_pGameDescription->getKeyValue( "common_shaders_dir" );
 			if( string_empty( commonDir ) )
 				commonDir = "common/";
