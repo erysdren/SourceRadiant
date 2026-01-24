@@ -53,8 +53,8 @@ radiant_add_gamepack(dod
 # Garry's Mod
 radiant_add_gamepack(garrysmod
 	HAS_BASEGAME
-	BASE_TITLE "sourceengine"
-	BASE_GAMEDIR "Source Engine Base Content"
+	BASE_TITLE "Source Engine Base Content"
+	BASE_GAMEDIR "sourceengine"
 	TITLE "Garry's Mod"
 	KNOWN_GAMEDIRS "garrysmod"
 	KNOWN_TITLES "Garry's Mod"
