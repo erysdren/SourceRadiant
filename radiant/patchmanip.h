@@ -41,7 +41,7 @@ void Scene_PatchFindReplaceShader_Selected( scene::Graph& graph, const char* fin
 
 void Scene_PatchGetTexdef_Selected( scene::Graph& graph, class TextureProjection &projection );
 bool Scene_PatchGetShaderTexdef_Selected( scene::Graph& graph, CopiedString& name, TextureProjection &projection );
-void Patch_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation );
+void Patch_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale );
 
 void Scene_PatchCapTexture_Selected( scene::Graph& graph );
 

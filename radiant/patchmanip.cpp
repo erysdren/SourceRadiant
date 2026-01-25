@@ -1163,7 +1163,7 @@ bool Scene_PatchGetShaderTexdef_Selected( scene::Graph& graph, CopiedString& nam
 	return false;
 }
 
-void Patch_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
+void Patch_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
 	Scene_forEachVisibleSelectedPatch( [hShift, vShift, hScale, vScale, rotation]( Patch& patch ){
 		PatchTexdefConstructor c( &patch );
 		if( c.valid() ){

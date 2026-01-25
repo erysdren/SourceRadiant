@@ -528,22 +528,23 @@ class FaceSetTexdef_
 	const float* m_hScale;
 	const float* m_vScale;
 	const float* m_rotation;
+	const float* m_lightmapscale;
 public:
-	FaceSetTexdef_( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ) :
-		m_hShift( hShift ), m_vShift( vShift ), m_hScale( hScale ), m_vScale( vScale ), m_rotation( rotation ) {
+	FaceSetTexdef_( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ) :
+		m_hShift( hShift ), m_vShift( vShift ), m_hScale( hScale ), m_vScale( vScale ), m_rotation( rotation ), m_lightmapscale( lightmapscale ) {
 	}
 	void operator()( Face& face ) const {
-		face.SetTexdef( m_hShift, m_vShift, m_hScale, m_vScale, m_rotation );
+		face.SetTexdef( m_hShift, m_vShift, m_hScale, m_vScale, m_rotation, m_lightmapscale );
 	}
 };
 
-void Scene_BrushSetTexdef_Selected( scene::Graph& graph, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
-	Scene_ForEachSelectedBrush_ForEachFace( graph, FaceSetTexdef_( hShift, vShift, hScale, vScale, rotation ) );
+void Scene_BrushSetTexdef_Selected( scene::Graph& graph, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
+	Scene_ForEachSelectedBrush_ForEachFace( graph, FaceSetTexdef_( hShift, vShift, hScale, vScale, rotation, lightmapscale ) );
 	SceneChangeNotify();
 }
 
-void Scene_BrushSetTexdef_Component_Selected( scene::Graph& graph, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
-	Scene_ForEachSelectedBrushFace( graph, FaceSetTexdef_( hShift, vShift, hScale, vScale, rotation ) );
+void Scene_BrushSetTexdef_Component_Selected( scene::Graph& graph, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
+	Scene_ForEachSelectedBrushFace( graph, FaceSetTexdef_( hShift, vShift, hScale, vScale, rotation, lightmapscale ) );
 	SceneChangeNotify();
 }
 

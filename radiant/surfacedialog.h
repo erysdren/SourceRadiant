@@ -40,6 +40,7 @@ struct si_globals_t
 	float shift[2] = { 8.0f, 8.0f };
 	float scale[2] = { 0.5f, 0.5f };
 	float rotate = 45.0f;
+	float lightmapscale = 4;
 
 	bool m_bSnapTToGrid = false;
 };

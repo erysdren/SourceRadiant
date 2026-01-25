@@ -108,7 +108,7 @@ public:
 		std::string kv1Data = "";
 
 		// FIXME: should this be hardcoded?
-		GlobalBrushCreator().toggleFormat(eBrushTypeValve220);
+		GlobalBrushCreator().toggleFormat(eBrushTypeValveSource);
 
 		while ( ( len = inputStream.read(buffer, sizeof(buffer)) ) > 0 ) {
 			kv1Data.append(buffer, len);
@@ -163,12 +163,13 @@ public:
 								sscanf(uaxis.getValue().data(), "[%f %f %f %f] %f", &uvaxis[0][0], &uvaxis[0][1], &uvaxis[0][2], &uvaxis[0][3], &scale[0]);
 								sscanf(vaxis.getValue().data(), "[%f %f %f %f] %f", &uvaxis[1][0], &uvaxis[1][1], &uvaxis[1][2], &uvaxis[1][3], &scale[1]);
 
-								std::string faceData = std::format("{} {} [{} {} {} {}] [{} {} {} {}] {} {} {}\n}}\n",
+								std::string faceData = std::format("{} {} [{} {} {} {}] [{} {} {} {}] {} {} {} {}\n}}\n",
 									solidelem["plane"].getValue(), solidelem["material"].getValue(),
 									uvaxis[0][0], uvaxis[0][1], uvaxis[0][2], uvaxis[0][3],
 									uvaxis[1][0], uvaxis[1][1], uvaxis[1][2], uvaxis[1][3],
 									solidelem["rotation"].getValue(),
-									scale[0], scale[1]
+									scale[0], scale[1],
+									solidelem["lightmapscale"].getValue()
 								);
 
 								MapImporter* importer = Node_getMapImporter( solid );
@@ -283,9 +284,11 @@ public:
 				double vaxis[4];
 				double rotation;
 				double scale[2];
-				sscanf(line.c_str(), "( %lf %lf %lf ) ( %lf %lf %lf ) ( %lf %lf %lf ) %128s [ %lf %lf %lf %lf ] [ %lf %lf %lf %lf ] %lf %lf %lf",
+				double lightmapscale;
+				sscanf(line.c_str(), "( %lf %lf %lf ) ( %lf %lf %lf ) ( %lf %lf %lf ) %128s [ %lf %lf %lf %lf ] [ %lf %lf %lf %lf ] %lf %lf %lf %lf",
 					&points[0][0], &points[0][1], &points[0][2], &points[1][0], &points[1][1], &points[1][2], &points[2][0], &points[2][1], &points[2][2],
-					material, &uaxis[0], &uaxis[1], &uaxis[2], &uaxis[3], &vaxis[0], &vaxis[1], &vaxis[2], &vaxis[3], &rotation, &scale[0], &scale[1]
+					material, &uaxis[0], &uaxis[1], &uaxis[2], &uaxis[3], &vaxis[0], &vaxis[1], &vaxis[2], &vaxis[3], &rotation, &scale[0], &scale[1],
+					&lightmapscale
 				);
 				side["id"] = childID++;
 				side["plane"] = std::format( "({} {} {}) ({} {} {}) ({} {} {})", points[0][0], points[0][1], points[0][2], points[1][0], points[1][1], points[1][2], points[2][0], points[2][1], points[2][2] );
@@ -293,7 +296,7 @@ public:
 				side["uaxis"] = std::format( "[{} {} {} {}] {}", uaxis[0], uaxis[1], uaxis[2], uaxis[3], scale[0] );
 				side["vaxis"] = std::format( "[{} {} {} {}] {}", vaxis[0], vaxis[1], vaxis[2], vaxis[3], scale[1] );
 				side["rotation"] = std::format( "{}", rotation );
-				side["lightmapscale"] = 16; // FIXME: make configurable
+				side["lightmapscale"] = std::format( "{}", lightmapscale );
 				side["smoothing_groups"] = 0; // FIXME: make configurable
 			});
 		}
@@ -324,7 +327,7 @@ public:
 	void writeGraph( scene::Node& root, GraphTraversalFunc traverse, TextOutputStream& outputStream ) const override {
 
 		// FIXME: should this be hardcoded?
-		GlobalBrushCreator().toggleFormat(eBrushTypeValve220);
+		GlobalBrushCreator().toggleFormat(eBrushTypeValveSource);
 
 		kvpp::KV1Writer writer;
 

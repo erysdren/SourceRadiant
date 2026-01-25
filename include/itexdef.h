@@ -27,6 +27,7 @@ public:
 	float shift[2];
 	float rotate;
 	float scale[2];
+	float lightmapscale;
 
 	texdef_t(){
 		shift[0] = 0;
@@ -34,5 +35,6 @@ public:
 		rotate = 0;
 		scale[0] = 1;
 		scale[1] = 1;
+		lightmapscale = 16;
 	}
 };

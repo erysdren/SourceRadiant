@@ -96,7 +96,7 @@ void Normal_GetTransform( const Vector3& normal, Matrix4& transform );
 void TexDef_Construct_Default( TextureProjection& projection );
 
 void Texdef_Assign( TextureProjection& projection, const TextureProjection& other, bool setBasis = true );
-void Texdef_Assign( TextureProjection& projection, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation );
+void Texdef_Assign( TextureProjection& projection, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale );
 void Texdef_Shift( TextureProjection& projection, float s, float t );
 void Texdef_Scale( TextureProjection& projection, float s, float t );
 void Texdef_Rotate( TextureProjection& projection, float angle );
@@ -131,6 +131,7 @@ struct bp_globals_t
 
 extern bp_globals_t g_bp_globals;
 extern float g_texdef_default_scale;
+extern float g_texdef_default_lightmapscale;
 
 void Texdef_Convert( TexdefTypeId in, TexdefTypeId out, const Plane3& plane, TextureProjection& projection, std::size_t width, std::size_t height );
 void Texdef_from_ST( TextureProjection& projection, const PlanePoints& points, const DoubleVector3 st[3], std::size_t width, std::size_t height );

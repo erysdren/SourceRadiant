@@ -508,11 +508,11 @@ void Select_SetTexdef( const TextureProjection& projection, bool setBasis /*= tr
 	Scene_BrushSetTexdef_Component_Selected( GlobalSceneGraph(), projection, setBasis, resetBasis );
 }
 
-void Select_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
+void Select_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
 	if ( GlobalSelectionSystem().Mode() != SelectionSystem::eComponent ) {
-		Scene_BrushSetTexdef_Selected( GlobalSceneGraph(), hShift, vShift, hScale, vScale, rotation );
+		Scene_BrushSetTexdef_Selected( GlobalSceneGraph(), hShift, vShift, hScale, vScale, rotation, lightmapscale );
 	}
-	Scene_BrushSetTexdef_Component_Selected( GlobalSceneGraph(), hShift, vShift, hScale, vScale, rotation );
+	Scene_BrushSetTexdef_Component_Selected( GlobalSceneGraph(), hShift, vShift, hScale, vScale, rotation, lightmapscale );
 }
 
 void Select_SetFlags( const ContentsFlagsValue& flags ){

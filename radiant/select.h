@@ -40,7 +40,7 @@ void Select_SetShader( const char* shader );
 void Select_SetShader_Undo( const char* shader );
 
 void Select_SetTexdef( const class TextureProjection& projection, bool setBasis = true, bool resetBasis = false );
-void Select_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation );
+void Select_SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale );
 
 void Select_SetFlags( const class ContentsFlagsValue& flags );
 

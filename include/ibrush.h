@@ -38,6 +38,7 @@ enum EBrushType
 	eBrushTypeDoom3,
 	eBrushTypeQuake4,
 	eBrushTypeValve220,
+	eBrushTypeValveSource,
 };
 
 

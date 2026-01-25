@@ -65,6 +65,8 @@ const char* BrushType_getName( EBrushType type ){
 	case eBrushTypeQuake3Valve220:
 	case eBrushTypeValve220:
 		return "Valve 220";
+	case eBrushTypeValveSource:
+		return "Valve Source";
 	case eBrushTypeDoom3:
 		return "Doom3";
 	case eBrushTypeQuake4:
@@ -176,10 +178,24 @@ void Brush_Construct( EBrushType type ){
 		}
 	}
 
+	g_texdef_default_lightmapscale = 16;
+	value = g_pGameDescription->getKeyValue( "default_lightmapscale" );
+	if ( !string_empty( value ) ) {
+		const float scale = atof( value );
+		if ( scale != 0 ) {
+			g_texdef_default_lightmapscale = scale;
+		}
+		else
+		{
+			globalErrorStream() << "error parsing \"default_lightmapscale\" attribute\n";
+		}
+	}
+
 	GlobalPreferenceSystem().registerPreference( "TextureLock", BoolImportStringCaller( g_brush_texturelock_enabled ), BoolExportStringCaller( g_brush_texturelock_enabled ) );
 	GlobalPreferenceSystem().registerPreference( "TextureVertexLock", BoolImportStringCaller( g_brush_textureVertexlock_enabled ), BoolExportStringCaller( g_brush_textureVertexlock_enabled ) );
 	GlobalPreferenceSystem().registerPreference( "BrushSnapPlanes", makeBoolStringImportCallback( FreeCaller<void(bool), Face_importSnapPlanes>() ), makeBoolStringExportCallback( FreeCaller<void(const BoolImportCallback&), Face_exportSnapPlanes>() ) );
 	GlobalPreferenceSystem().registerPreference( "TexdefDefaultScale", FloatImportStringCaller( g_texdef_default_scale ), FloatExportStringCaller( g_texdef_default_scale ) );
+	GlobalPreferenceSystem().registerPreference( "TexdefDefaultLightmapScale", FloatImportStringCaller( g_texdef_default_lightmapscale ), FloatExportStringCaller( g_texdef_default_lightmapscale ) );
 
 	GridStatus_getTextureLockEnabled = getTextureLockEnabled;
 	GridStatus_getTexdefTypeIdLabel = getTexdefTypeIdLabel;
@@ -424,3 +440,28 @@ public:
 typedef SingletonModule<BrushHalfLifeAPI, BrushDependencies> BrushHalfLifeModule;
 typedef Static<BrushHalfLifeModule> StaticBrushHalfLifeModule;
 StaticRegisterModule staticRegisterBrushHalfLife( StaticBrushHalfLifeModule::instance() );
+
+
+class BrushSourceAPI : public TypeSystemRef
+{
+	BrushCreator* m_brushsource;
+public:
+	typedef BrushCreator Type;
+	STRING_CONSTANT( Name, "source" );
+
+	BrushSourceAPI(){
+		Brush_Construct( eBrushTypeValveSource );
+
+		m_brushsource = &GetBrushCreator();
+	}
+	~BrushSourceAPI(){
+		Brush_Destroy();
+	}
+	BrushCreator* getTable(){
+		return m_brushsource;
+	}
+};
+
+typedef SingletonModule<BrushSourceAPI, BrushDependencies> BrushSourceModule;
+typedef Static<BrushSourceModule> StaticBrushSourceModule;
+StaticRegisterModule staticRegisterBrushSource( StaticBrushSourceModule::instance() );

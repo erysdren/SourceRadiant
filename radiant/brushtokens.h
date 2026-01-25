@@ -68,7 +68,7 @@ inline bool FaceTexdef_BP_importTokens( FaceTexdef& texdef, Tokeniser& tokeniser
 	return true;
 }
 
-inline bool FaceTexdef_Valve220_importTokens( FaceTexdef& texdef, Tokeniser& tokeniser ){
+inline bool FaceTexdef_Valve220_importTokens( FaceTexdef& texdef, Tokeniser& tokeniser, bool lightmapscale ){
 	// parse texdef
 	RETURN_FALSE_IF_FAIL( Tokeniser_parseToken( tokeniser, "[" ) );
 	RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, texdef.m_projection.m_basis_s.x() ) );
@@ -85,6 +85,10 @@ inline bool FaceTexdef_Valve220_importTokens( FaceTexdef& texdef, Tokeniser& tok
 	RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, texdef.m_projection.m_texdef.rotate ) );
 	RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, texdef.m_projection.m_texdef.scale[0] ) );
 	RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, texdef.m_projection.m_texdef.scale[1] ) );
+
+	if ( lightmapscale ) {
+		RETURN_FALSE_IF_FAIL( Tokeniser_getFloat( tokeniser, texdef.m_projection.m_texdef.lightmapscale ) );
+	}
 
 	texdef.m_projection.m_texdef.rotate = -texdef.m_projection.m_texdef.rotate;
 
@@ -238,6 +242,7 @@ public:
 	}
 };
 
+template<bool lightmapscale = false>
 class Valve220FaceTokenImporter
 {
 	Face& m_face;
@@ -247,7 +252,7 @@ public:
 	bool importTokens( Tokeniser& tokeniser ){
 		RETURN_FALSE_IF_FAIL( FacePlane_importTokens( m_face.getPlane(), tokeniser ) );
 		RETURN_FALSE_IF_FAIL( FaceShader_importTokens( m_face.getShader(), tokeniser ) );
-		RETURN_FALSE_IF_FAIL( FaceTexdef_Valve220_importTokens( m_face.getTexdef(), tokeniser ) );
+		RETURN_FALSE_IF_FAIL( FaceTexdef_Valve220_importTokens( m_face.getTexdef(), tokeniser, lightmapscale ) );
 		if ( Tokeniser_nextTokenIsDigit( tokeniser ) ) { ///optional for more flexibility
 			m_face.getShader().m_flags.m_specified = true; // enable for Q2
 			RETURN_FALSE_IF_FAIL( FaceShader_importContentsFlagsValue( m_face.getShader(), tokeniser ) );
@@ -314,7 +319,7 @@ inline void FaceTexdef_exportTokens( const FaceTexdef& faceTexdef, TokenWriter& 
 	writer.writeFloat( faceTexdef.m_projection.m_texdef.scale[1] );
 }
 
-inline void FaceTexdef_Valve220_exportTokens( const FaceTexdef& faceTexdef, TokenWriter& writer ){
+inline void FaceTexdef_Valve220_exportTokens( const FaceTexdef& faceTexdef, TokenWriter& writer, bool lightmapscale ){
 	if( !texdef_sane( faceTexdef.m_projection.m_texdef ) )
 		globalWarningStream() << "FaceTexdef_Valve220_exportTokens: bad texdef\n";
 	// write texdef
@@ -333,6 +338,9 @@ inline void FaceTexdef_Valve220_exportTokens( const FaceTexdef& faceTexdef, Toke
 	writer.writeFloat( -faceTexdef.m_projection.m_texdef.rotate );
 	writer.writeFloat( faceTexdef.m_projection.m_texdef.scale[0] );
 	writer.writeFloat( faceTexdef.m_projection.m_texdef.scale[1] );
+	if ( lightmapscale ) {
+		writer.writeFloat( faceTexdef.m_projection.m_texdef.lightmapscale );
+	}
 }
 
 inline void FaceShader_ContentsFlagsValue_exportTokens( const FaceShader& faceShader, TokenWriter& writer ){
@@ -443,7 +451,7 @@ public:
 	}
 };
 
-template<FaceExportFlags exportFlags>
+template<FaceExportFlags exportFlags, bool lightmapscale = false>
 class Valve220FaceTokenExporter
 {
 	const Face& m_face;
@@ -453,7 +461,7 @@ public:
 	void exportTokens( TokenWriter& writer ) const {
 		FacePlane_exportTokens( m_face.getPlane(), writer );
 		FaceShader_exportTokens( m_face.getShader(), writer );
-		FaceTexdef_Valve220_exportTokens( m_face.getTexdef(), writer );
+		FaceTexdef_Valve220_exportTokens( m_face.getTexdef(), writer, lightmapscale );
 		FaceFlags_exportTokens<exportFlags>( m_face, writer );
 		writer.nextLine();
 	}
@@ -519,11 +527,17 @@ public:
 					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
 				}
 				break;
+			case eBrushTypeValveSource:
+				{
+					Valve220FaceTokenImporter<true> importer( face );
+					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
+				}
+				break;
 			case eBrushTypeValve220:
 			case eBrushTypeQuake2Valve220:
 			case eBrushTypeQuake3Valve220:
 				{
-					Valve220FaceTokenImporter importer( face );
+					Valve220FaceTokenImporter<false> importer( face );
 					RETURN_FALSE_IF_FAIL( importer.importTokens( tokeniser ) );
 				}
 				break;
@@ -635,6 +649,12 @@ public:
 				case eBrushTypeQuake3Valve220:
 					{
 						Valve220FaceTokenExporter<FaceExportFlags::yes> exporter( *face );
+						exporter.exportTokens( writer );
+					}
+					break;
+				case eBrushTypeValveSource:
+					{
+						Valve220FaceTokenExporter<FaceExportFlags::yes, true> exporter( *face );
 						exporter.exportTokens( writer );
 					}
 					break;

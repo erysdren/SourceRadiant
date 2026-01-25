@@ -119,6 +119,7 @@ public:
 	Increment m_hscaleIncrement;
 	Increment m_vscaleIncrement;
 	Increment m_rotateIncrement;
+	Increment m_lightmapscaleIncrement;
 
 	SurfaceInspector() :
 		m_idleDraw( UpdateCaller( *this ) ),
@@ -126,7 +127,8 @@ public:
 		m_vshiftIncrement( g_si_globals.shift[1] ),
 		m_hscaleIncrement( g_si_globals.scale[0] ),
 		m_vscaleIncrement( g_si_globals.scale[1] ),
-		m_rotateIncrement( g_si_globals.rotate ){
+		m_rotateIncrement( g_si_globals.rotate ),
+		m_lightmapscaleIncrement( g_si_globals.lightmapscale ){
 		m_fitVertical = 1;
 		m_fitHorizontal = 1;
 	}
@@ -164,6 +166,8 @@ public:
 	typedef MemberCaller<SurfaceInspector, void(), &SurfaceInspector::ApplyTexdef_VScale> ApplyTexdef_VScaleCaller;
 	void ApplyTexdef_Rotation();
 	typedef MemberCaller<SurfaceInspector, void(), &SurfaceInspector::ApplyTexdef_Rotation> ApplyTexdef_RotationCaller;
+	void ApplyTexdef_LightmapScale();
+	typedef MemberCaller<SurfaceInspector, void(), &SurfaceInspector::ApplyTexdef_LightmapScale> ApplyTexdef_LightmapScaleCaller;
 
 	void ApplyFlags();
 	typedef MemberCaller<SurfaceInspector, void(), &SurfaceInspector::ApplyFlags> ApplyFlagsCaller;
@@ -374,6 +378,9 @@ void SurfaceInspector_ProjectTexture( EProjectTexture type, bool isGuiClick ){
 		texdef.scale[0] = getSurfaceInspector().m_hscaleIncrement.m_spin->value();
 		texdef.scale[1] = getSurfaceInspector().m_vscaleIncrement.m_spin->value();
 		texdef.rotate = getSurfaceInspector().m_rotateIncrement.m_spin->value();
+		if ( string_equal( g_pGameDescription->getKeyValue( "no_lightmapscale" ), "0" ) ) {
+			texdef.lightmapscale = getSurfaceInspector().m_lightmapscaleIncrement.m_spin->value();
+		}
 	}
 	else{ //bind
 		texdef.scale[0] = texdef.scale[1] = Texdef_getDefaultTextureScale();
@@ -423,14 +430,14 @@ void SurfaceInspector_InvertTextureHorizontally(){
 	UndoableCommand undo( "textureInvertHorizontally" );
 	const float shift = -getSurfaceInspector().m_hshiftIncrement.m_spin->value();
 	const float scale = -getSurfaceInspector().m_hscaleIncrement.m_spin->value();
-	Select_SetTexdef( &shift, 0, &scale, 0, 0 );
+	Select_SetTexdef( &shift, 0, &scale, 0, 0, 0 );
 	Scene_PatchFlipTexture_Selected( GlobalSceneGraph(), 0 );
 }
 void SurfaceInspector_InvertTextureVertically(){
 	UndoableCommand undo( "textureInvertVertically" );
 	const float shift = -getSurfaceInspector().m_vshiftIncrement.m_spin->value();
 	const float scale = -getSurfaceInspector().m_vscaleIncrement.m_spin->value();
-	Select_SetTexdef( 0, &shift, 0, &scale, 0 );
+	Select_SetTexdef( 0, &shift, 0, &scale, 0, 0 );
 	Scene_PatchFlipTexture_Selected( GlobalSceneGraph(), 1 );
 }
 
@@ -716,6 +723,13 @@ void SurfaceInspector::BuildDialog(){
 					m_rotateIncrement.m_spin = spin;
 					adder.addRow( new SpinBoxLabel( "Rotate", spin ), spin );
 				}
+				if ( string_equal( g_pGameDescription->getKeyValue( "no_lightmapscale" ), "0" ) )
+				{
+					auto *spin = new NonModalSpinner( -8192, 8192, 16, 0, 4 );
+					spin->setCallbacks( ApplyTexdef_LightmapScaleCaller( *this ), UpdateCaller( *this ) );
+					m_lightmapscaleIncrement.m_spin = spin;
+					adder.addRow( new SpinBoxLabel( "Lightmap Scale", spin ), spin );
+				}
 			}
 			{
 				GridRowAdder adder{ grid, 3, 4 };
@@ -742,6 +756,12 @@ void SurfaceInspector::BuildDialog(){
 				{
 					auto *entry = new NonModalEntry( Increment::ApplyCaller( m_rotateIncrement ), Increment::CancelCaller( m_rotateIncrement ) );
 					m_rotateIncrement.m_entry = entry;
+					adder.addRow( "Step", entry );
+				}
+				if ( string_equal( g_pGameDescription->getKeyValue( "no_lightmapscale" ), "0" ) )
+				{
+					auto *entry = new NonModalEntry( Increment::ApplyCaller( m_lightmapscaleIncrement ), Increment::CancelCaller( m_lightmapscaleIncrement ) );
+					m_lightmapscaleIncrement.m_entry = entry;
 					adder.addRow( "Step", entry );
 				}
 			}
@@ -982,6 +1002,13 @@ void SurfaceInspector::Update(){
 		entry_set_float( m_rotateIncrement.m_entry, g_si_globals.rotate );
 	}
 
+	if ( string_equal( g_pGameDescription->getKeyValue( "no_lightmapscale" ), "0" ) )
+	{
+		m_lightmapscaleIncrement.m_spin->setValue( shiftScaleRotate.lightmapscale );
+		m_lightmapscaleIncrement.m_spin->setSingleStep( g_si_globals.lightmapscale );
+		entry_set_float( m_lightmapscaleIncrement.m_entry, g_si_globals.lightmapscale );
+	}
+
 	patch_tesselation_update();
 
 	if ( !string_empty( g_pGameDescription->getKeyValue( "si_flags" ) ) ) {
@@ -1043,40 +1070,48 @@ void SurfaceInspector::ApplyTexdef_HShift(){
 	const float value = m_hshiftIncrement.m_spin->value();
 	const auto command = StringStream<64>( "textureProjectionSetSelected -hShift ", value );
 	UndoableCommand undo( command );
-	Select_SetTexdef( &value, 0, 0, 0, 0 );
-	Patch_SetTexdef( &value, 0, 0, 0, 0 );
+	Select_SetTexdef( &value, 0, 0, 0, 0, 0 );
+	Patch_SetTexdef( &value, 0, 0, 0, 0, 0 );
 }
 
 void SurfaceInspector::ApplyTexdef_VShift(){
 	const float value = m_vshiftIncrement.m_spin->value();
 	const auto command = StringStream<64>( "textureProjectionSetSelected -vShift ", value );
 	UndoableCommand undo( command );
-	Select_SetTexdef( 0, &value, 0, 0, 0 );
-	Patch_SetTexdef( 0, &value, 0, 0, 0 );
+	Select_SetTexdef( 0, &value, 0, 0, 0, 0 );
+	Patch_SetTexdef( 0, &value, 0, 0, 0, 0 );
 }
 
 void SurfaceInspector::ApplyTexdef_HScale(){
 	const float value = m_hscaleIncrement.m_spin->value();
 	const auto command = StringStream<64>( "textureProjectionSetSelected -hScale ", value );
 	UndoableCommand undo( command );
-	Select_SetTexdef( 0, 0, &value, 0, 0 );
-	Patch_SetTexdef( 0, 0, &value, 0, 0 );
+	Select_SetTexdef( 0, 0, &value, 0, 0, 0 );
+	Patch_SetTexdef( 0, 0, &value, 0, 0, 0 );
 }
 
 void SurfaceInspector::ApplyTexdef_VScale(){
 	const float value = m_vscaleIncrement.m_spin->value();
 	const auto command = StringStream<64>( "textureProjectionSetSelected -vScale ", value );
 	UndoableCommand undo( command );
-	Select_SetTexdef( 0, 0, 0, &value, 0 );
-	Patch_SetTexdef( 0, 0, 0, &value, 0 );
+	Select_SetTexdef( 0, 0, 0, &value, 0, 0 );
+	Patch_SetTexdef( 0, 0, 0, &value, 0, 0 );
 }
 
 void SurfaceInspector::ApplyTexdef_Rotation(){
 	const float value = m_rotateIncrement.m_spin->value();
 	const auto command = StringStream<64>( "textureProjectionSetSelected -rotation ", float_to_integer( value * 100.f ) / 100.f );
 	UndoableCommand undo( command );
-	Select_SetTexdef( 0, 0, 0, 0, &value );
-	Patch_SetTexdef( 0, 0, 0, 0, &value );
+	Select_SetTexdef( 0, 0, 0, 0, &value, 0 );
+	Patch_SetTexdef( 0, 0, 0, 0, &value, 0 );
+}
+
+void SurfaceInspector::ApplyTexdef_LightmapScale(){
+	const float value = m_lightmapscaleIncrement.m_spin->value();
+	const auto command = StringStream<64>( "textureProjectionSetSelected -lightmapscale ", value );
+	UndoableCommand undo( command );
+	Select_SetTexdef( 0, 0, 0, 0, 0, &value );
+	Patch_SetTexdef( 0, 0, 0, 0, 0, &value );
 }
 
 void SurfaceInspector::ApplyFlags(){

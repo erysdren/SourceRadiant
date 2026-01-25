@@ -523,9 +523,9 @@ public:
 		addScale();
 	}
 
-	void setTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
+	void setTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
 		removeScale();
-		Texdef_Assign( m_projection, hShift, vShift, hScale, vScale, rotation );
+		Texdef_Assign( m_projection, hShift, vShift, hScale, vScale, rotation, lightmapscale );
 //		if( hShift || vShift ){
 //			Texdef_normalise( m_projection, m_shader.width(), m_shader.height() );
 //		}
@@ -863,6 +863,7 @@ inline TexdefTypeId BrushType_getTexdefType( EBrushType type ){
 	case eBrushTypeDoom3:
 	case eBrushTypeQuake4:
 		return TEXDEFTYPEID_BRUSHPRIMITIVES;
+	case eBrushTypeValveSource:
 	case eBrushTypeValve220:
 	case eBrushTypeQuake2Valve220:
 	case eBrushTypeQuake3Valve220:
@@ -1218,9 +1219,9 @@ public:
 		texdefChanged();
 	}
 
-	void SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
+	void SetTexdef( const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
 		undoSave();
-		m_texdef.setTexdef( hShift, vShift, hScale, vScale, rotation );
+		m_texdef.setTexdef( hShift, vShift, hScale, vScale, rotation, lightmapscale );
 		texdefChanged();
 	}
 

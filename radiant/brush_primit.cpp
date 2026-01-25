@@ -34,6 +34,7 @@
 
 bp_globals_t g_bp_globals;
 float g_texdef_default_scale;
+float g_texdef_default_lightmapscale;
 
 /*!
    \brief Construct a transform from XYZ space to ST space (3d to 2d).
@@ -358,7 +359,7 @@ void Texdef_Assign( texdef_t& td, const texdef_t& other ){
 }
 
 
-void Texdef_Assign( texdef_t& td, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
+void Texdef_Assign( texdef_t& td, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
 	if( hShift ){
 		td.shift[0] = *hShift;
 	}
@@ -385,6 +386,9 @@ void Texdef_Assign( texdef_t& td, const float* hShift, const float* vShift, cons
 		td.rotate = *rotation;
 		//td.rotate = static_cast<float>( float_to_integer( td.rotate * 100.f ) % 36000 ) / 100.f;
 		td.rotate = fmod( td.rotate, 360.f );
+	}
+	if( lightmapscale ){
+		td.lightmapscale = *lightmapscale;
 	}
 }
 
@@ -1155,7 +1159,7 @@ void Texdef_Assign( TextureProjection& projection, const TextureProjection& othe
 	}
 }
 
-void Texdef_Assign( TextureProjection& projection, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation ){
+void Texdef_Assign( TextureProjection& projection, const float* hShift, const float* vShift, const float* hScale, const float* vScale, const float* rotation, const float* lightmapscale ){
 	if ( g_bp_globals.m_texdefTypeId == TEXDEFTYPEID_BRUSHPRIMITIVES ) {
 		BPTexdef_Assign( projection.m_brushprimit_texdef, hShift, vShift, hScale, vScale, rotation );
 	}
@@ -1164,7 +1168,7 @@ void Texdef_Assign( TextureProjection& projection, const float* hShift, const fl
 		if ( rotation && g_bp_globals.m_texdefTypeId == TEXDEFTYPEID_VALVE ) {
 			Valve220_rotate( projection, *rotation - projection.m_texdef.rotate );
 		}
-		Texdef_Assign( projection.m_texdef, hShift, vShift, hScale, vScale, rotation );
+		Texdef_Assign( projection.m_texdef, hShift, vShift, hScale, vScale, rotation, lightmapscale );
 	}
 }
 
@@ -1278,6 +1282,10 @@ void Texdef_FitTexture( TextureProjection& projection, std::size_t width, std::s
 
 float Texdef_getDefaultTextureScale(){
 	return g_texdef_default_scale;
+}
+
+float Texdef_getDefaultLightmapScale(){
+	return g_texdef_default_lightmapscale;
 }
 
 void TexDef_Construct_Default( TextureProjection& projection ){
