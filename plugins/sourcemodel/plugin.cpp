@@ -61,7 +61,7 @@ class ModelSourceAPI : public TypeSystemRef
 	SourceModelLoader m_modelsource;
 public:
 	typedef ModelLoader Type;
-	STRING_CONSTANT( Name, "sourcemdl" );
+	STRING_CONSTANT( Name, "mdl" );
 
 	ModelSourceAPI(){
 		GlobalFiletypesModule::getTable().addType( Type::Name, Name, filetype_t( "source models", "*.mdl" ) );

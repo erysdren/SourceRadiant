@@ -63,7 +63,7 @@ function(radiant_add_gamepack name)
   shaderpath="$<IF:$<TARGET_PROPERTY:GOLDSRC>,textures,materials>"
   archivetypes="$<IF:$<TARGET_PROPERTY:GOLDSRC>,pak wad,vpk gma gcf>"
   texturetypes="$<IF:$<TARGET_PROPERTY:GOLDSRC>,hlw spr mdl,vtf tth>"
-  modeltypes="$<IF:$<TARGET_PROPERTY:GOLDSRC>,mdl,sourcemdl>"
+  modeltypes="mdl"
   soundtypes="$<IF:$<TARGET_PROPERTY:GOLDSRC>,wav,wav mp3>"
   maptypes="$<IF:$<TARGET_PROPERTY:GOLDSRC>,maphl,mapvmf>"
   shaders="$<IF:$<TARGET_PROPERTY:GOLDSRC>,quake3,source>"
