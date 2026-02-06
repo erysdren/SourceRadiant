@@ -77,7 +77,7 @@ inline void write_angles( const Vector3& angles, Entity* entity ){
 	}
 	else
 	{
-		if ( angles[0] == 0 && angles[1] == 0 ) {
+		if ( angles[0] == 0 && angles[1] == 0 && g_gameType != eGameTypeSource ) {
 			const float yaw = angles[2];
 			entity->setKeyValue( "angles", "" );
 			write_angle( yaw, entity );
