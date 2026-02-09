@@ -2256,6 +2256,24 @@ void Camera_ToggleFarClip(){
 }
 
 
+bool Camera_GetFaceFill(){
+	return g_camwindow_globals_private.m_bFaceFill;
+}
+
+ToggleItem g_getfacefill_item( BoolExportCaller( g_camwindow_globals_private.m_bFaceFill ) );
+
+void Camera_SetFaceFill( bool value ){
+	CamWnd& camwnd = *g_camwnd;
+	g_camwindow_globals_private.m_bFaceFill = value;
+	g_getfacefill_item.update();
+	Camera_updateProjection( camwnd.getCamera() );
+	CamWnd_Update( camwnd );
+}
+
+void Camera_ToggleFaceFill(){
+	Camera_SetFaceFill( !Camera_GetFaceFill() );
+}
+
 void CamWnd_constructToolbar( QToolBar* toolbar ){
 	toolbar_append_toggle_button( toolbar, "Cubic clip the camera view", "view_cubicclipping.png", "ToggleCubicClip" );
 }
@@ -2489,6 +2507,7 @@ void CamWnd_Construct(){
 	GlobalCommands_insert( "CameraFocusOnSelected", makeCallbackF( GlobalCamera_FocusOnSelected ), QKeySequence( "Tab" ) );
 
 	GlobalToggles_insert( "ToggleCubicClip", makeCallbackF( Camera_ToggleFarClip ), ToggleItem::AddCallbackCaller( g_getfarclip_item ), QKeySequence( "Ctrl+\\" ) );
+	GlobalToggles_insert( "ToggleFaceFill", makeCallbackF( Camera_ToggleFaceFill ), ToggleItem::AddCallbackCaller( g_getfacefill_item ) );
 	GlobalCommands_insert( "CubicClipZoomIn", makeCallbackF( Camera_CubeIn ), QKeySequence( "Ctrl+[" ) );
 	GlobalCommands_insert( "CubicClipZoomOut", makeCallbackF( Camera_CubeOut ), QKeySequence( "Ctrl+]" ) );
 
