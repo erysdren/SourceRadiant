@@ -429,6 +429,19 @@ public:
 		writer["versioninfo"]["formatversion"] = 100; // not sure what this corresponds to
 		writer["versioninfo"]["prefab"] = 0; // FIXME: make configurable
 
+#if 0
+		// write visgroups
+		auto* layers = Node_getLayers( root );
+		auto& visgroups = writer.addChild("visgroups");
+		layers->update_ownIndices();
+		layers->forEach([&]( Layer& layer ){
+			auto& visgroup = visgroups.addChild("visgroup");
+			visgroup["name"] = layer.m_name.c_str();
+			visgroup["visgroupid"] = layer.m_ownIndex;
+			visgroup["color"] = std::format("{} {} {}", layer.m_color[0], layer.m_color[1], layer.m_color[2]);
+		});
+#endif
+
 		// traverse tree
 		traverse(root, MapVMFWalker( writer, writer.getChildCount() ));
 
