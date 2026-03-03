@@ -27,7 +27,6 @@ add_executable(q3map2
 	${PROJECT_SOURCE_DIR}/tools/quake3/common/cmdlib.cpp
 	${PROJECT_SOURCE_DIR}/tools/quake3/common/qimagelib.cpp
 	${PROJECT_SOURCE_DIR}/tools/quake3/common/inout.cpp
-	${PROJECT_SOURCE_DIR}/tools/quake3/common/jpeg.cpp
 	${PROJECT_SOURCE_DIR}/tools/quake3/common/md4.cpp
 	${PROJECT_SOURCE_DIR}/tools/quake3/common/mutex.cpp
 	${PROJECT_SOURCE_DIR}/tools/quake3/common/polylib.cpp
@@ -88,7 +87,6 @@ endif()
 target_link_libraries(q3map2 PRIVATE l_net filematch ddslib etclib)
 target_link_libraries(q3map2 PRIVATE LibXml2::LibXml2)
 target_link_libraries(q3map2 PRIVATE assimp)
-target_link_libraries(q3map2 PRIVATE PNG::PNG $<TARGET_NAME_IF_EXISTS:JPEG::JPEG>)
 target_include_directories(q3map2 PRIVATE
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/libs
@@ -100,7 +98,6 @@ target_compile_definitions(q3map2 PRIVATE
 	RADIANT_MINOR_VERSION=\"${RADIANT_MINOR_VERSION}\"
 	RADIANT_ABOUTMSG=\"${RADIANT_ABOUTMSG}\"
 	Q3MAP_VERSION=\"${Q3MAP_VERSION}\"
-	$<IF:$<TARGET_EXISTS:JPEG::JPEG>,,NO_JPEG>
 	NO_WEBP
 	NO_CRN
 )
