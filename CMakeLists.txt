@@ -25,7 +25,7 @@ include(FetchContent)
 FetchContent_Declare(
 	CMP_Compressonator
 	GIT_REPOSITORY https://github.com/craftablescience/compressonator
-	GIT_TAG 4d7469c41629f19b7d889592cab8a4115931339c
+	GIT_TAG fac3a97ccb25bed3137e9130707d5bb05dfe0bcb
 	EXCLUDE_FROM_ALL
 )
 FetchContent_MakeAvailable(CMP_Compressonator)
