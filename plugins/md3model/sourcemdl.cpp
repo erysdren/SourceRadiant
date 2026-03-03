@@ -19,7 +19,7 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "mdl.h"
+#include "sourcemdl.h"
 
 #include "ifilesystem.h"
 #include "imodel.h"
@@ -119,12 +119,11 @@ static void processMesh(mdlpp::StudioModel& mdl, mdlpp::BakedModel& baked, mdlpp
 #define MAX_PATH 260
 #endif
 
-scene::Node& loadSourceModel( ArchiveFile& mdlFile ) {
+scene::Node& loadSourceMDL( unsigned char* mdlBuffer, int mdlBufferLength, const char* mdlFilename ) {
 	auto modelNode = new ModelNode();
 
 	char vtxFilename[MAX_PATH];
 	char vvdFilename[MAX_PATH];
-	const char *mdlFilename = mdlFile.getName();
 
 	// glean base filename
 	bool appendExtOnly = false;
@@ -177,13 +176,12 @@ scene::Node& loadSourceModel( ArchiveFile& mdlFile ) {
 	}
 
 	// get data
-	ScopedArchiveBuffer mdlBuffer( mdlFile );
 	ScopedArchiveBuffer vtxBuffer( *vtxFile );
 	ScopedArchiveBuffer vvdBuffer( *vvdFile );
 
 	// parse data
 	mdlpp::StudioModel mdl;
-	if ( !mdl.open( mdlBuffer.buffer, mdlBuffer.length, vtxBuffer.buffer, vtxBuffer.length, vvdBuffer.buffer, vvdBuffer.length ) ) {
+	if ( !mdl.open( mdlBuffer, mdlBufferLength, vtxBuffer.buffer, vtxBuffer.length, vvdBuffer.buffer, vvdBuffer.length ) ) {
 		vtxFile->release();
 		vvdFile->release();
 		Model_constructNull( modelNode->model() );

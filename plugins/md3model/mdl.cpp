@@ -20,6 +20,7 @@
  */
 
 #include "mdl.h"
+#include "sourcemdl.h"
 
 #include "ifilesystem.h"
 #include "imodel.h"
@@ -230,5 +231,8 @@ scene::Node& MDLModel_fromBuffer( unsigned char* buffer, const char* name ){
 
 scene::Node& loadMDLModel( ArchiveFile& file ){
 	ScopedArchiveBuffer buffer( file );
+	if ( ident_equal( buffer.buffer, SOURCE_MDL_IDENT ) ) {
+		return loadSourceMDL( buffer.buffer, buffer.length, file.getName() );
+	}
 	return MDLModel_fromBuffer( buffer.buffer, file.getName() );
 }

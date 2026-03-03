@@ -19,4 +19,12 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "model.h"
+#pragma once
+
+const unsigned char SOURCE_MDL_IDENT[4] = { 'I', 'D', 'S', 'T', };
+
+namespace scene {
+class Node;
+}
+class ArchiveFile;
+scene::Node& loadSourceMDL( unsigned char* mdlBuffer, int mdlBufferLength, const char* mdlFilename );
