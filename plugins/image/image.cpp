@@ -27,7 +27,7 @@
 #include "tga.h"
 #include "bmp.h"
 #include "pcx.h"
-
+#include "stb.h"
 
 #include "modulesystem/singletonmodule.h"
 
@@ -55,8 +55,6 @@ typedef SingletonModule<ImageTGAAPI> ImageTGAModule;
 ImageTGAModule g_ImageTGAModule;
 
 
-#ifndef NO_JPEG
-#include "jpeg.h"
 class ImageJPGAPI
 {
 	_QERPlugImageTable m_imagejpg;
@@ -75,7 +73,26 @@ public:
 typedef SingletonModule<ImageJPGAPI, ImageDependencies> ImageJPGModule;
 
 ImageJPGModule g_ImageJPGModule;
-#endif
+
+
+class ImagePNGAPI
+{
+	_QERPlugImageTable m_imagepng;
+public:
+	typedef _QERPlugImageTable Type;
+	STRING_CONSTANT( Name, "png" );
+
+	ImagePNGAPI(){
+		m_imagepng.loadImage = LoadPNG;
+	}
+	_QERPlugImageTable* getTable(){
+		return &m_imagepng;
+	}
+};
+
+typedef SingletonModule<ImagePNGAPI, ImageDependencies> ImagePNGModule;
+
+ImagePNGModule g_ImagePNGModule;
 
 
 class ImageBMPAPI
@@ -212,9 +229,8 @@ extern "C" void RADIANT_DLLEXPORT Radiant_RegisterModules( ModuleServer& server 
 	initialiseModule( server );
 
 	g_ImageTGAModule.selfRegister();
-#ifndef NO_JPEG
 	g_ImageJPGModule.selfRegister();
-#endif
+	g_ImagePNGModule.selfRegister();
 	g_ImageBMPModule.selfRegister();
 	g_ImagePCXModule.selfRegister();
 #ifndef NO_DDS

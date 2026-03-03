@@ -63,39 +63,6 @@ if(NOT LibXml2_FOUND)
 	FetchContent_MakeAvailable(libxml2)
 endif()
 
-find_package(JPEG)
-if(NOT JPEG_FOUND)
-	FetchContent_Declare(
-		libjpeg-turbo
-		GIT_REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git
-		GIT_TAG "3.1.3"
-		EXCLUDE_FROM_ALL
-	)
-	set(ENABLE_SHARED OFF CACHE BOOL "" FORCE)
-	set(WITH_TOOLS OFF CACHE BOOL "" FORCE)
-	set(WITH_TESTS OFF CACHE BOOL "" FORCE)
-	set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
-	set(REQUIRE_SIMD OFF CACHE BOOL "" FORCE)
-	FetchContent_MakeAvailable(libjpeg-turbo)
-	add_library(JPEG::JPEG ALIAS jpeg-static)
-endif()
-
-find_package(PNG)
-if(NOT PNG_FOUND)
-	FetchContent_Declare(
-		libpng
-		GIT_REPOSITORY https://github.com/pnggroup/libpng.git
-		GIT_TAG "v1.6.53"
-		EXCLUDE_FROM_ALL
-	)
-	set(PNG_SHARED OFF CACHE BOOL "" FORCE)
-	set(PNG_TOOLS OFF CACHE BOOL "" FORCE)
-	set(PNG_TESTS OFF CACHE BOOL "" FORCE)
-	set(PNG_STATIC ON CACHE BOOL "" FORCE)
-	FetchContent_MakeAvailable(libpng)
-	add_library(PNG::PNG ALIAS png_static)
-endif()
-
 if(RADIANT_USE_ASSIMP)
 	FetchContent_Declare(
 		assimp
@@ -500,26 +467,19 @@ add_module(entity
 )
 target_link_libraries(entity PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 
-add_module(imagepng
-	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/imagepng/plugin.cpp
-)
-target_link_libraries(imagepng PRIVATE PNG::PNG)
-
 add_module(image
 	SOURCES
 		${PROJECT_SOURCE_DIR}/plugins/image/bmp.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/crn.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/dds.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/image.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/jpeg.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/ktx.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/pcx.cpp
+		${PROJECT_SOURCE_DIR}/plugins/image/stb.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/tga.cpp
 		${PROJECT_SOURCE_DIR}/plugins/image/webp.cpp
 )
-target_link_libraries(image PRIVATE $<TARGET_NAME_IF_EXISTS:JPEG::JPEG>)
-target_compile_definitions(image PRIVATE NO_WEBP NO_KTX $<IF:$<TARGET_EXISTS:JPEG::JPEG>,,NO_JPEG> NO_DDS NO_CRN)
+target_compile_definitions(image PRIVATE NO_WEBP NO_KTX NO_DDS NO_CRN)
 
 add_module(imagevtf
 	SOURCES
