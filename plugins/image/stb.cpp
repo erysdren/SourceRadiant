@@ -56,6 +56,8 @@ Image* LoadSTB( const byte* buffer, const int length ){
 
 	memcpy(dest, pixels, w * h * 4);
 
+	stbi_image_free(pixels);
+
 	return image;
 }
 
