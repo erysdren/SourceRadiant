@@ -102,6 +102,7 @@ considered **!!EXPERIMENTAL!!**
 	- Support general prefabs loaded from a folder
 - Parse TrenchBroom-specific map keys
 	- Convert TrenchBroom map layers into Radiant map layers
+- Replace the external PNG and JPG loaders with `stb_image` for less dependencies
 
 ### Random feature highlights
 
