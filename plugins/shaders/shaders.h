@@ -39,7 +39,9 @@ enum ShaderLanguage
 	SHADERLANGUAGE_QUAKE3,
 	SHADERLANGUAGE_DOOM3,
 	SHADERLANGUAGE_QUAKE4,
+#ifndef NO_SOURCEVMT
 	SHADERLANGUAGE_SOURCE
+#endif
 };
 
 extern const char* g_shadersExtension;
