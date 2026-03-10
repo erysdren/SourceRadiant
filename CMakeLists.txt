@@ -626,12 +626,6 @@ add_plugin(prtview
 )
 target_link_libraries(prtview PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 
-add_plugin(shaderplug
-	SOURCES
-		${PROJECT_SOURCE_DIR}/contrib/shaderplug/shaderplug.cpp
-)
-target_link_libraries(shaderplug PRIVATE LibXml2::LibXml2)
-
 add_plugin(sunplug
 	SOURCES
 		${PROJECT_SOURCE_DIR}/contrib/sunplug/sunplug.cpp
