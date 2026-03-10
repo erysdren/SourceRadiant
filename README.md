@@ -23,6 +23,7 @@ SourceRadiant is a fork of NetRadiant-custom ([GtkRadiant](https://icculus.org/g
 - [MRVN-Radiant](https://github.com/MRVN-Radiant/MRVN-Radiant)
 - [GtkRadiant](https://icculus.org/gtkradiant/)
 - [FTEQW](https://github.com/fte-team/fteqw)
+- [Sean Barrett](https://github.com/nothings/stb)
 
 ## Supported games
 
