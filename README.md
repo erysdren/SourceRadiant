@@ -105,6 +105,7 @@ considered **!!EXPERIMENTAL!!**
 	- Convert TrenchBroom map layers into Radiant map layers
 - ~~Replace the external PNG and JPG loaders with `stb_image` for less dependencies~~
 - Replace `libxml2` with [`pugixml`](https://pugixml.org/)
+- See if a web-based version (with Emscripten and WASM) is possible
 
 ### Random feature highlights
 
