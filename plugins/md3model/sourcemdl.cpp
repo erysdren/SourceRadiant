@@ -19,6 +19,8 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef NO_SOURCEMDL
+
 #include "sourcemdl.h"
 
 #include "ifilesystem.h"
@@ -204,3 +206,5 @@ scene::Node& loadSourceMDL( unsigned char* mdlBuffer, int mdlBufferLength, const
 
 	return modelNode->node();
 }
+
+#endif // NO_SOURCEMDL

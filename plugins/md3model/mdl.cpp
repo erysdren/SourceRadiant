@@ -231,8 +231,10 @@ scene::Node& MDLModel_fromBuffer( unsigned char* buffer, const char* name ){
 
 scene::Node& loadMDLModel( ArchiveFile& file ){
 	ScopedArchiveBuffer buffer( file );
+#ifndef NO_SOURCEMDL
 	if ( ident_equal( buffer.buffer, SOURCE_MDL_IDENT ) ) {
 		return loadSourceMDL( buffer.buffer, buffer.length, file.getName() );
 	}
+#endif
 	return MDLModel_fromBuffer( buffer.buffer, file.getName() );
 }

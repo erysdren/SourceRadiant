@@ -21,6 +21,8 @@
 
 #pragma once
 
+#ifndef NO_SOURCEMDL
+
 const unsigned char SOURCE_MDL_IDENT[4] = { 'I', 'D', 'S', 'T', };
 
 namespace scene {
@@ -28,3 +30,5 @@ class Node;
 }
 class ArchiveFile;
 scene::Node& loadSourceMDL( unsigned char* mdlBuffer, int mdlBufferLength, const char* mdlFilename );
+
+#endif // NO_SOURCEMDL
