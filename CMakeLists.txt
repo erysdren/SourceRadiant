@@ -607,37 +607,6 @@ function(add_plugin name)
 	)
 endfunction()
 
-if(0)
-add_plugin(bobtoolz
-	SOURCES
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/bobToolz-GTK.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/bsploader.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/cportals.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DBobView.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DBrush.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DEntity.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DEPair.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/dialogs/dialogs-gtk.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DMap.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DPatch.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DPlane.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DPoint.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DShape.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DTrainDrawer.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DTreePlanter.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DVisDrawer.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/DWinding.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/funchandlers-GTK.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/lists.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/misc.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/ScriptParser.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/shapes.cpp
-		${PROJECT_SOURCE_DIR}/contrib/bobtoolz/visfind.cpp
-)
-target_link_libraries(bobtoolz PRIVATE commandlib mathlib)
-target_link_libraries(bobtoolz PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
-endif()
-
 add_plugin(brushexport
 	SOURCES
 		${PROJECT_SOURCE_DIR}/contrib/brushexport/callbacks.cpp
