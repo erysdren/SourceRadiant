@@ -859,9 +859,9 @@ void UpdateAllWindows(){
 }
 
 
-LatchedInt g_Layout_viewStyle( 0, "Window Layout" );
-LatchedBool g_Layout_enableDetachableMenus( true, "Detachable Menus" );
-LatchedBool g_Layout_builtInGroupDialog( false, "Built-In Group Dialog" );
+LatchedInt g_Layout_viewStyle( 2, "Window Layout" );
+LatchedBool g_Layout_enableDetachableMenus( false, "Detachable Menus" );
+LatchedBool g_Layout_builtInGroupDialog( true, "Built-In Group Dialog" );
 
 
 
