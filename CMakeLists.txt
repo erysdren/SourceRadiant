@@ -414,108 +414,108 @@ endfunction()
 
 add_module(archivepak
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/archivepak/archive.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivepak/pak.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivepak/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivepak/archive.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivepak/pak.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivepak/plugin.cpp
 )
 
 add_module(archivevpk
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/archivevpk/archive.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivevpk/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivevpk/archive.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivevpk/plugin.cpp
 )
 target_link_libraries(archivevpk PRIVATE sourcepp::vpkpp)
 set_target_properties(sourcepp_vpkpp miniz minizip-ng zlib-ng bzip2 liblzma sourcepp_crypto sourcepp_parser sourcepp PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_module(archivezip
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/archivezip/archive.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivezip/pkzip.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivezip/plugin.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivezip/zlibstream.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivezip/archive.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivezip/pkzip.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivezip/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivezip/zlibstream.cpp
 )
 
 add_module(archivewad
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/archivewad/archive.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivewad/plugin.cpp
-		${PROJECT_SOURCE_DIR}/plugins/archivewad/wad.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivewad/archive.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivewad/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/archivewad/wad.cpp
 )
 
 add_module(entity
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/entity/angle.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/angles.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/colour.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/doom3group.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/eclassmodel.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/entity.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/filters.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/generic.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/group.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/light.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/miscmodel.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/model.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/modelskinkey.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/namedentity.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/origin.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/plugin.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/rotation.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/scale.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/skincache.cpp
-		${PROJECT_SOURCE_DIR}/plugins/entity/targetable.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/angle.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/angles.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/colour.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/doom3group.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/eclassmodel.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/entity.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/filters.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/generic.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/group.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/light.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/miscmodel.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/model.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/modelskinkey.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/namedentity.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/origin.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/rotation.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/scale.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/skincache.cpp
+		${PROJECT_SOURCE_DIR}/modules/entity/targetable.cpp
 )
 target_link_libraries(entity PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 
 add_module(image
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/image/bmp.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/crn.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/dds.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/image.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/ktx.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/pcx.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/stb.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/tga.cpp
-		${PROJECT_SOURCE_DIR}/plugins/image/webp.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/bmp.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/crn.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/dds.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/image.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/ktx.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/pcx.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/stb.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/tga.cpp
+		${PROJECT_SOURCE_DIR}/modules/image/webp.cpp
 )
 target_compile_definitions(image PRIVATE NO_WEBP NO_KTX NO_DDS NO_CRN)
 
 add_module(imagevtf
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/imagevtf/imagevtf.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imagevtf/vtf.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagevtf/imagevtf.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagevtf/vtf.cpp
 )
 target_link_libraries(imagevtf PRIVATE sourcepp::vtfpp)
 set_target_properties(sourcepp_vtfpp sourcepp_compression PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_module(imagepvr
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/imagepvr/imagepvr.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imagepvr/pvr.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagepvr/imagepvr.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagepvr/pvr.cpp
 )
 
 add_module(imagehl
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/imagehl/hlw.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imagehl/imagehl.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imagehl/mip.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imagehl/sprite.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagehl/hlw.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagehl/imagehl.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagehl/mip.cpp
+		${PROJECT_SOURCE_DIR}/modules/imagehl/sprite.cpp
 )
 
 add_module(imageq2
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/imageq2/imageq2.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imageq2/wal.cpp
-		${PROJECT_SOURCE_DIR}/plugins/imageq2/wal32.cpp
+		${PROJECT_SOURCE_DIR}/modules/imageq2/imageq2.cpp
+		${PROJECT_SOURCE_DIR}/modules/imageq2/wal.cpp
+		${PROJECT_SOURCE_DIR}/modules/imageq2/wal32.cpp
 )
 
 if(RADIANT_USE_ASSIMP)
 	add_module(assmodel
 		SOURCES
-			${PROJECT_SOURCE_DIR}/plugins/assmodel/mdlimage.cpp
-			${PROJECT_SOURCE_DIR}/plugins/assmodel/model.cpp
-			${PROJECT_SOURCE_DIR}/plugins/assmodel/plugin.cpp
+			${PROJECT_SOURCE_DIR}/modules/assmodel/mdlimage.cpp
+			${PROJECT_SOURCE_DIR}/modules/assmodel/model.cpp
+			${PROJECT_SOURCE_DIR}/modules/assmodel/plugin.cpp
 	)
 	target_link_libraries(assmodel PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 	target_link_libraries(assmodel PRIVATE assimp)
@@ -523,18 +523,18 @@ endif()
 
 add_module(model
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/model/md2.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/md3.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/md3normals.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/md5.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/mdc.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/mdl.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/sourcemdl.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/mdlformat.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/mdlimage.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/mdlnormals.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/model.cpp
-		${PROJECT_SOURCE_DIR}/plugins/model/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/md2.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/md3.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/md3normals.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/md5.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/mdc.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/mdl.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/sourcemdl.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/mdlformat.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/mdlimage.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/mdlnormals.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/model.cpp
+		${PROJECT_SOURCE_DIR}/modules/model/plugin.cpp
 )
 target_link_libraries(model PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 target_link_libraries(model PRIVATE sourcepp::mdlpp)
@@ -542,29 +542,29 @@ set_target_properties(sourcepp_mdlpp PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_module(mapq3
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/mapq3/parse.cpp
-		${PROJECT_SOURCE_DIR}/plugins/mapq3/plugin.cpp
-		${PROJECT_SOURCE_DIR}/plugins/mapq3/write.cpp
+		${PROJECT_SOURCE_DIR}/modules/mapq3/parse.cpp
+		${PROJECT_SOURCE_DIR}/modules/mapq3/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/mapq3/write.cpp
 )
 
 add_module(mapvmf
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/mapvmf/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/mapvmf/plugin.cpp
 )
 target_link_libraries(mapvmf PRIVATE sourcepp::kvpp)
 
 add_module(mapxml
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/mapxml/plugin.cpp
-		${PROJECT_SOURCE_DIR}/plugins/mapxml/xmlparse.cpp
-		${PROJECT_SOURCE_DIR}/plugins/mapxml/xmlwrite.cpp
+		${PROJECT_SOURCE_DIR}/modules/mapxml/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/mapxml/xmlparse.cpp
+		${PROJECT_SOURCE_DIR}/modules/mapxml/xmlwrite.cpp
 )
 target_link_libraries(mapxml PRIVATE LibXml2::LibXml2)
 
 add_module(shaders
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/shaders/plugin.cpp
-		${PROJECT_SOURCE_DIR}/plugins/shaders/shaders.cpp
+		${PROJECT_SOURCE_DIR}/modules/shaders/plugin.cpp
+		${PROJECT_SOURCE_DIR}/modules/shaders/shaders.cpp
 )
 target_link_libraries(shaders PRIVATE commandlib)
 target_link_libraries(shaders PRIVATE LibXml2::LibXml2)
@@ -573,9 +573,9 @@ set_target_properties(sourcepp_kvpp PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_module(vfspk3
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/vfspk3/archive.cpp
-		${PROJECT_SOURCE_DIR}/plugins/vfspk3/vfs.cpp
-		${PROJECT_SOURCE_DIR}/plugins/vfspk3/vfspk3.cpp
+		${PROJECT_SOURCE_DIR}/modules/vfspk3/archive.cpp
+		${PROJECT_SOURCE_DIR}/modules/vfspk3/vfs.cpp
+		${PROJECT_SOURCE_DIR}/modules/vfspk3/vfspk3.cpp
 )
 target_link_libraries(vfspk3 PRIVATE LibXml2::LibXml2)
 target_link_libraries(vfspk3 PRIVATE filematch)
@@ -617,52 +617,52 @@ endfunction()
 
 add_plugin(brushexport
 	SOURCES
-		${PROJECT_SOURCE_DIR}/contrib/brushexport/callbacks.cpp
-		${PROJECT_SOURCE_DIR}/contrib/brushexport/export.cpp
-		${PROJECT_SOURCE_DIR}/contrib/brushexport/interface.cpp
-		${PROJECT_SOURCE_DIR}/contrib/brushexport/plugin.cpp
+		${PROJECT_SOURCE_DIR}/plugins/brushexport/callbacks.cpp
+		${PROJECT_SOURCE_DIR}/plugins/brushexport/export.cpp
+		${PROJECT_SOURCE_DIR}/plugins/brushexport/interface.cpp
+		${PROJECT_SOURCE_DIR}/plugins/brushexport/plugin.cpp
 )
 target_link_libraries(brushexport PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 
 add_plugin(prtview
 	SOURCES
-		${PROJECT_SOURCE_DIR}/contrib/prtview/AboutDialog.cpp
-		${PROJECT_SOURCE_DIR}/contrib/prtview/ConfigDialog.cpp
-		${PROJECT_SOURCE_DIR}/contrib/prtview/LoadPortalFileDialog.cpp
-		${PROJECT_SOURCE_DIR}/contrib/prtview/portals.cpp
-		${PROJECT_SOURCE_DIR}/contrib/prtview/prtview.cpp
+		${PROJECT_SOURCE_DIR}/plugins/prtview/AboutDialog.cpp
+		${PROJECT_SOURCE_DIR}/plugins/prtview/ConfigDialog.cpp
+		${PROJECT_SOURCE_DIR}/plugins/prtview/LoadPortalFileDialog.cpp
+		${PROJECT_SOURCE_DIR}/plugins/prtview/portals.cpp
+		${PROJECT_SOURCE_DIR}/plugins/prtview/prtview.cpp
 )
 target_link_libraries(prtview PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 
 add_plugin(sunplug
 	SOURCES
-		${PROJECT_SOURCE_DIR}/contrib/sunplug/sunplug.cpp
+		${PROJECT_SOURCE_DIR}/plugins/sunplug/sunplug.cpp
 )
 target_link_libraries(sunplug PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 
 add_plugin(ufoaiplug
 	SOURCES
-		${PROJECT_SOURCE_DIR}/contrib/ufoaiplug/ufoai_filters.cpp
-		${PROJECT_SOURCE_DIR}/contrib/ufoaiplug/ufoai_gtk.cpp
-		${PROJECT_SOURCE_DIR}/contrib/ufoaiplug/ufoai_level.cpp
-		${PROJECT_SOURCE_DIR}/contrib/ufoaiplug/ufoai.cpp
+		${PROJECT_SOURCE_DIR}/plugins/ufoaiplug/ufoai_filters.cpp
+		${PROJECT_SOURCE_DIR}/plugins/ufoaiplug/ufoai_gtk.cpp
+		${PROJECT_SOURCE_DIR}/plugins/ufoaiplug/ufoai_level.cpp
+		${PROJECT_SOURCE_DIR}/plugins/ufoaiplug/ufoai.cpp
 )
 target_link_libraries(ufoaiplug PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 
 add_plugin(meshtex
 	SOURCES
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/GeneralFunctionDialog.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/GenericDialog.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/GenericMainMenu.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/GenericPluginUI.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/GetInfoDialog.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/MainMenu.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/MeshEntity.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/MeshVisitor.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/PluginModule.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/PluginRegistration.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/PluginUI.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/RefCounted.cpp
-		${PROJECT_SOURCE_DIR}/contrib/meshtex/SetScaleDialog.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/GeneralFunctionDialog.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/GenericDialog.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/GenericMainMenu.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/GenericPluginUI.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/GetInfoDialog.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/MainMenu.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/MeshEntity.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/MeshVisitor.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/PluginModule.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/PluginRegistration.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/PluginUI.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/RefCounted.cpp
+		${PROJECT_SOURCE_DIR}/plugins/meshtex/SetScaleDialog.cpp
 )
 target_link_libraries(meshtex PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)

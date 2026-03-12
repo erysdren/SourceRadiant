@@ -348,7 +348,7 @@ public:
 
 
 
-#include "../plugins/entity/model.h"
+#include "../modules/entity/model.h"
 
 class ModelNode final :
 	public scene::Node::Symbiot,
