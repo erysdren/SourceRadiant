@@ -169,6 +169,18 @@ target_include_directories(filematch PRIVATE
 
 set_property(TARGET filematch PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# ddslib
+
+add_library(ddslib STATIC
+	${PROJECT_SOURCE_DIR}/libs/ddslib/ddslib.c
+)
+
+target_include_directories(ddslib PUBLIC
+	${PROJECT_SOURCE_DIR}/libs/ddslib
+)
+
+set_property(TARGET ddslib PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 # mathlib
 
 add_library(mathlib STATIC
