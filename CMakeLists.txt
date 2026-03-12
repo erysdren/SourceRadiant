@@ -25,7 +25,7 @@ include(FetchContent)
 FetchContent_Declare(
 	CMP_Compressonator
 	GIT_REPOSITORY https://github.com/craftablescience/compressonator
-	GIT_TAG fac3a97ccb25bed3137e9130707d5bb05dfe0bcb
+	GIT_TAG f9c8c58fe753108c260b33ec32301805c33c08b7
 	EXCLUDE_FROM_ALL
 )
 FetchContent_MakeAvailable(CMP_Compressonator)
@@ -35,7 +35,7 @@ set_target_properties(CMP_Core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 FetchContent_Declare(
 	sourcepp
 	GIT_REPOSITORY https://github.com/craftablescience/sourcepp.git
-	GIT_TAG "v2026.2.18"
+	GIT_TAG "v2026.3.9"
 	EXCLUDE_FROM_ALL
 )
 
