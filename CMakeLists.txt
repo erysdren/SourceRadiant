@@ -171,15 +171,16 @@ set_property(TARGET filematch PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # ddslib
 
-add_library(ddslib STATIC
-	${PROJECT_SOURCE_DIR}/libs/ddslib/ddslib.c
-)
-
-target_include_directories(ddslib PUBLIC
-	${PROJECT_SOURCE_DIR}/libs/ddslib
-)
-
+add_library(ddslib STATIC ${PROJECT_SOURCE_DIR}/libs/ddslib/ddslib.c)
+target_include_directories(ddslib PUBLIC ${PROJECT_SOURCE_DIR}/libs/ddslib)
 set_property(TARGET ddslib PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# etclib
+
+add_library(etclib STATIC ${PROJECT_SOURCE_DIR}/libs/etclib/etclib.c)
+target_include_directories(etclib PRIVATE ${PROJECT_SOURCE_DIR}/libs)
+target_include_directories(etclib PUBLIC ${PROJECT_SOURCE_DIR}/libs/etclib)
+set_property(TARGET etclib PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # mathlib
 
