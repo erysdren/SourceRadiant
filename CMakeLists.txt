@@ -521,23 +521,23 @@ if(RADIANT_USE_ASSIMP)
 	target_link_libraries(assmodel PRIVATE assimp)
 endif()
 
-add_module(md3model
+add_module(model
 	SOURCES
-		${PROJECT_SOURCE_DIR}/plugins/md3model/md2.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/md3.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/md3normals.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/md5.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/mdc.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/mdl.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/sourcemdl.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/mdlformat.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/mdlimage.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/mdlnormals.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/model.cpp
-		${PROJECT_SOURCE_DIR}/plugins/md3model/plugin.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/md2.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/md3.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/md3normals.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/md5.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/mdc.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/mdl.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/sourcemdl.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/mdlformat.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/mdlimage.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/mdlnormals.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/model.cpp
+		${PROJECT_SOURCE_DIR}/plugins/model/plugin.cpp
 )
-target_link_libraries(md3model PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
-target_link_libraries(md3model PRIVATE sourcepp::mdlpp)
+target_link_libraries(model PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
+target_link_libraries(model PRIVATE sourcepp::mdlpp)
 set_target_properties(sourcepp_mdlpp PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_module(mapq3
