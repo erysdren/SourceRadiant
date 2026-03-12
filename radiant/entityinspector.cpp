@@ -1471,6 +1471,8 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 	GlobalSelectionSystem().addSelectionChangeCallback( EntityInspectorSelectionChangedCaller() );
 	GlobalEntityCreator().setKeyValueChangedFunc( EntityInspector_keyValueChanged );
 
+	splitter->setChildrenCollapsible( false );
+
 	g_guiSettings.addSplitter( splitter, "EntityInspector/splitter", { 55, 175, 255, 255 } );
 
 	return splitter;
