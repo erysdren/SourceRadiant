@@ -180,6 +180,12 @@ target_include_directories(crnlib PUBLIC ${PROJECT_SOURCE_DIR}/libs/crnlib)
 target_link_libraries(crnlib PRIVATE ddslib)
 set_property(TARGET crnlib PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# webplib
+
+add_library(webplib STATIC ${PROJECT_SOURCE_DIR}/libs/webplib/webplib.cpp)
+target_include_directories(webplib PUBLIC ${PROJECT_SOURCE_DIR}/libs/webplib)
+set_property(TARGET webplib PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 # mathlib
 
 add_library(mathlib STATIC
