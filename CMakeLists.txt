@@ -152,21 +152,12 @@ target_link_libraries(xmllib PRIVATE LibXml2::LibXml2)
 
 # quickhull
 
-add_library(quickhull STATIC
-	${PROJECT_SOURCE_DIR}/libs/quickhull/QuickHull.cpp
-)
+add_library(quickhull STATIC ${PROJECT_SOURCE_DIR}/libs/quickhull/QuickHull.cpp)
 
 # filematch
 
-add_library(filematch STATIC
-	${PROJECT_SOURCE_DIR}/libs/filematch.c
-)
-
-target_include_directories(filematch PRIVATE
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/libs
-)
-
+add_library(filematch STATIC ${PROJECT_SOURCE_DIR}/libs/filematch/filematch.c)
+target_include_directories(filematch PUBLIC ${PROJECT_SOURCE_DIR}/libs/filematch)
 set_property(TARGET filematch PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # ddslib
