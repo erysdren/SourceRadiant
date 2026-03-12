@@ -129,7 +129,7 @@ add_library(l_net STATIC
 )
 
 target_include_directories(l_net PRIVATE
-	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/libs/l_net
 	${PROJECT_SOURCE_DIR}/libs
 )
 
@@ -172,6 +172,13 @@ add_library(etclib STATIC ${PROJECT_SOURCE_DIR}/libs/etclib/etclib.c)
 target_include_directories(etclib PRIVATE ${PROJECT_SOURCE_DIR}/libs)
 target_include_directories(etclib PUBLIC ${PROJECT_SOURCE_DIR}/libs/etclib)
 set_property(TARGET etclib PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# crnlib
+
+add_library(crnlib STATIC ${PROJECT_SOURCE_DIR}/libs/crnlib/crnlib.cpp)
+target_include_directories(crnlib PUBLIC ${PROJECT_SOURCE_DIR}/libs/crnlib)
+target_link_libraries(crnlib PRIVATE ddslib)
+set_property(TARGET crnlib PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # mathlib
 

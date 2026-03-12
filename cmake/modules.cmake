@@ -100,8 +100,8 @@ add_module(image
 		${PROJECT_SOURCE_DIR}/modules/image/tga.cpp
 		${PROJECT_SOURCE_DIR}/modules/image/webp.cpp
 )
-target_compile_definitions(image PRIVATE NO_WEBP NO_CRN)
-target_link_libraries(image PRIVATE ddslib etclib)
+target_compile_definitions(image PRIVATE NO_WEBP)
+target_link_libraries(image PRIVATE ddslib etclib crnlib)
 
 add_module(imagevtf
 	SOURCES
