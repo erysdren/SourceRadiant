@@ -82,6 +82,7 @@ void Sys_LogFile( bool enable ){
 }
 
 QPlainTextEdit* g_console = 0;
+QFont* g_console_font = nullptr;
 
 class QPlainTextEdit_console : public QPlainTextEdit
 {
@@ -103,12 +104,18 @@ QWidget* Console_constructWindow(){
 	text->setMinimumHeight( 10 );
 	text->setFocusPolicy( Qt::FocusPolicy::NoFocus );
 
+	g_console_font = new QFont;
+	g_console_font->setFamily("monospace");
+	g_console_font->setFixedPitch( true );
+	g_console_font->setStyleHint( QFont::Monospace );
+
 	{
 		g_console = text;
+		g_console->setFont( *g_console_font );
 
 		//globalExtendedASCIICharacterSet().print();
 
-		text->connect( text, &QObject::destroyed, [](){ g_console = nullptr; } );
+		text->connect( text, &QObject::destroyed, [](){ g_console = nullptr; delete g_console_font; g_console_font = nullptr; } );
 	}
 
 	return text;
