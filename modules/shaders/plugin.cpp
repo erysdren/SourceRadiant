@@ -60,6 +60,9 @@ public:
 		g_shadersExtension = "shader";
 		g_shadersDirectory = "scripts/";
 		g_texturePrefix = "textures/";
+		g_enableDefaultShaders = true;
+		g_shaderLanguage = SHADERLANGUAGE_QUAKE3;
+		g_useShaderList = true;
 		g_bitmapModule = dependencies.getBitmapModule().getTable();
 		Shaders_Construct();
 		m_shadersq3 = &GetShaderSystem();
