@@ -1,3 +1,6 @@
+if(NOT RADIANT_SUPPORT_SOURCE)
+	return()
+endif()
 
 # Counter-Strike: Source
 radiant_add_gamepack(cstrike

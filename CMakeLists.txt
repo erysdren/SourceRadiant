@@ -8,6 +8,7 @@ include(CMakeDependentOption)
 
 option(RADIANT_GENERATE_GAMEPACKS "Generate gamepacks" ON)
 option(RADIANT_USE_ASSIMP "Build Assimp model loader plugin" OFF)
+option(RADIANT_SUPPORT_SOURCE "Support Source Engine formats" ON)
 cmake_dependent_option(RADIANT_BUILD_Q3MAP2 "Build q3map2" ON RADIANT_USE_ASSIMP OFF)
 
 set(RADIANT_VERSION "1.6.0n" CACHE STRING "")
@@ -22,34 +23,36 @@ cmake_policy(SET CMP0077 NEW)
 
 include(FetchContent)
 
-FetchContent_Declare(
-	CMP_Compressonator
-	GIT_REPOSITORY https://github.com/craftablescience/compressonator
-	GIT_TAG f9c8c58fe753108c260b33ec32301805c33c08b7
-	EXCLUDE_FROM_ALL
-)
-FetchContent_MakeAvailable(CMP_Compressonator)
-set_target_properties(CMP_Compressonator PROPERTIES POSITION_INDEPENDENT_CODE ON)
-set_target_properties(CMP_Core PROPERTIES POSITION_INDEPENDENT_CODE ON)
+if(RADIANT_SUPPORT_SOURCE)
+	FetchContent_Declare(
+		CMP_Compressonator
+		GIT_REPOSITORY https://github.com/craftablescience/compressonator
+		GIT_TAG f9c8c58fe753108c260b33ec32301805c33c08b7
+		EXCLUDE_FROM_ALL
+	)
+	FetchContent_MakeAvailable(CMP_Compressonator)
+	set_target_properties(CMP_Compressonator PROPERTIES POSITION_INDEPENDENT_CODE ON)
+	set_target_properties(CMP_Core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-FetchContent_Declare(
-	sourcepp
-	GIT_REPOSITORY https://github.com/craftablescience/sourcepp.git
-	GIT_TAG "v2026.3.9"
-	EXCLUDE_FROM_ALL
-)
+	FetchContent_Declare(
+		sourcepp
+		GIT_REPOSITORY https://github.com/craftablescience/sourcepp.git
+		GIT_TAG "v2026.3.9"
+		EXCLUDE_FROM_ALL
+	)
 
-set(SOURCEPP_LIBS_START_ENABLED OFF CACHE BOOL "" FORCE)
-set(SOURCEPP_USE_KVPP ON CACHE BOOL "" FORCE) # for VMTs
-set(SOURCEPP_USE_MDLPP ON CACHE BOOL "" FORCE) # for MDLs
-set(SOURCEPP_USE_TOOLPP ON CACHE BOOL "" FORCE) # for FGDs
-set(SOURCEPP_USE_VPKPP ON CACHE BOOL "" FORCE) # for VPKs
-set(SOURCEPP_USE_VTFPP ON CACHE BOOL "" FORCE) # for VTFs
-set(SOURCEPP_VTFPP_SUPPORT_EXR OFF CACHE BOOL "" FORCE)
-set(SOURCEPP_VTFPP_SUPPORT_QOI OFF CACHE BOOL "" FORCE)
-set(SOURCEPP_VTFPP_SUPPORT_WEBP OFF CACHE BOOL "" FORCE)
+	set(SOURCEPP_LIBS_START_ENABLED OFF CACHE BOOL "" FORCE)
+	set(SOURCEPP_USE_KVPP ON CACHE BOOL "" FORCE) # for VMTs
+	set(SOURCEPP_USE_MDLPP ON CACHE BOOL "" FORCE) # for MDLs
+	set(SOURCEPP_USE_TOOLPP ON CACHE BOOL "" FORCE) # for FGDs
+	set(SOURCEPP_USE_VPKPP ON CACHE BOOL "" FORCE) # for VPKs
+	set(SOURCEPP_USE_VTFPP ON CACHE BOOL "" FORCE) # for VTFs
+	set(SOURCEPP_VTFPP_SUPPORT_EXR OFF CACHE BOOL "" FORCE)
+	set(SOURCEPP_VTFPP_SUPPORT_QOI OFF CACHE BOOL "" FORCE)
+	set(SOURCEPP_VTFPP_SUPPORT_WEBP OFF CACHE BOOL "" FORCE)
 
-FetchContent_MakeAvailable(sourcepp)
+	FetchContent_MakeAvailable(sourcepp)
+endif()
 
 find_package(LibXml2)
 if(NOT LibXml2_FOUND)
@@ -222,7 +225,8 @@ add_executable(radiant WIN32
 	${PROJECT_SOURCE_DIR}/radiant/dialog.cpp
 	${PROJECT_SOURCE_DIR}/radiant/eclass_def.cpp
 	${PROJECT_SOURCE_DIR}/radiant/eclass_doom3.cpp
-	${PROJECT_SOURCE_DIR}/radiant/eclass_fgd_sourcepp.cpp
+	$<$<NOT:$<BOOL:${RADIANT_SUPPORT_SOURCE}>>:${PROJECT_SOURCE_DIR}/radiant/eclass_fgd.cpp>
+	$<$<BOOL:${RADIANT_SUPPORT_SOURCE}>:${PROJECT_SOURCE_DIR}/radiant/eclass_fgd_sourcepp.cpp>
 	${PROJECT_SOURCE_DIR}/radiant/eclass.cpp
 	${PROJECT_SOURCE_DIR}/radiant/eclass_xml.cpp
 	${PROJECT_SOURCE_DIR}/radiant/entityinspector.cpp
@@ -306,7 +310,7 @@ target_include_directories(radiant PRIVATE
 target_link_libraries(radiant PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
 target_link_libraries(radiant PRIVATE LibXml2::LibXml2)
 target_link_libraries(radiant PRIVATE commandlib gtkutil l_net xmllib quickhull)
-target_link_libraries(radiant PRIVATE sourcepp::toolpp)
+target_link_libraries(radiant PRIVATE $<$<BOOL:${RADIANT_SUPPORT_SOURCE}>:sourcepp::toolpp>)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	target_link_libraries(radiant PRIVATE ws2_32 dbghelp)
 endif()
