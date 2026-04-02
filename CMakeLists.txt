@@ -9,6 +9,7 @@ include(CMakeDependentOption)
 option(RADIANT_GENERATE_GAMEPACKS "Generate gamepacks" ON)
 option(RADIANT_USE_ASSIMP "Build Assimp model loader plugin" OFF)
 option(RADIANT_SUPPORT_SOURCE "Support Source Engine formats" ON)
+option(RADIANT_BUILD_MBSPC "Build mbspc" OFF)
 cmake_dependent_option(RADIANT_BUILD_Q3MAP2 "Build q3map2" ON RADIANT_USE_ASSIMP OFF)
 
 set(RADIANT_VERSION "1.6.0n" CACHE STRING "")
@@ -396,6 +397,12 @@ endif()
 
 if(RADIANT_BUILD_Q3MAP2)
 	include(q3map2)
+endif()
+
+# mbspc
+
+if(RADIANT_BUILD_MBSPC)
+	include(mbspc)
 endif()
 
 # modules
