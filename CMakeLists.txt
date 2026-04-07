@@ -84,6 +84,8 @@ endif()
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Svg OpenGL OpenGLWidgets)
 
+qt_standard_project_setup()
+
 # commandlib
 
 add_library(commandlib STATIC
@@ -207,7 +209,7 @@ target_include_directories(mathlib PRIVATE
 
 # radiant
 
-add_executable(radiant WIN32
+qt_add_executable(radiant
 	${PROJECT_SOURCE_DIR}/radiant/autosave.cpp
 	${PROJECT_SOURCE_DIR}/radiant/brushmanip.cpp
 	${PROJECT_SOURCE_DIR}/radiant/brushmodule.cpp
