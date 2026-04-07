@@ -106,6 +106,9 @@ considered **!!EXPERIMENTAL!!**
 - ~~Replace the external PNG and JPG loaders with `stb_image` for less dependencies~~
 - Replace `libxml2` with [`pugixml`](https://pugixml.org/)
 - See if a web-based version (with Emscripten and WASM) is possible
+- Use Qt resource system to pack essential files into the executable so they arent sitting around loose
+- Add system-wide search paths for additional gamepacks on all platforms
+- Remove the version checking stuff with the `RADIANT_MAJOR`/ `RADIANT_MINOR` files
 
 ### Random feature highlights
 
