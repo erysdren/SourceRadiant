@@ -38,7 +38,7 @@ if(RADIANT_SUPPORT_SOURCE)
 	FetchContent_Declare(
 		sourcepp
 		GIT_REPOSITORY https://github.com/craftablescience/sourcepp.git
-		GIT_TAG "v2026.3.9"
+		GIT_TAG "v2026.4.2"
 		EXCLUDE_FROM_ALL
 	)
 
