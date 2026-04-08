@@ -665,12 +665,12 @@ public:
 	}
 
 	EntityOutput& addOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) {
-		m_outputs.push_back( EntityOutput( name, target, input, data, delay, numUses ) );
+		m_outputs.push_back( EntityOutput( *this, name, target, input, data, delay, numUses ) );
 		return m_outputs.back();
 	}
 
 	EntityOutput& addOutput( const char* key, const char* value ) {
-		m_outputs.push_back( EntityOutput( key, value ) );
+		m_outputs.push_back( EntityOutput( *this, key, value ) );
 		return m_outputs.back();
 	}
 

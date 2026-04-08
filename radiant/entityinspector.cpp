@@ -1067,8 +1067,8 @@ void EntityInspector_applySpawnflags(){
 }
 
 class OutputTreeWidgetItem : public QTreeWidgetItem {
-	EntityOutput* m_output;
 public:
+	EntityOutput* m_output;
 	OutputTreeWidgetItem( const QStringList& strings, EntityOutput* output ) : QTreeWidgetItem( strings ), m_output( output ) {
 	}
 };
@@ -1247,6 +1247,12 @@ g_pressedKeysFilter;
 
 void EntityOutputs_ItemChanged(QTreeWidgetItem *_item, int column){
 	OutputTreeWidgetItem *item = static_cast<OutputTreeWidgetItem*>(_item);
+	item->m_output->setName(qUtf8Printable(item->text(0)));
+	item->m_output->setTarget(qUtf8Printable(item->text(1)));
+	item->m_output->setInput(qUtf8Printable(item->text(2)));
+	item->m_output->setData(qUtf8Printable(item->text(3)));
+	item->m_output->setDelay(item->text(4).toFloat());
+	item->m_output->setNumUses(item->text(5).toInt());
 }
 
 void EntityInspector_destroyWindow(){

@@ -30,9 +30,11 @@
 #include "qerplugin.h"
 
 class EntityClass;
+class Entity;
 
 class EntityOutput
 {
+	Entity& m_entity;
 	std::string m_name;
 	std::string m_target;
 	std::string m_input;
@@ -41,14 +43,14 @@ class EntityOutput
 	int m_numUses;
 	char m_separator;
 public:
-	EntityOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) : m_name( name ), m_target( target ), m_input( input ), m_data( data ), m_delay( delay ), m_numUses( numUses ) {
+	EntityOutput( Entity& entity, const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) : m_entity( entity ), m_name( name ), m_target( target ), m_input( input ), m_data( data ), m_delay( delay ), m_numUses( numUses ) {
 		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_separator" ), "1" ) ) {
 			m_separator = '\x1b';
 		} else {
 			m_separator = ',';
 		}
 	}
-	EntityOutput( const char* key, const char* value ) : m_name( key ) {
+	EntityOutput( Entity& entity, const char* key, const char* value ) : m_entity( entity ), m_name( key ) {
 		if ( string_equal( GlobalRadiant().getGameDescriptionKeyValue( "use_new_output_separator" ), "1" ) ) {
 			m_separator = '\x1b';
 		} else {
