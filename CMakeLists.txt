@@ -239,6 +239,7 @@ qt_add_executable(radiant
 	${PROJECT_SOURCE_DIR}/radiant/environment.cpp
 	${PROJECT_SOURCE_DIR}/radiant/error.cpp
 	${PROJECT_SOURCE_DIR}/radiant/feedback.cpp
+	${PROJECT_SOURCE_DIR}/radiant/files.cpp
 	${PROJECT_SOURCE_DIR}/radiant/filetypes.cpp
 	${PROJECT_SOURCE_DIR}/radiant/filterbar.cpp
 	${PROJECT_SOURCE_DIR}/radiant/filters.cpp

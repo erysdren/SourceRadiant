@@ -53,6 +53,8 @@
 #include "xywindow.h"
 #include "camwindow.h"
 
+#include "files.h"
+
 
 
 #define DEBUG_RENDER 0
@@ -152,15 +154,17 @@ void createShader( GLuint program, const char* filename, GLenum type ){
 
 	// load shader
 	{
-		std::size_t size = file_size( filename );
-		FileInputStream file( filename );
-		ASSERT_MESSAGE( !file.failed(), "failed to open " << Quoted( filename ) );
-		Array<GLchar> buffer( size );
-		size = file.read( reinterpret_cast<StreamBase::byte_type*>( buffer.data() ), size );
+		QFile *file = Radiant_OpenFileRead(filename);
 
-		const GLchar* string = buffer.data();
-		GLint length = GLint( size );
+		ASSERT_MESSAGE( file, "failed to open " << Quoted( filename ) );
+
+		QByteArray buffer = file->readAll();
+
+		const GLchar* string = (const GLchar*)buffer.data();
+		GLint length = GLint( file->size() );
 		gl().glShaderSource( shader, 1, &string, &length );
+
+		Radiant_CloseFile(file);
 	}
 
 	// compile shader
@@ -235,9 +239,8 @@ public:
 
 		// create shader
 		{
-			StringOutputStream filename( 256 );
-			createShader( m_program, filename( GlobalRadiant().getAppPath(), "gl/lighting_DBS_omni_vp.glsl" ), GL_VERTEX_SHADER );
-			createShader( m_program, filename( GlobalRadiant().getAppPath(), "gl/lighting_DBS_omni_fp.glsl" ), GL_FRAGMENT_SHADER );
+			createShader( m_program, "gl/lighting_DBS_omni_vp.glsl", GL_VERTEX_SHADER );
+			createShader( m_program, "gl/lighting_DBS_omni_fp.glsl", GL_FRAGMENT_SHADER );
 		}
 
 		GLSLProgram_link( m_program );
@@ -341,9 +344,8 @@ public:
 
 		// create shader
 		{
-			StringOutputStream filename( 256 );
-			createShader( m_program, filename( GlobalRadiant().getAppPath(), "gl/zfill_vp.glsl" ), GL_VERTEX_SHADER );
-			createShader( m_program, filename( GlobalRadiant().getAppPath(), "gl/zfill_fp.glsl" ), GL_FRAGMENT_SHADER );
+			createShader( m_program, "gl/zfill_vp.glsl", GL_VERTEX_SHADER );
+			createShader( m_program, "gl/zfill_fp.glsl", GL_FRAGMENT_SHADER );
 		}
 
 		GLSLProgram_link( m_program );
@@ -390,9 +392,8 @@ public:
 
 		// create shader
 		{
-			StringOutputStream filename( 256 );
-			createShader( m_program, filename( GlobalRadiant().getAppPath(), "gl/skybox_vp.glsl" ), GL_VERTEX_SHADER );
-			createShader( m_program, filename( GlobalRadiant().getAppPath(), "gl/skybox_fp.glsl" ), GL_FRAGMENT_SHADER );
+			createShader( m_program, "gl/skybox_vp.glsl", GL_VERTEX_SHADER );
+			createShader( m_program, "gl/skybox_fp.glsl", GL_FRAGMENT_SHADER );
 		}
 
 		GLSLProgram_link( m_program );
