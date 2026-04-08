@@ -14,8 +14,27 @@
 		{
 			"name": "DefaultNinja",
 			"displayName": "DefaultNinja",
-			"generator": "Ninja",
-			"binaryDir": "build"
+			"inherits": "Default",
+			"generator": "Ninja"
+		},
+		{
+			"name": "Emscripten",
+			"displayName": "Emscripten",
+			"binaryDir": "build-emscripten",
+			"toolchainFile": "$env{EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake",
+			"cacheVariables": {
+				"RADIANT_GENERATE_GAMEPACKS": true,
+				"RADIANT_USE_ASSIMP": false,
+				"RADIANT_SUPPORT_SOURCE": true,
+				"RADIANT_BUILD_MBSPC": false,
+				"RADIANT_BUILD_Q3MAP2": false
+			}
+		},
+		{
+			"name": "EmscriptenNinja",
+			"displayName": "EmscriptenNinja",
+			"inherits": "Emscripten",
+			"generator": "Ninja"
 		}
 	],
 	"buildPresets": [
@@ -26,6 +45,14 @@
 		{
 			"name": "DefaultNinja",
 			"configurePreset": "DefaultNinja"
+		},
+		{
+			"name": "Emscripten",
+			"configurePreset": "Emscripten"
+		},
+		{
+			"name": "EmscriptenNinja",
+			"configurePreset": "EmscriptenNinja"
 		}
 	]
 }

@@ -2,7 +2,13 @@
 
 function(add_plugin name)
 	cmake_parse_arguments(PARSE_ARGV 1 ARG "" "" "SOURCES")
-	add_library(${name} SHARED ${ARG_SOURCES})
+	if(EMSCRIPTEN)
+		add_executable(${name} ${ARG_SOURCES})
+		target_compile_options(${name} PRIVATE -sSIDE_MODULE=2 -nostdlib)
+		target_link_options(${name} PRIVATE -sSIDE_MODULE=2 -sSTANDALONE_WASM=1 -sERROR_ON_UNDEFINED_SYMBOLS=0 -nostdlib)
+	else()
+		add_library(${name} SHARED ${ARG_SOURCES})
+	endif()
 	set_target_properties(${name}
 		PROPERTIES
 			CXX_STANDARD_REQUIRED ON
