@@ -1476,6 +1476,22 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 		QObject::connect( tree, &QTreeWidget::itemChanged, EntityOutputs_ItemChanged );
 
 		splitter->addWidget( tree );
+
+		// add/remove buttons
+		auto *parent = new QWidget;
+		auto *hbox = new QHBoxLayout(parent);
+		hbox->setContentsMargins( 0, 0, 0, 0 );
+		{
+			auto *b = new QPushButton( "Add Output" );
+			hbox->addWidget( b );
+			QObject::connect( b, &QAbstractButton::clicked, EntityInspector_clearAllKeyValues );
+		}
+		{
+			auto *b = new QPushButton( "Delete Selected Output" );
+			hbox->addWidget( b );
+			QObject::connect( b, &QAbstractButton::clicked, EntityInspector_clearKeyValue );
+		}
+		splitter->addWidget( parent );
 	}
 
 	g_entityInspector_windowConstructed = true;

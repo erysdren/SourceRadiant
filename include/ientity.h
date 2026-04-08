@@ -153,8 +153,9 @@ public:
 	virtual bool isContainer() const = 0;
 	virtual void attach( Observer& observer ) = 0;
 	virtual void detach( Observer& observer ) = 0;
-	virtual EntityOutput& addOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) = 0;
-	virtual EntityOutput& addOutput( const char* key, const char* value ) = 0;
+	virtual EntityOutput* addOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) = 0;
+	virtual EntityOutput* addOutput( const char* key, const char* value ) = 0;
+	virtual void removeOutput( EntityOutput* output ) = 0;
 	virtual void forEachOutput( OutputVisitor& visitor ) = 0;
 };
 

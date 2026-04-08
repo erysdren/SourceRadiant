@@ -664,14 +664,24 @@ public:
 		return m_isContainer;
 	}
 
-	EntityOutput& addOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) {
+	EntityOutput* addOutput( const char* name, const char* target, const char* input, const char* data = "", float delay = 0, int numUses = -1 ) {
 		m_outputs.push_back( EntityOutput( *this, name, target, input, data, delay, numUses ) );
-		return m_outputs.back();
+		return &m_outputs.back();
 	}
 
-	EntityOutput& addOutput( const char* key, const char* value ) {
+	EntityOutput* addOutput( const char* key, const char* value ) {
 		m_outputs.push_back( EntityOutput( *this, key, value ) );
-		return m_outputs.back();
+		return &m_outputs.back();
+	}
+
+	void removeOutput( EntityOutput* output ) {
+		for (auto it = m_outputs.begin(); it != m_outputs.end(); ) {
+			if ( output == &(*it) ) {
+				it = m_outputs.erase( it );
+			} else {
+				++it;
+			}
+		}
 	}
 
 	void forEachOutput( OutputVisitor& visitor ) override {
