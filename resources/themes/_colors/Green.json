@@ -1,0 +1,20 @@
+/* Green Color Scheme: GREEN background, GREEN grid & WHITE brushes */
+{
+    "ColorTexBroBackground": [0.239215, 0.239215, 0.239215],
+    "ColorModBroBackground": [0.239215, 0.239215, 0.239215],
+    "ColorCameraBackground": [0.239215, 0.239215, 0.239215],
+    "ColorGridBackground"  : [0.094117, 0.317647, 0.274509],
+    "ColorGridMajor"       : [0.223529, 0.450980, 0.407843],
+    "ColorGridMinor"       : [0.145098, 0.360784, 0.317647],
+    "ColorGridText"        : [0.223529, 0.749019, 0.647058],
+    "ColorGridBlocks"      : [0.250980, 0.564705, 1.0],
+    "ColorGridWorldspawn"  : [0.901960, 0.901960, 0.901960],
+    "ColorGridSelection"   : [0.298039, 1.0, 0.862745],
+    "ColorCameraSelection" : [0.501960, 1.0, 0.901960],
+    "ColorClipperSplit"    : [0.501960, 1.0, 1.0],
+    "ColorGridActive"      : [0.486274, 0.749019, 0.698039],
+    "ColorCameraIcon"      : [0.960784, 0.945098, 0.301960],
+    "ColorAxisX"           : [1.0, 0.2, 0.321568],
+    "ColorAxisY"           : [0.545098, 0.862745, 0.0],
+    "ColorAxisZ"           : [0.156862, 0.564705, 1.0],
+}

@@ -299,6 +299,16 @@ qt_add_executable(radiant
 	${PROJECT_SOURCE_DIR}/radiant/xywindow.cpp
 )
 
+file(GLOB RADIANT_RESOURCES "${PROJECT_SOURCE_DIR}/resources/*")
+qt_add_resources(radiant "radiant"
+	PREFIX
+		"/"
+	FILES
+		${RADIANT_RESOURCES}
+	BASE
+		"${PROJECT_SOURCE_DIR}/resources"
+)
+
 target_compile_definitions(radiant PRIVATE QT_NO_KEYWORDS)
 target_compile_definitions(radiant PRIVATE
 	RADIANT_VERSION=\"${RADIANT_VERSION}\"
@@ -338,7 +348,7 @@ file(WRITE ${PROJECT_SOURCE_DIR}/install/RADIANT_MAJOR ${RADIANT_MAJOR_VERSION})
 file(WRITE ${PROJECT_SOURCE_DIR}/install/RADIANT_MINOR ${RADIANT_MINOR_VERSION})
 file(WRITE ${PROJECT_SOURCE_DIR}/install/RADIANT_PATCH ${RADIANT_PATCH_VERSION})
 
-file(GLOB RADIANT_DATA_FILES "${PROJECT_SOURCE_DIR}/setup/data/tools/*")
+file(GLOB RADIANT_DATA_FILES "${PROJECT_SOURCE_DIR}/resources/*")
 file(COPY ${RADIANT_DATA_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/install/)
 file(COPY "${PROJECT_SOURCE_DIR}/docs/mouse shortcuts.txt" DESTINATION ${PROJECT_SOURCE_DIR}/install/docs/)
 

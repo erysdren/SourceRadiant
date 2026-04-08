@@ -1,0 +1,20 @@
+/* Blender2 Color Scheme: LIGHTER background, BLACK grid & WHITE brushes */
+{
+    "ColorTexBroBackground": [0.239215, 0.239215, 0.239215],
+    "ColorModBroBackground": [0.239215, 0.239215, 0.239215],
+    "ColorCameraBackground": [0.239215, 0.239215, 0.239215],
+    "ColorGridBackground"  : [0.290196, 0.290196, 0.290196],
+    "ColorGridMajor"       : [0.156862, 0.156862, 0.156862],
+    "ColorGridMinor"       : [0.239215, 0.239215, 0.239215],
+    "ColorGridText"        : [0.721568, 0.721568, 0.721568],
+    "ColorGridBlocks"      : [0.250980, 0.501960, 1.0],
+    "ColorGridWorldspawn"  : [0.843137, 0.843137, 0.843137],
+    "ColorGridSelection"   : [1.0, 0.627450, 0.156862],
+    "ColorCameraSelection" : [1.0, 0.627450, 0.156862],
+    "ColorClipperSplit"    : [0.501960, 1.0, 1.0],
+    "ColorGridActive"      : [0.721568, 0.721568, 0.721568],
+    "ColorCameraIcon"      : [0.960784, 0.945098, 0.301960],
+    "ColorAxisX"           : [1.0, 0.2, 0.321568],
+    "ColorAxisY"           : [0.545098, 0.862745, 0.0],
+    "ColorAxisZ"           : [0.156862, 0.564705, 1.0],
+}
