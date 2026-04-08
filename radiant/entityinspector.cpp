@@ -1246,13 +1246,21 @@ protected:
 g_pressedKeysFilter;
 
 void EntityOutputs_ItemChanged(QTreeWidgetItem *_item, int column){
-	OutputTreeWidgetItem *item = static_cast<OutputTreeWidgetItem*>(_item);
-	item->m_output->setName(qUtf8Printable(item->text(0)));
-	item->m_output->setTarget(qUtf8Printable(item->text(1)));
-	item->m_output->setInput(qUtf8Printable(item->text(2)));
-	item->m_output->setData(qUtf8Printable(item->text(3)));
-	item->m_output->setDelay(item->text(4).toFloat());
-	item->m_output->setNumUses(item->text(5).toInt());
+	OutputTreeWidgetItem* item = static_cast<OutputTreeWidgetItem*>(_item);
+	auto name = item->text(0);
+	auto target = item->text(1);
+	auto input = item->text(2);
+	auto data = item->text(3);
+	auto delay = item->text(4);
+	auto uses = item->text(5);
+	const auto command = StringStream("entitySetOutput ", Quoted(qUtf8Printable(name)), " ", Quoted(qUtf8Printable(target)), " ", Quoted(qUtf8Printable(input)), " ", Quoted(qUtf8Printable(data)), " ", Quoted(qUtf8Printable(delay)), " ", Quoted(qUtf8Printable(uses)));
+	UndoableCommand undo(command);
+	item->m_output->setName(qUtf8Printable(name));
+	item->m_output->setTarget(qUtf8Printable(target));
+	item->m_output->setInput(qUtf8Printable(input));
+	item->m_output->setData(qUtf8Printable(data));
+	item->m_output->setDelay(delay.toFloat());
+	item->m_output->setNumUses(uses.toInt());
 }
 
 void EntityInspector_destroyWindow(){
