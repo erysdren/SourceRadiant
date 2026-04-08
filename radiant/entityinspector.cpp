@@ -1477,6 +1477,7 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 
 		splitter->addWidget( tree );
 
+#if 0
 		// add/remove buttons
 		auto *parent = new QWidget;
 		auto *hbox = new QHBoxLayout(parent);
@@ -1492,6 +1493,7 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 			QObject::connect( b, &QAbstractButton::clicked, EntityInspector_clearKeyValue );
 		}
 		splitter->addWidget( parent );
+#endif
 	}
 
 	g_entityInspector_windowConstructed = true;
