@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2002 Forest "LordHavoc" Hale
+   Copyright (c) 2002 Ashley "LadyHavoc" Hale
 
    All rights reserved.
 
@@ -13,7 +13,7 @@
    list of conditions and the following disclaimer in the documentation and/or
    other materials provided with the distribution.
 
-   Neither the name of Forest Hale nor the names of other contributors may be used
+   Neither the name of Ashley Hale nor the names of other contributors may be used
    to endorse or promote products derived from this software without specific prior
    written permission.
 
