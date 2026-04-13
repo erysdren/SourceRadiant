@@ -106,6 +106,12 @@ public:
 	void setNumUses( int i ) {
 		m_numUses = i;
 	}
+	Entity& parent() {
+		return m_entity;
+	}
+	const Entity& parent() const {
+		return m_entity;
+	}
 };
 
 typedef Callback<void(const char*)> KeyObserver;

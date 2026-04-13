@@ -1245,6 +1245,15 @@ protected:
 }
 g_pressedKeysFilter;
 
+void EntityOutputs_RemoveItem(){
+	auto items = g_entoutputs_store->selectedItems();
+	for (auto& _item : items) {
+		OutputTreeWidgetItem* item = static_cast<OutputTreeWidgetItem*>(_item);
+		item->m_output->parent().removeOutput(item->m_output);
+		delete item;
+	}
+}
+
 void EntityOutputs_ItemChanged(QTreeWidgetItem *_item, int column){
 	OutputTreeWidgetItem* item = static_cast<OutputTreeWidgetItem*>(_item);
 	auto name = item->text(0);
@@ -1490,7 +1499,7 @@ QWidget* EntityInspector_constructWindow( QWidget* toplevel ){
 		{
 			auto *b = new QPushButton( "Delete Selected Output" );
 			hbox->addWidget( b );
-			QObject::connect( b, &QAbstractButton::clicked, EntityInspector_clearKeyValue );
+			QObject::connect( b, &QAbstractButton::clicked, EntityOutputs_RemoveItem );
 		}
 		splitter->addWidget( parent );
 #endif
