@@ -22,7 +22,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "profile/profile2.h"
+#include "inifile.h"
 
 #include "qerplugin.h"
 #include "iscenegraph.h"

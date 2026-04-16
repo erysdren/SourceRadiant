@@ -429,7 +429,7 @@ void DoCommandListDlg(){
 
 
 
-#include "profile/profile2.h"
+#include "inifile.h"
 
 const char* const COMMANDS_VERSION = "1.0-gtk-accelnames";
 
