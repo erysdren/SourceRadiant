@@ -110,6 +110,7 @@ considered **!!EXPERIMENTAL!!**
 - Use Qt resource system to pack essential files into the executable so they arent sitting around loose
 - Add system-wide search paths for additional gamepacks on all platforms
 - Remove the version checking stuff with the `RADIANT_MAJOR`/ `RADIANT_MINOR` files
+- Move asset loading to a thread so it doesn't lock up the whole program when loading a big map
 
 ### Random feature highlights
 
