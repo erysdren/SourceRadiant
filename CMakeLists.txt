@@ -193,21 +193,6 @@ add_library(webplib STATIC ${PROJECT_SOURCE_DIR}/libs/webplib/webplib.cpp)
 target_include_directories(webplib PUBLIC ${PROJECT_SOURCE_DIR}/libs/webplib)
 set_property(TARGET webplib PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# mathlib
-
-add_library(mathlib STATIC
-	${PROJECT_SOURCE_DIR}/libs/mathlib/bbox.c
-	${PROJECT_SOURCE_DIR}/libs/mathlib/line.c
-	${PROJECT_SOURCE_DIR}/libs/mathlib/m4x4.c
-	${PROJECT_SOURCE_DIR}/libs/mathlib/mathlib.c
-	${PROJECT_SOURCE_DIR}/libs/mathlib/ray.c
-)
-
-target_include_directories(mathlib PRIVATE
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/libs
-)
-
 # radiant
 
 qt_add_executable(radiant
