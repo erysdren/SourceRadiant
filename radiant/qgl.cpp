@@ -28,20 +28,9 @@
 #include <cstdlib>
 #include <cstring>
 
-
 #include "igl.h"
 
-
-
-void QGL_Shutdown( OpenGLBinding& table ){
-	globalOutputStream() << "Shutting down OpenGL module...";
-
-	globalOutputStream() << "Done.\n";
-}
-
-
-typedef struct glu_error_struct
-{
+typedef struct glu_error_struct {
 	GLenum errnum;
 	const char *errstr;
 } GLU_ERROR_STRUCT;
@@ -67,18 +56,8 @@ const GLubyte* qgluErrorString( GLenum errCode ){
 	return (const GLubyte *)"Unknown error";
 }
 
-
 void glInvalidFunction(){
 	ERROR_MESSAGE( "calling an invalid OpenGL function" );
-}
-
-
-void QGL_clear( OpenGLBinding& table ){
-}
-
-int QGL_Init( OpenGLBinding& table ){
-	QGL_clear( table );
-	return 1;
 }
 
 int g_qglMajorVersion = 0;
@@ -106,7 +85,6 @@ void QGL_InitVersion(){
 #endif
 }
 
-
 inline void extension_not_implemented( const char* extension ){
 	globalWarningStream() << "WARNING: OpenGL driver reports support for " << extension << " but does not implement it\n";
 }
@@ -123,7 +101,6 @@ void QGL_sharedContextCreated( OpenGLBinding& table ){
 	table.major_version = g_qglMajorVersion;
 	table.minor_version = g_qglMinorVersion;
 
-
 	if ( QOpenGLContext::currentContext()->hasExtension( "GL_EXT_texture_filter_anisotropic" ) ) {
 		gl().glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_maxTextureAnisotropy );
 		globalOutputStream() << "Anisotropic filtering possible (max " << g_maxTextureAnisotropy << "x)\n";
@@ -139,9 +116,8 @@ void QGL_sharedContextCreated( OpenGLBinding& table ){
 }
 
 void QGL_sharedContextDestroyed( OpenGLBinding& table ){
-	QGL_clear( table );
-}
 
+}
 
 void QGL_assertNoErrors( const char *file, int line ){
 	GLenum error = gl().glGetError();
@@ -159,7 +135,6 @@ void QGL_assertNoErrors( const char *file, int line ){
 	}
 }
 
-
 class QglAPI
 {
 	OpenGLBinding m_qgl;
@@ -168,13 +143,9 @@ public:
 	STRING_CONSTANT( Name, "*" );
 
 	QglAPI(){
-		QGL_Init( m_qgl );
-
 		m_qgl.assertNoErrors = &QGL_assertNoErrors;
 	}
-	~QglAPI(){
-		QGL_Shutdown( m_qgl );
-	}
+	~QglAPI(){}
 	OpenGLBinding* getTable(){
 		return &m_qgl;
 	}
