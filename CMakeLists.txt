@@ -392,6 +392,12 @@ else()
 	endif()
 endif()
 
+target_compile_definitions(radiant PRIVATE $<$<CONFIG:Debug>:_DEBUG>)
+target_compile_definitions(commandlib PRIVATE $<$<CONFIG:Debug>:_DEBUG>)
+target_compile_definitions(gtkutil PRIVATE $<$<CONFIG:Debug>:_DEBUG>)
+target_compile_definitions(l_net PRIVATE $<$<CONFIG:Debug>:_DEBUG>)
+target_compile_definitions(xmllib PRIVATE $<$<CONFIG:Debug>:_DEBUG>)
+
 # gamepacks
 
 if(RADIANT_GENERATE_GAMEPACKS)
