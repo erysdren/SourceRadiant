@@ -204,6 +204,9 @@ constexpr const char* MP_ENGINE_ATTRIBUTE = "mp_engine_linux";
 #elif defined( __APPLE__ )
 constexpr const char* ENGINE_ATTRIBUTE = "engine_macos";
 constexpr const char* MP_ENGINE_ATTRIBUTE = "mp_engine_macos";
+#elif defined( __HAIKU__ )
+constexpr const char* ENGINE_ATTRIBUTE = "engine_haiku";
+constexpr const char* MP_ENGINE_ATTRIBUTE = "mp_engine_haiku";
 #else
 #error "unsupported platform"
 #endif
