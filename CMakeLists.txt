@@ -316,7 +316,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	target_link_libraries(radiant PRIVATE ws2_32 dbghelp)
 endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Haiku")
-	target_link_libraries(radiant PRIVATE net)
+	target_link_libraries(radiant PRIVATE network)
 endif()
 
 set_target_properties(radiant commandlib gtkutil xmllib PROPERTIES CXX_STANDARD_REQUIRED ON CXX_STANDARD 20)
