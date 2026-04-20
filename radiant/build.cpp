@@ -1149,7 +1149,7 @@ EMessageBoxReturn BuildMenuDialog_construct( ProjectList& projectList ){
 						XMLStreamWriter writer( stream ); // destructor dumps to stream
 						tool.exportXML( writer );
 					}
-					item->setData( Qt::ItemDataRole::UserRole, strchr( stream, '>' ) + 1 ); // skip xml header
+					item->setData( Qt::ItemDataRole::UserRole, (const char *)strchr( stream, '>' ) + 1 ); // skip xml header
 				}
 				table->insertRow( table->rowCount() );
 				table->setItem( table->rowCount() - 1, 0, new QTableWidgetItem( LAST_ITER_STRING ) );

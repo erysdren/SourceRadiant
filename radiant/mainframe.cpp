@@ -437,6 +437,8 @@ public:
 				engine = g_pGameDescription->getRequiredKeyValue( "engine_linux" );
 #elif defined( __APPLE__ )
 				engine = g_pGameDescription->getRequiredKeyValue( "engine_macos" );
+#elif defined( __HAIKU__ )
+				engine = g_pGameDescription->getRequiredKeyValue( "engine_haiku" );
 #else
 #error "unsupported platform"
 #endif
@@ -2121,6 +2123,8 @@ void MainFrame_Construct(){
 		    "enginepath_macos"
 #elif defined( __linux__ ) || defined ( __FreeBSD__ )
 		    "enginepath_linux"
+#elif defined( __HAIKU__ )
+		    "enginepath_haiku"
 #else
 #error "unknown platform"
 #endif
