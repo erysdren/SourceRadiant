@@ -534,7 +534,7 @@ const char* const c_library_extension =
     "dll"
 #elif defined ( __APPLE__ )
     "dylib"
-#elif defined( __linux__ ) || defined ( __FreeBSD__ )
+#elif defined( __linux__ ) || defined ( __FreeBSD__ ) || defined ( __HAIKU__ )
     "so"
 #endif
     ;
