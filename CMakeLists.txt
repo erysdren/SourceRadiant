@@ -27,19 +27,9 @@ include(FetchContent)
 
 if(RADIANT_SUPPORT_SOURCE)
 	FetchContent_Declare(
-		CMP_Compressonator
-		GIT_REPOSITORY https://github.com/craftablescience/compressonator
-		GIT_TAG f9c8c58fe753108c260b33ec32301805c33c08b7
-		EXCLUDE_FROM_ALL
-	)
-	FetchContent_MakeAvailable(CMP_Compressonator)
-	set_target_properties(CMP_Compressonator PROPERTIES POSITION_INDEPENDENT_CODE ON)
-	set_target_properties(CMP_Core PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-	FetchContent_Declare(
 		sourcepp
 		GIT_REPOSITORY https://github.com/craftablescience/sourcepp.git
-		GIT_TAG "v2026.4.2"
+		GIT_TAG bd60f5dd494903e2e7727ae798e1bc3f34f4a6e7
 		EXCLUDE_FROM_ALL
 	)
 
@@ -49,6 +39,7 @@ if(RADIANT_SUPPORT_SOURCE)
 	set(SOURCEPP_USE_TOOLPP ON CACHE BOOL "" FORCE) # for FGDs
 	set(SOURCEPP_USE_VPKPP ON CACHE BOOL "" FORCE) # for VPKs
 	set(SOURCEPP_USE_VTFPP ON CACHE BOOL "" FORCE) # for VTFs
+	set(SOURCEPP_VTFPP_BUILD_WITH_COMPRESSONATOR OFF CACHE BOOL "" FORCE)
 	set(SOURCEPP_VTFPP_SUPPORT_EXR OFF CACHE BOOL "" FORCE)
 	set(SOURCEPP_VTFPP_SUPPORT_QOI OFF CACHE BOOL "" FORCE)
 	set(SOURCEPP_VTFPP_SUPPORT_WEBP OFF CACHE BOOL "" FORCE)
