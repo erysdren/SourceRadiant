@@ -64,6 +64,7 @@ add_module(archivezip
 		${PROJECT_SOURCE_DIR}/modules/archivezip/plugin.cpp
 		${PROJECT_SOURCE_DIR}/modules/archivezip/zlibstream.cpp
 )
+target_link_libraries(archivezip PRIVATE ZLIB::ZLIB)
 
 add_module(archivewad
 	SOURCES

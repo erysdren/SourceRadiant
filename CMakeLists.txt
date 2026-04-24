@@ -56,6 +56,8 @@ if(RADIANT_SUPPORT_SOURCE)
 	FetchContent_MakeAvailable(sourcepp)
 endif()
 
+find_package(ZLIB REQUIRED)
+
 find_package(LibXml2)
 if(NOT LibXml2_FOUND)
 	FetchContent_Declare(
