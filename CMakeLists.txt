@@ -333,16 +333,8 @@ file(GLOB RADIANT_DATA_FILES "${PROJECT_SOURCE_DIR}/resources/*")
 file(COPY ${RADIANT_DATA_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/install/)
 file(COPY "${PROJECT_SOURCE_DIR}/docs/mouse shortcuts.txt" DESTINATION ${PROJECT_SOURCE_DIR}/install/docs/)
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Haiku")
-	if(CMAKE_VERSION VERSION_GREATER_EQUAL "4.2")
-		string(CONCAT RADIANT_STATIC_RUNTIME $<
-			$<CXX_COMPILER_LINKER_FRONTEND_VARIANT:GCC>:
-			LINKER:SHELL:-static-libstdc++ -static-libgcc
-		>)
-	else()
-		set(RADIANT_STATIC_RUNTIME -static-libstdc++ -static-libgcc)
-	endif()
-	target_link_options(radiant PRIVATE ${RADIANT_STATIC_RUNTIME})
+if(MINGW)
+	target_compile_options(radiant PRIVATE -static-libgcc -static-libstdc++ -static -mcrtdll=msvcrt-os)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
