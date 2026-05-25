@@ -21,13 +21,11 @@
 #define _GENSURF_H_
 
 #include <string.h>
-#include "qertypes.h"
 #include <stdio.h>
 
-#include "mathlib.h"
 #include "iscenegraph.h"
 #define USE_QERTABLE_DEFINE
-#include "qerplugin.h"
+#include "iplugin.h"
 extern _QERFuncTable_1 g_FuncTable;
 
 #include "irender.h"
@@ -47,10 +45,6 @@ extern _QERBrushTable __BRUSHTABLENAME;
 
 #include "igl.h"
 #include "ientity.h"
-
-#include <gtk/gtk.h>
-
-#include "iui_gtk.h"
 
 #include "gendlgs.h"
 

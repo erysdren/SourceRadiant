@@ -108,7 +108,8 @@ add_plugin(gensurf
 		${PROJECT_SOURCE_DIR}/plugins/gtkgensurf/view.cpp
 )
 target_link_libraries(gensurf PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::OpenGL Qt6::OpenGLWidgets)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	set_source_files_properties(${PROJECT_SOURCE_DIR}/plugins/gtkgensurf/triangle.c PROPERTIES COMPILE_FLAGS "-Wno-old-style-definition -Wno-unused-but-set-variable")
-endif()
+target_compile_options(gensurf PRIVATE
+	$<$<AND:$<COMPILE_LANGUAGE:C>,$<C_COMPILER_ID:GNU,Clang>>:-Wno-old-style-definition>
+	$<$<AND:$<COMPILE_LANGUAGE:C>,$<C_COMPILER_ID:GNU,Clang>>:-Wno-unused-but-set-variable>
+)
 endif()
