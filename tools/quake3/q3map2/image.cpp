@@ -235,7 +235,7 @@ const image_t *ImageLoad( const char *name ){
 	}
 	else if( path_set_extension( filename, ".jpg" ); ( buffer = vfsLoadFile( filename ) ) )
 	{
-		if ( LoadJPGBuff( buffer.data(), buffer.size(), &pixels, &width, &height ) == -1 && pixels != nullptr ) {
+		if ( LoadJPGBuff( (byte *)buffer.data(), buffer.size(), &pixels, &width, &height ) == -1 && pixels != nullptr ) {
 			// On error, LoadJPGBuff might store a pointer to the error message in pixels
 			Sys_Warning( "LoadJPGBuff %s %s\n", filename, (unsigned char*) pixels );
 			pixels = nullptr;
@@ -287,7 +287,7 @@ const image_t *ImageLoad( const char *name ){
 
 	if ( alphaHack ) {
 		if ( path_set_extension( filename, "_alpha.jpg" ); ( buffer = vfsLoadFile( filename ) ) ) {
-			if ( LoadJPGBuff( buffer.data(), buffer.size(), &pixels, &width, &height ) == -1 ) {
+			if ( LoadJPGBuff( (byte *)buffer.data(), buffer.size(), &pixels, &width, &height ) == -1 ) {
 				if ( pixels ) {
 					// On error, LoadJPGBuff might store a pointer to the error message in pixels
 					Sys_Warning( "LoadJPGBuff %s %s\n", filename, (unsigned char*) pixels );

@@ -1,26 +1,4 @@
 
-# ddslib
-
-add_library(ddslib STATIC
-	${PROJECT_SOURCE_DIR}/libs/ddslib/ddslib.c
-)
-
-target_include_directories(ddslib PRIVATE
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/libs
-)
-
-# etclib
-
-add_library(etclib STATIC
-	${PROJECT_SOURCE_DIR}/libs/etclib.c
-)
-
-target_include_directories(etclib PRIVATE
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/libs
-)
-
 # q3map2
 
 add_executable(q3map2
@@ -84,7 +62,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
 	target_compile_options(q3map2 PRIVATE -MMD -W -Wall -Wcast-align -Wcast-qual -Wno-unused-parameter -Wno-unused-function -fno-strict-aliasing)
 	target_compile_options(q3map2 PRIVATE -Wreorder -fno-exceptions -fno-rtti)
 endif()
-target_link_libraries(q3map2 PRIVATE l_net filematch ddslib etclib)
+target_link_libraries(q3map2 PRIVATE l_net filematch ddslib etclib crnlib webplib)
 target_link_libraries(q3map2 PRIVATE LibXml2::LibXml2)
 target_link_libraries(q3map2 PRIVATE assimp)
 target_include_directories(q3map2 PRIVATE
@@ -99,8 +77,6 @@ target_compile_definitions(q3map2 PRIVATE
 	RADIANT_PATCH_VERSION=$<QUOTE>${RADIANT_PATCH_VERSION}$<QUOTE>
 	RADIANT_ABOUTMSG=$<QUOTE>${RADIANT_ABOUTMSG}$<QUOTE>
 	Q3MAP_VERSION=$<QUOTE>${Q3MAP_VERSION}$<QUOTE>
-	NO_WEBP
-	NO_CRN
 )
 set_target_properties(q3map2
 	PROPERTIES
