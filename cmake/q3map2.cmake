@@ -64,7 +64,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
 endif()
 target_link_libraries(q3map2 PRIVATE l_net filematch ddslib etclib crnlib webplib)
 target_link_libraries(q3map2 PRIVATE LibXml2::LibXml2)
-target_link_libraries(q3map2 PRIVATE assimp)
+target_link_libraries(q3map2 PRIVATE assimp $<$<BOOL:${WIN32}>:ws2_32>)
 target_include_directories(q3map2 PRIVATE
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/libs
