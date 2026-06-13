@@ -1,0 +1,89 @@
+
+# qdata3
+
+add_executable(qdata3
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/bspfile.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/cmdlib.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/inout.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/l3dslib.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/lbmlib.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/mathlib.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/md4.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/path_init.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/polylib.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/scriplib.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/threads.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/common/trilib.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/qdata/images.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/qdata/models.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/qdata/qdata.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/qdata/sprites.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/qdata/tables.c
+	${PROJECT_SOURCE_DIR}/tools/quake2/qdata/video.c
+)
+target_link_libraries(qdata3 PRIVATE l_net)
+target_link_libraries(qdata3 PRIVATE LibXml2::LibXml2)
+target_include_directories(qdata3 PRIVATE
+	${PROJECT_SOURCE_DIR}/tools/quake2/common
+	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/libs
+)
+target_compile_definitions(qdata3 PRIVATE
+	RADIANT_VERSION=$<QUOTE>${RADIANT_VERSION}$<QUOTE>
+	RADIANT_MAJOR_VERSION=$<QUOTE>${RADIANT_MAJOR_VERSION}$<QUOTE>
+	RADIANT_MINOR_VERSION=$<QUOTE>${RADIANT_MINOR_VERSION}$<QUOTE>
+	RADIANT_PATCH_VERSION=$<QUOTE>${RADIANT_PATCH_VERSION}$<QUOTE>
+	RADIANT_ABOUTMSG=$<QUOTE>${RADIANT_ABOUTMSG}$<QUOTE>
+)
+set_target_properties(qdata3
+	PROPERTIES
+		LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/install
+		RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/install
+)
+target_compile_options(qdata3 PRIVATE
+	$<$<BOOL:${MINGW}>:-static>
+	$<$<BOOL:${MINGW}>:-static-libgcc>
+	$<$<BOOL:${MINGW}>:-static-libstdc++>
+	$<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU,Clang>>:-Wreorder>
+	$<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU,Clang>>:-fno-rtti>
+	$<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU,Clang>>:-fpermissive>
+	$<$<AND:$<COMPILE_LANGUAGE:C,CXX>,$<C_COMPILER_ID:GNU,Clang>>:-W>
+	$<$<AND:$<COMPILE_LANGUAGE:C,CXX>,$<C_COMPILER_ID:GNU,Clang>>:-Wall>
+	$<$<AND:$<COMPILE_LANGUAGE:C,CXX>,$<C_COMPILER_ID:GNU,Clang>>:-Wcast-align>
+	$<$<AND:$<COMPILE_LANGUAGE:C,CXX>,$<C_COMPILER_ID:GNU,Clang>>:-Wcast-qual>
+	$<$<AND:$<COMPILE_LANGUAGE:C,CXX>,$<C_COMPILER_ID:GNU,Clang>>:-Wno-unused-parameter>
+	$<$<AND:$<COMPILE_LANGUAGE:C,CXX>,$<C_COMPILER_ID:GNU,Clang>>:-Wno-unused-function>
+	$<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU,Clang>>:-fno-strict-aliasing>
+)
+
+if(WIN32)
+	install(CODE [[
+		file(GET_RUNTIME_DEPENDENCIES
+			RESOLVED_DEPENDENCIES_VAR _resolved_deps
+			UNRESOLVED_DEPENDENCIES_VAR _unresolved_deps
+			EXECUTABLES
+				$<TARGET_FILE:qdata3>
+			PRE_EXCLUDE_REGEXES
+				"api-ms-" "ext-ms-" "Qt6"
+			POST_EXCLUDE_REGEXES
+				".*system32/.*\\.dll"
+			DIRECTORIES
+				$<TARGET_RUNTIME_DLL_DIRS:qdata3>
+		)
+		if(_unresolved_deps)
+			message(WARNING "qdata3 unresolved dependencies: ${_unresolved_deps}")
+		endif()
+		file(COPY ${_resolved_deps} DESTINATION $<TARGET_FILE_DIR:qdata3>)
+	]])
+endif()
+
+target_compile_definitions(qdata3 PRIVATE $<$<CONFIG:Debug>:_DEBUG> $<$<NOT:$<BOOL:${WIN32}>>:POSIX> $<$<BOOL:${WIN32}>:WIN32>)
+if(WIN32)
+	target_compile_definitions(qdata3 PRIVATE RADIANT_EXECUTABLE=$<QUOTE>exe$<QUOTE>)
+elseif(DEFINED CMAKE_SYSTEM_PROCESSOR)
+	string(TOLOWER ${CMAKE_SYSTEM_PROCESSOR} SYSTEM_PROCESSOR)
+	target_compile_definitions(qdata3 PRIVATE RADIANT_EXECUTABLE=$<QUOTE>${SYSTEM_PROCESSOR}$<QUOTE>)
+	set_target_properties(qdata3 PROPERTIES SUFFIX ".${SYSTEM_PROCESSOR}")
+else()
+	target_compile_definitions(qdata3 PRIVATE RADIANT_EXECUTABLE=$<QUOTE>unknown$<QUOTE>)
+endif()

@@ -24,6 +24,7 @@ option(RADIANT_BUILD_MBSPC "Build mbspc" ON)
 cmake_dependent_option(RADIANT_BUILD_Q3MAP2 "Build q3map2" ON RADIANT_USE_ASSIMP OFF)
 option(RADIANT_BUILD_Q2MAP "Build q2map" ON)
 option(RADIANT_BUILD_H2DATA "Build h2data" ON)
+option(RADIANT_BUILD_QDATA3 "Build qdata3" ON)
 
 set(RADIANT_VERSION ${PROJECT_VERSION})
 set(RADIANT_MAJOR_VERSION ${PROJECT_VERSION_MAJOR})
@@ -449,6 +450,12 @@ endif()
 
 if(RADIANT_BUILD_H2DATA)
 	include(h2data)
+endif()
+
+# qdata3
+
+if(RADIANT_BUILD_QDATA3)
+	include(qdata3)
 endif()
 
 # modules
