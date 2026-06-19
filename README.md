@@ -27,7 +27,13 @@ SourceRadiant is a fork of NetRadiant-custom ([GtkRadiant](https://icculus.org/g
 
 ## Supported games
 
-There are gamepacks for the following Source Engine and GoldSrc titles:
+**NOTE**: The editor still fundamentally supports all of the old idTech2/3/4
+games it always did. The gamepack format has changed somewhat, but old ones can
+be easily updated. Please raise an issue or contact me if you need a specific
+gamepack re-added.
+
+There are built-in gamepacks for the following Source Engine and GoldSrc
+titles:
 
 - Half-Life (1998)
 - Half-Life 2 (2004)
@@ -44,8 +50,8 @@ There are gamepacks for the following Source Engine and GoldSrc titles:
 - D.I.P.R.I.P. Warm Up (2008)
 - Portal 2 (2011)
 
-Note that any support for specific game or engine branch features should be
-considered **!!EXPERIMENTAL!!**
+Note that any support for specific Source Engine game or engine branch features
+should be considered **!!EXPERIMENTAL!!**
 
 ## Features
 
