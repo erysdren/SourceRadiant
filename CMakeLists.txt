@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(radiant LANGUAGES C CXX VERSION 1.6.0)
+project(WifeRadiant LANGUAGES C CXX VERSION 1.6.0)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # global

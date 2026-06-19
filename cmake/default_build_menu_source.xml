@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 build variables
-[RadiantPath]: path to Radiant .. C:/Projects/Source/Tools/SourceRadiant
+[RadiantPath]: path to Radiant .. C:/Projects/Source/Tools/WifeRadiant
 [CopyCommand]: copy command .. copy
 [EnginePath]: path to the engine .. C:/Program Files (x86)/Steam/steamapps/common/Half-Life 2/
 [ExecutableType]: Radiant executable suffix .. exe
