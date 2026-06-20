@@ -415,8 +415,8 @@ int main( int argc, char* argv[] ){
 	QApplication qapplication( argc, argv );
 	setlocale( LC_NUMERIC, "C" );
 	qInstallMessageHandler( qute_messageHandler );
-	QCoreApplication::setOrganizationName( "SourceRadiant" );
-	QCoreApplication::setApplicationName( "SourceRadiant" );
+	QCoreApplication::setOrganizationName( "WifeRadiant" );
+	QCoreApplication::setApplicationName( "WifeRadiant" );
 	QCoreApplication::setApplicationVersion( QT_VERSION_STR );
 
 	GlobalDebugMessageHandler::instance().setHandler( GlobalPopupDebugMessageHandler::instance() );
@@ -431,7 +431,7 @@ int main( int argc, char* argv[] ){
 
 	Sys_LogFile( true );
 
-	QApplication::setWindowIcon( new_local_icon( "radiant.ico" ) ); // before any windows, after paths_init()
+	QApplication::setWindowIcon( new_local_icon( "logo.ico" ) ); // before any windows, after paths_init()
 
 	show_splash();
 

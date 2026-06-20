@@ -56,7 +56,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SourceRadiant-${{ github.sha }}-Windows-${{ matrix.arch }}
+        name: WifeRadiant-${{ github.sha }}-Windows-${{ matrix.arch }}
         path: install/*
         if-no-files-found: error
 
@@ -99,6 +99,6 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SourceRadiant-${{ github.sha }}-Linux-${{ matrix.arch }}
+        name: WifeRadiant-${{ github.sha }}-Linux-${{ matrix.arch }}
         path: install/*
         if-no-files-found: error

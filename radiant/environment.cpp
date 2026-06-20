@@ -260,7 +260,7 @@ void environment_init( int argc, char* argv[] ){
 	}
 
 	if ( !portable_app_setup() ) {
-		home_path = StringStream( DirectoryCleaned( qPrintable( QDir::homePath() ) ), ".sourceradiant/" );
+		home_path = StringStream( DirectoryCleaned( qPrintable( QDir::homePath() ) ), ".wiferadiant/" );
 		Q_mkdir( home_path.c_str() );
 	}
 	gamedetect();
@@ -295,7 +295,7 @@ void environment_init( int argc, char* argv[] ){
 		{
 			home << PathCleaned( appdata );
 		}
-		home << "/SourceRadiantSettings/";
+		home << "/WifeRadiantSettings/";
 		Q_mkdir( home );
 		home_path = home;
 	}
