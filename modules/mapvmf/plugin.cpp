@@ -422,7 +422,7 @@ public:
 		kvpp::KV1Writer writer;
 
 		// make up some shit
-		writer["versioninfo"]["editorextension"] = "sourceradiant"; // strata checks this
+		writer["versioninfo"]["editorextension"] = "wiferadiant"; // strata checks this
 		writer["versioninfo"]["editorversion"] = RADIANT_VERSION; // probably should be a single number
 		writer["versioninfo"]["editorbuild"] = 0; // not tracked in radiant
 		writer["versioninfo"]["mapversion"] = 0; // not tracked in radiant

@@ -1,4 +1,4 @@
-There are 3 license types used throughout SourceRadiant source code.
+There are 3 license types used throughout WifeRadiant source code.
 
 BSD - modified Berkeley Software Distribution license
 ( each BSD licensed source file starts with the appropriate header )
@@ -13,9 +13,9 @@ Each source file in the tree comes with a license header which explains what
 license applies. To sum up shortly:
 
 GPL: ( except some files contributed by Loki Software under BSD license )
-SourceRadiant Core
-SourceRadiant Modules
-SourceRadiant Libraries
+WifeRadiant Core
+WifeRadiant Modules
+WifeRadiant Libraries
 Quake III Tools
 Quake II Tools
 Background2D Plugin
