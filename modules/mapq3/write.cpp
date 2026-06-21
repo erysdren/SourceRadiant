@@ -62,6 +62,18 @@ static std::size_t g_count_brushes;
 void Entity_ExportTokens( const Entity& entity, TokenWriter& writer ){
 	g_count_brushes = 0;
 
+	class WriteOutput : public Entity::OutputVisitor
+	{
+		TokenWriter& m_writer;
+	public:
+		WriteOutput( TokenWriter& writer ) : m_writer( writer ) { }
+		void visit( EntityOutput* output ) override {
+			m_writer.writeString( output->key().c_str() );
+			m_writer.writeString( output->value().c_str() );
+			m_writer.nextLine();
+		}
+	} outputVisitor( writer );;
+
 	class WriteKeyValue : public Entity::Visitor
 	{
 		TokenWriter& m_writer;
@@ -78,6 +90,7 @@ void Entity_ExportTokens( const Entity& entity, TokenWriter& writer ){
 	} visitor( writer );
 
 	entity.forEachKeyValue( visitor );
+	entity.forEachOutput( outputVisitor );
 }
 
 class WriteTokensWalker : public scene::Traversable::Walker
