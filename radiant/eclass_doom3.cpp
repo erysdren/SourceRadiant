@@ -414,6 +414,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && ( string_equal( first.c_str(), "editor_var" ) || string_equal( first.c_str(), "editor_string" ) ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "string";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -421,6 +422,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && string_equal( first.c_str(), "editor_float" ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "string";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -428,6 +430,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && string_equal( first.c_str(), "editor_snd" ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "sound";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -435,6 +438,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && string_equal( first.c_str(), "editor_bool" ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "boolean";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -442,6 +446,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && string_equal( first.c_str(), "editor_int" ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "integer";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -449,6 +454,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && string_equal( first.c_str(), "editor_model" ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "model";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -456,6 +462,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && string_equal( first.c_str(), "editor_color" ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "color";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -463,6 +470,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 		}
 		else if ( !string_empty( last ) && ( string_equal( first.c_str(), "editor_material" ) || string_equal( first.c_str(), "editor_mat" ) ) ) {
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, last ).second;
+			attribute.m_displayName = attribute.m_name = last;
 			attribute.m_type = "shader";
 			currentDescription = &attribute.m_description;
 			currentString = &description;
@@ -507,6 +515,7 @@ static bool EntityClass_parse( EntityClass& entityClass, Tokeniser& tokeniser ){
 				globalErrorStream() << "unsupported editor key " << Quoted( key );
 			}
 			EntityClassAttribute& attribute = EntityClass_insertAttribute( entityClass, key ).second;
+			attribute.m_displayName = attribute.m_name = key;
 			attribute.m_type = "string";
 			const char* value;
 			PARSE_RETURN_FALSE_IF_FAIL( EntityClassDoom3_parseString( tokeniser, value ) );
